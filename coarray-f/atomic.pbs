@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -q debug
+#PBS -N atomic
+#PBS -l mppwidth=48
+#PBS -l walltime=00:10:00
+#PBS -j eo
+#PBS -V
+ 
+cd $PBS_O_WORKDIR
+aprun -n 48 ./atomic.x
