@@ -8,7 +8,7 @@ LIBS     = -nodefaultlibs -lc++ -lc++abi  -lm -lc
 LD       = $(CXX)
 LDFLAGS  = $(CXXFLAGS)
 
-all: future.x
+all: future.x packaged_task.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@

@@ -11,9 +11,7 @@ int f(int x, int y) { return std::pow(x,y); }
 
 void task_lambda()
 {
-    std::packaged_task<int(int,int)> task([](int a, int b) {
-        return std::pow(a, b);
-    });
+    std::packaged_task<int(int,int)> task([](int a, int b) { return std::pow(a, b); });
     std::future<int> result = task.get_future();
 
     task(2, 9);
@@ -33,7 +31,10 @@ void task_bind()
 
 void task_thread()
 {
-    std::packaged_task<int(int,int)> task(f);
+    /* the following does not work */
+    //std::packaged_task<int(int,int)> task(f);
+ 
+    std::packaged_task<int(int,int)> task([](int a, int b) { return f(a,b); });
     std::future<int> result = task.get_future();
 
     std::thread task_td(std::move(task), 2, 10);
