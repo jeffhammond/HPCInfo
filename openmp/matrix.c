@@ -17,18 +17,18 @@ int main(int argc, char* argv[])
 
     double t0, t1;
 
-#pragma omp parallel 
+#pragma omp parallel
 {
     #pragma omp parallel for
     for (int i=0; i<n; i++)
         for (int j=0; j<n; j++)
             A[i*n+j] = 1.0/(i+j+1);
-            
+
     #pragma omp parallel for
     for (int i=0; i<n; i++)
         for (int j=0; j<n; j++)
             B[i*n+j] = 1.0/(i+j+1);
-            
+
     #pragma omp parallel for
     for (int i=0; i<n; i++)
         for (int j=0; j<n; j++)
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 
     t1 = omp_get_wtime();
 }
-            
+
     double x = 0.0;
     #pragma omp parallel for
     for (int i=0; i<n; i++)
