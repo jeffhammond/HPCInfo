@@ -27,6 +27,7 @@ int main(int argc, char * argv[])
     for (int i=0; i<n; i++) {
         cilk_spawn foo(&(x[i]),&(y[i]));
     }
+    cilk_sync;
 
     for (int i=0; i<n; i++) {
         printf("y[%d] = %lf\n", i, y[i]);
