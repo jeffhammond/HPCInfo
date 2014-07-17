@@ -1,4 +1,4 @@
-CC       = clang-3.5
+CC       = gcc-4.9
 CFLAGS   = -g -O2 -std=c11
 LIBS     =
 
