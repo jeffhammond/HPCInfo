@@ -4,7 +4,7 @@ LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 LIBS     = 
 
-all: for1.x
+all: for1.x spawn1.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
