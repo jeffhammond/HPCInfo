@@ -1,35 +1,6 @@
 #include <stdio.h>
 #include <mpi.h>
 
-/* This function synchronizes process i with process j
- * in such a way that this function returns on process j
- * only after it has been called on process i.
- *
- * No additional semantic guarantees are provided.
- *
- * The process ranks are with respect to the input communication. */
-
-int p2p_xsync(int i, int j, MPI_Comm comm)
-{
-    /* Avoid deadlock. */
-    if (i==j) {
-        return MPI_SUCCESS;
-    }
-
-    int rank;
-    MPI_Comm_rank(comm, &rank);
-
-    int tag = 666; /* The number of the beast. */
-
-    if (rank==i) {
-        MPI_Send(NULL, 0, MPI_INT, j, tag, comm);
-    } else if (rank==j) {
-        MPI_Recv(NULL, 0, MPI_INT, i, tag, comm, MPI_STATUS_IGNORE);
-    }
-
-    return MPI_SUCCESS;
-}
-
 /* If val is the same at all MPI processes in comm,
  * this function returns 1, else 0. */
 
