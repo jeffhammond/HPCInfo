@@ -54,12 +54,12 @@ int main(int argc, char * argv[])
     MPI_Win_allocate_shared(rank==0 ? sizeof(int) : 0,sizeof(int),
                             MPI_INFO_NULL, MPI_COMM_WORLD,
                             &shptr, &shwin);
-    MPI_Win_lock_all(0 /* assertion */, shwin);
 
+    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOPRECEDE, shwin);
     if (rank==0) {
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
-        MPI_Win_sync(shwin);
     }
+    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, shwin);
     for (int j=1; j<size; j++) {
         p2p_xsync(0, j, MPI_COMM_WORLD);
     }
@@ -70,12 +70,11 @@ int main(int argc, char * argv[])
     int * rptr = NULL;
     int lint = -999;
     MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOPRECEDE, shwin);
     if (rptr!=NULL && rsize>0) {
-        if (rank!=0) {
-            MPI_Win_sync(shwin);
-        }
         lint = *rptr;
     }
+    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, shwin);
     if (1==coll_check_equal(lint,MPI_COMM_WORLD)) {
         if (rank==0) {
             printf("SUCCESS!\n");
@@ -84,7 +83,6 @@ int main(int argc, char * argv[])
         printf("rank %d: lint = %d \n", rank, lint);
     }
 
-    MPI_Win_unlock_all(shwin);
     MPI_Win_free(&shwin);
 
     MPI_Finalize();
