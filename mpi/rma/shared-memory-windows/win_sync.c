@@ -61,6 +61,10 @@ int main(int argc, char * argv[])
     int * rptr = NULL;
     int lint = -999;
     MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+    if (rptr==NULL || rsize!=sizeof(int)) {
+        printf("rptr=%p rsize=%zu \n", rptr, (size_t)rsize);
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
 
     /*******************************************************/
 
@@ -73,12 +77,10 @@ int main(int argc, char * argv[])
     for (int j=1; j<size; j++) {
         p2p_xsync(0, j, MPI_COMM_WORLD);
     }
-    if (rptr!=NULL && rsize>0) {
-        if (rank!=0) {
-            MPI_Win_sync(shwin);
-        }
-        lint = *rptr;
+    if (rank!=0) {
+        MPI_Win_sync(shwin);
     }
+    lint = *rptr;
 
     MPI_Win_unlock_all(shwin);
 

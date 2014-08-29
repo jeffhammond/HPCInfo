@@ -34,29 +34,32 @@ int main(int argc, char * argv[])
     int rdisp = 0;
     int * rptr = NULL;
     MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+    if (rptr==NULL || rsize!=sizeof(int)) {
+        printf("rptr=%p rsize=%zu \n", rptr, (size_t)rsize);
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+
+    *rptr = -1000*(rank+1); /* racey, doesn't matter */
 
     /*******************************************************/
 
     if (rank==0) {
+
         MPI_Win_post(MPI_GROUP_ONE, 0, shwin);
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
-        MPI_Win_wait(shwin);
+        MPI_Win_wait(shwin); /* this is win_wait A */
 
         MPI_Win_post(MPI_GROUP_ONE, 0, shwin);
         MPI_Win_wait(shwin);
+
     } else if (rank==1) {
         int lint;
 
         MPI_Win_start(MPI_GROUP_ZERO, 0, shwin);
-        MPI_Win_complete(shwin);
+        MPI_Win_complete(shwin); /* matches win_wait A */
 
         MPI_Win_start(MPI_GROUP_ZERO, 0, shwin);
-        if (rptr!=NULL && rsize>0) {
-            lint = *rptr;
-        } else {
-            lint = -911;
-            printf("rptr=%p rsize=%zu \n", rptr, (size_t)rsize);
-        }
+        lint = *rptr;
         MPI_Win_complete(shwin);
 
         if (lint==42) {

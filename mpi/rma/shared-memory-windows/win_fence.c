@@ -32,6 +32,10 @@ int main(int argc, char * argv[])
     int * rptr = NULL;
     int lint = -999;
     MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+    if (rptr==NULL || rsize!=sizeof(int)) {
+        printf("rptr=%p rsize=%zu \n", rptr, (size_t)rsize);
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
 
     /*******************************************************/
 
@@ -44,9 +48,7 @@ int main(int argc, char * argv[])
     //MPI_Barrier(MPI_COMM_WORLD);
 
     MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOPRECEDE, shwin);
-    if (rptr!=NULL && rsize>0) {
-        lint = *rptr;
-    }
+    lint = *rptr;
     MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, shwin);
 
     /*******************************************************/
