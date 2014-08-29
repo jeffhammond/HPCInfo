@@ -55,6 +55,15 @@ int main(int argc, char * argv[])
                             MPI_INFO_NULL, MPI_COMM_WORLD,
                             &shptr, &shwin);
 
+    /* l=local r=remote */
+    MPI_Aint rsize = 0;
+    int rdisp;
+    int * rptr = NULL;
+    int lint = -999;
+    MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+
+    /*******************************************************/
+
     if (rank==0) {
         MPI_Win_lock(MPI_LOCK_EXCLUSIVE, 0, 0, shwin);
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
@@ -63,18 +72,14 @@ int main(int argc, char * argv[])
     for (int j=1; j<size; j++) {
         p2p_xsync(0, j, MPI_COMM_WORLD);
     }
-
-    /* l=local r=remote */
-    MPI_Aint rsize = 0;
-    int rdisp;
-    int * rptr = NULL;
-    int lint = -999;
-    MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
     if (rptr!=NULL && rsize>0) {
         MPI_Win_lock(MPI_LOCK_EXCLUSIVE, 0, 0, shwin);
         lint = *rptr;
         MPI_Win_unlock(0, shwin);
     }
+
+    /*******************************************************/
+
     if (1==coll_check_equal(lint,MPI_COMM_WORLD)) {
         if (rank==0) {
             printf("SUCCESS!\n");

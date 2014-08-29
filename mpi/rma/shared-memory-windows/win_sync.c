@@ -54,6 +54,16 @@ int main(int argc, char * argv[])
     MPI_Win_allocate_shared(rank==0 ? sizeof(int) : 0,sizeof(int),
                             MPI_INFO_NULL, MPI_COMM_WORLD,
                             &shptr, &shwin);
+
+    /* l=local r=remote */
+    MPI_Aint rsize = 0;
+    int rdisp;
+    int * rptr = NULL;
+    int lint = -999;
+    MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+
+    /*******************************************************/
+
     MPI_Win_lock_all(0 /* assertion */, shwin);
 
     if (rank==0) {
@@ -63,19 +73,17 @@ int main(int argc, char * argv[])
     for (int j=1; j<size; j++) {
         p2p_xsync(0, j, MPI_COMM_WORLD);
     }
-
-    /* l=local r=remote */
-    MPI_Aint rsize = 0;
-    int rdisp;
-    int * rptr = NULL;
-    int lint = -999;
-    MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
     if (rptr!=NULL && rsize>0) {
         if (rank!=0) {
             MPI_Win_sync(shwin);
         }
         lint = *rptr;
     }
+
+    MPI_Win_unlock_all(shwin);
+
+    /*******************************************************/
+
     if (1==coll_check_equal(lint,MPI_COMM_WORLD)) {
         if (rank==0) {
             printf("SUCCESS!\n");
@@ -84,7 +92,6 @@ int main(int argc, char * argv[])
         printf("rank %d: lint = %d \n", rank, lint);
     }
 
-    MPI_Win_unlock_all(shwin);
     MPI_Win_free(&shwin);
 
     MPI_Finalize();

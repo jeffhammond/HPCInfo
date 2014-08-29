@@ -35,6 +35,8 @@ int main(int argc, char * argv[])
     int * rptr = NULL;
     MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
 
+    /*******************************************************/
+
     if (rank==0) {
         MPI_Win_post(MPI_GROUP_ONE, 0, shwin);
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
@@ -43,7 +45,8 @@ int main(int argc, char * argv[])
         MPI_Win_post(MPI_GROUP_ONE, 0, shwin);
         MPI_Win_wait(shwin);
     } else if (rank==1) {
-        int lint = -1;
+        int lint;
+
         MPI_Win_start(MPI_GROUP_ZERO, 0, shwin);
         MPI_Win_complete(shwin);
 
@@ -51,15 +54,19 @@ int main(int argc, char * argv[])
         if (rptr!=NULL && rsize>0) {
             lint = *rptr;
         } else {
+            lint = -911;
             printf("rptr=%p rsize=%zu \n", rptr, (size_t)rsize);
         }
         MPI_Win_complete(shwin);
+
         if (lint==42) {
             printf("SUCCESS!\n");
         } else {
             printf("lint=%d\n", lint);
         }
     }
+
+    /*******************************************************/
 
     MPI_Win_free(&shwin);
 
