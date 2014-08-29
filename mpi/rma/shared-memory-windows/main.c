@@ -11,13 +11,15 @@
 
 int p2p_xsync(int i, int j, MPI_Comm comm)
 {
-    /* Avoid deadlock for stupid usage. */
-    if (i==j) return MPI_SUCCESS;
-
-    int tag = 666; /* The number of the beast. */
+    /* Avoid deadlock. */
+    if (i==j) {
+        return MPI_SUCCESS;
+    }
 
     int rank;
     MPI_Comm_rank(comm, &rank);
+
+    int tag = 666; /* The number of the beast. */
 
     if (rank==i) {
         MPI_Send(NULL, 0, MPI_INT, j, tag, comm);
@@ -34,7 +36,7 @@ int main(int argc, char * argv[])
 
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_rank(MPI_COMM_WORLD, &size);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     int *   shptr = NULL;
     MPI_Win shwin;
@@ -59,6 +61,7 @@ int main(int argc, char * argv[])
     for (int j=1; j<size; j++) {
         p2p_xsync(0, j, MPI_COMM_WORLD);
     }
+    //MPI_Barrier(MPI_COMM_WORLD);
     if (rank!=0) {
         MPI_Win_sync(shwin);
     }
