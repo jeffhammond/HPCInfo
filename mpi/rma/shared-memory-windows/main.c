@@ -36,17 +36,23 @@ int main(int argc, char * argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_rank(MPI_COMM_WORLD, &size);
 
-    int *   shptr;
+    int *   shptr = NULL;
     MPI_Win shwin;
     MPI_Win_allocate_shared(rank==0 ? sizeof(int) : 0,sizeof(int),
                             MPI_INFO_NULL, MPI_COMM_WORLD,
                             &shptr, &shwin);
+
+#if RMA_SYNC_MODE == 1
+    MPI_Win_lock_all(0 /* assertion */, shwin);
+#endif
 
     if (rank==0) {
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
     }
 
 #if RMA_SYNC_MODE == 0
+#warning NO SYNC
+#elif RMA_SYNC_MODE == 1
     if (rank==0) {
         MPI_Win_sync(shwin);
     }
@@ -56,14 +62,24 @@ int main(int argc, char * argv[])
     if (rank!=0) {
         MPI_Win_sync(shwin);
     }
-#elif RMA_SYNC_MODE == 1
-#warning NO SYNC
 #else
 #error Invalid choice of RMA_SYNC_MODE
 #endif
 
-    int lint = *shptr; /* Okay here, but not in one's bellybutton... */
-    printf("rank %d: lint = %d \n", rank, lint);
+    {
+        MPI_Aint rsize = 0;
+        int rdisp;
+        int * rptr = NULL;
+        MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
+        if (rptr!=NULL && rsize>0) {
+            int lint = *rptr; /* Okay here, but not in one's bellybutton... */
+            printf("rank %d: lint = %d \n", rank, lint);
+        }
+    }
+
+#if RMA_SYNC_MODE == 1
+    MPI_Win_unlock_all(shwin);
+#endif
 
     MPI_Win_free(&shwin);
 

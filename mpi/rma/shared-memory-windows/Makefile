@@ -1,4 +1,4 @@
-RMA_SYNC_MODE := -1
+RMA_SYNC_MODE := 0
 
 CC      = mpicc
 CFLAGS  = -g -O2 -Wall -DRMA_SYNC_MODE=$(RMA_SYNC_MODE)
