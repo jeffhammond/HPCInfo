@@ -43,47 +43,37 @@ int main(int argc, char * argv[])
     MPI_Win_allocate_shared(rank==0 ? sizeof(int) : 0,sizeof(int),
                             MPI_INFO_NULL, MPI_COMM_WORLD,
                             &shptr, &shwin);
-
-#if RMA_SYNC_MODE == 1
     MPI_Win_lock_all(0 /* assertion */, shwin);
-#endif
 
     if (rank==0) {
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
     }
 
-#if RMA_SYNC_MODE == 0
-#warning NO SYNC
-#elif RMA_SYNC_MODE == 1
+    /****************************************************/
     if (rank==0) {
         MPI_Win_sync(shwin);
     }
     for (int j=1; j<size; j++) {
         p2p_xsync(0, j, MPI_COMM_WORLD);
     }
-    //MPI_Barrier(MPI_COMM_WORLD);
     if (rank!=0) {
         MPI_Win_sync(shwin);
     }
-#else
-#error Invalid choice of RMA_SYNC_MODE
-#endif
+    /****************************************************/
 
     {
+        /* l=local r=remote */
         MPI_Aint rsize = 0;
         int rdisp;
         int * rptr = NULL;
         MPI_Win_shared_query(shwin, 0, &rsize, &rdisp, &rptr);
         if (rptr!=NULL && rsize>0) {
-            int lint = *rptr; /* Okay here, but not in one's bellybutton... */
+            int lint = *rptr;
             printf("rank %d: lint = %d \n", rank, lint);
         }
     }
 
-#if RMA_SYNC_MODE == 1
     MPI_Win_unlock_all(shwin);
-#endif
-
     MPI_Win_free(&shwin);
 
     MPI_Finalize();

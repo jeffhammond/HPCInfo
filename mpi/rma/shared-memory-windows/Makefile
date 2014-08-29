@@ -6,7 +6,7 @@ CFLAGS  = -g -O2 -Wall -DRMA_SYNC_MODE=$(RMA_SYNC_MODE)
 LD      = $(CC)
 LDFLAGS = $(CFLAGS)
 
-all: main.x
+all: win_sync.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
@@ -19,3 +19,4 @@ clean:
 
 realclean: clean
 	-rm -f *.x
+	-rm -rf *.dSYM
