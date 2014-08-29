@@ -24,7 +24,6 @@ int main(int argc, char * argv[])
     MPI_Group MPI_GROUP_ZERO;
     MPI_Group_incl(MPI_GROUP_WORLD, 1, ranks, &MPI_GROUP_ZERO);
 
-
     int *   shptr = NULL;
     MPI_Win shwin;
     MPI_Win_allocate_shared(rank==0 ? sizeof(int) : 0,sizeof(int),
