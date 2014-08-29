@@ -60,9 +60,8 @@ int main(int argc, char * argv[])
         *shptr = 42; /* Answer to the Ultimate Question of Life, The Universe, and Everything. */
     }
     MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, shwin);
-    for (int j=1; j<size; j++) {
-        p2p_xsync(0, j, MPI_COMM_WORLD);
-    }
+
+    //MPI_Barrier(MPI_COMM_WORLD);
 
     /* l=local r=remote */
     MPI_Aint rsize = 0;
