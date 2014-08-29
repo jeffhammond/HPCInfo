@@ -1,12 +1,10 @@
-RMA_SYNC_MODE := 0
-
 CC      = mpicc
-CFLAGS  = -g -O2 -Wall -DRMA_SYNC_MODE=$(RMA_SYNC_MODE)
+CFLAGS  = -g -O2 -Wall -Werror
 
 LD      = $(CC)
 LDFLAGS = $(CFLAGS)
 
-all: win_sync.x
+all: win_sync.x win_lock_exclusive.x win_lock_shared.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
