@@ -4,7 +4,7 @@ CFLAGS  = -g -O2 -Wall -Werror
 LD      = $(CC)
 LDFLAGS = $(CFLAGS)
 
-all: win_sync.x win_lock_exclusive.x win_lock_shared.x
+all: win_fence.x win_pscw.x win_sync.x win_lock_exclusive.x win_lock_shared.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
