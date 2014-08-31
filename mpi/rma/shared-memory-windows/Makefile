@@ -14,7 +14,5 @@ all: win_fence.x win_pscw.x win_sync.x win_lock_exclusive.x win_lock_shared.x
 
 clean:
 	-rm -f *.o
-
-realclean: clean
 	-rm -f *.x
 	-rm -rf *.dSYM
