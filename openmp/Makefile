@@ -1,16 +1,22 @@
-CC       = gcc
-CFLAGS   = -g -O2 -fopenmp -std=gnu99
+OPT	 = -g -O2 -fopenmp
+CC       = gcc-4.9
+CFLAGS   = $(OPT) -std=gnu99
+FC	 = gfortran-4.9
+FFLAGS   = $(OPT)
 LD       = $(CC)
-LDFLAGS  = $(CFLAGS)
+LDFLAGS  = $(OPT)
 LIBS     = 
 
-all: matrix.x 
+all: matrix.x fusion.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
-%.o: %.c 
-	$(CC) $(CFLAGS) -c $< -o $@
+%.x: %.c 
+	$(CC) $(CFLAGS) $< -o $@
+
+%.x: %.f90
+	$(FC) $(FFLAGS) $< -o $@
 
 clean:
 	-rm -f *.o
