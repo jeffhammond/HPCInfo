@@ -21,10 +21,13 @@ class MpiTypeWrapper
                  * exercise the destructor properly. */
                 /* Don't copy the mpiOn check here because I am not that dumb :-) */
                 MPI_Type_contiguous(static_cast<int>(largeCount), inType, &(this->type));
+                this->freeable = true;
+                this->count    = static_cast<int>(largeCount);
                 MPI_Type_commit(&(this->type));
 #else
-                this->count = static_cast<int>(largeCount);
-                this->type  = inType;
+                this->freeable = false;
+                this->count    = static_cast<int>(largeCount);
+                this->type     = inType;
 #endif
             } else {
                 int mpiOn;
@@ -55,6 +58,9 @@ class MpiTypeWrapper
                 MPI_Aint displacements[2] = {0,remdisp};
                 MPI_Datatype types[2]     = {chunks,remainder};
                 MPI_Type_create_struct(2, blocklengths, displacements, types, &(this->type));
+
+                this->freeable = true;
+                this->count    = static_cast<int>(largeCount);
                 MPI_Type_commit(&(this->type));
 
                 MPI_Type_free(&chunks);
