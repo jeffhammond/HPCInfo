@@ -19,11 +19,11 @@ int main(int argc, char* argv[])
     }
 
     {
-        MpiLargelargeCountType bigtype(n,MPI_CHAR);
+        MpiTypeWrapper bigtype(n,MPI_CHAR);
         MPI_Bcast(buf,
-                  1, bigtype.GetMpiDatatype(),
+                  bigtype.GetMpiCount(), bigtype.GetMpiDatatype(),
                   0, MPI_COMM_WORLD);
-        /* ~MpiLargelargeCountType happens here */
+        /* ~MpiTypeWrapper happens here */
     }
 
     void * test = malloc(n);

@@ -10,22 +10,29 @@
 #include <iostream>
 #include <mpi.h>
 
-class MpiLargelargeCountType
+class MpiTypeWrapper
 {
     public:
-        MpiLargelargeCountType(MPI_Count largeCount, MPI_Datatype inType)
+        MpiTypeWrapper(MPI_Count largeCount, MPI_Datatype inType)
         {
-            int mpiOn, mpiOff;
-            MPI_Initialized(&mpiOn);
-            MPI_Finalized(&mpiOff);
-            assert(mpiOn && !mpiOff);
-
-            assert(largeCount>=0);
-
             if ((unsigned long long)largeCount < (unsigned long long)INT_MAX) {
-                MPI_Type_contiguous(static_cast<int>(largeCount), inType, &(this->largeType));
-                MPI_Type_commit(&(this->largeType));
+#ifdef DEBUGGING
+                /* For debugging, I want to always create a datatype to 
+                 * exercise the destructor properly. */
+                /* Don't copy the mpiOn check here because I am not that dumb :-) */
+                MPI_Type_contiguous(static_cast<int>(largeCount), inType, &(this->type));
+                MPI_Type_commit(&(this->type));
+#else
+                this->count = static_cast<int>(largeCount);
+                this->type  = inType;
+#endif
             } else {
+                int mpiOn;
+                MPI_Initialized(&mpiOn);
+                if (!mpiOn) {
+                    std::cerr << "Constructor called before MPI was initialized." << std::endl;
+                }
+
                 /* TODO C++-ify this as throw() */
                 /* The largeCount has to fit into MPI_Aint for BigMPI to work. */
                 assert(static_cast<unsigned long long>(largeCount) < 
@@ -47,33 +54,35 @@ class MpiLargelargeCountType
                 int blocklengths[2]       = {1,1};
                 MPI_Aint displacements[2] = {0,remdisp};
                 MPI_Datatype types[2]     = {chunks,remainder};
-                MPI_Type_create_struct(2, blocklengths, displacements, types, &(this->largeType));
-                MPI_Type_commit(&(this->largeType));
+                MPI_Type_create_struct(2, blocklengths, displacements, types, &(this->type));
+                MPI_Type_commit(&(this->type));
 
                 MPI_Type_free(&chunks);
                 MPI_Type_free(&remainder);
             } // largeCount < INT_MAX
         } // ctor
 
-        ~MpiLargelargeCountType()
+        ~MpiTypeWrapper()
         {
-            /* If user declares this in scope of main(), 
-             * then the destructor will be called after MPI_Finalize() */
-            int mpiOn, mpiOff;
-            MPI_Initialized(&mpiOn);
-            MPI_Finalized(&mpiOff);
-            assert(mpiOn && !mpiOff);
-
-            MPI_Type_free(&(this->largeType));
+            if (this->freeable) {
+                int mpiOff;
+                MPI_Finalized(&mpiOff);
+                if (mpiOff) {
+                    std::cerr << "Destructor called after MPI was finalized, "
+                              << "presumably because you declared MpiTypeWrapper "
+                              << "in the scope of main()." << std::endl;
+                }
+                MPI_Type_free(&(this->type));
+            } // freeable
         }
 
-        MPI_Datatype GetMpiDatatype()
-        {
-            return this->largeType;
-        }
+        int GetMpiCount() { return this->count; }
+        MPI_Datatype GetMpiDatatype() { return this->type; }
 
     private:
-        MPI_Datatype largeType;
+        bool freeable;
+        int count;
+        MPI_Datatype type;
 
 };
 
