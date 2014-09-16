@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <thread>
 
 void fnoarg(int t)
@@ -12,14 +13,13 @@ int main(int argc, char* argv[])
     int nthreads = std::thread::hardware_concurrency();
     std::cout << "nthreads = " << nthreads << std::endl;
 
-    std::thread * pool = new std::thread[nthreads];
+    std::vector<std::thread> pool;
     for (int i=0; i<nthreads; ++i) {
-        pool[i] = std::thread(fnoarg,i);
+        pool.push_back( std::thread(fnoarg,i) );
     }
-    for (int i=0; i<nthreads; ++i) {
-        pool[i].join();
+    for(auto& t : pool){
+        t.join();
     }
-    delete[] pool;
 
     return 0;
 }
