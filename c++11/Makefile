@@ -8,19 +8,14 @@ LIBS     = -nodefaultlibs -lc++ -lc++abi  -lm -lc
 LD       = $(CXX)
 LDFLAGS  = $(CXXFLAGS)
 
-all: future.x packaged_task.x threads.x
+TESTS = future packaged_task threads lambda
 
-%.x: %.o
-	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+all: $(TESTS)
 
-%.o: %.cxx
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+%: %.cxx
+	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
-
-realclean: clean
-	-rm -f *.x
-
-distclean: realclean
+	-rm -f $(TESTS)
 
