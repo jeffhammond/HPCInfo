@@ -20,6 +20,6 @@ See the [UPC specification repo on Google Code](http://code.google.com/p/upc-spe
 
 ## Sample Programs 
 
-If you have a [[Cray]] machine and do ```module load PrgEnv-cray```, you can use the Makefile.
+If you have a [Cray](https://github.com/jeffhammond/HPCInfo/wiki/Cray) machine and do ```module load PrgEnv-cray```, you can use the Makefile.
 
 See [NERSC's PGAS page](http://www.nersc.gov/users/computational-systems/hopper/programming/PGAS/) for details about running on Hopper.
