@@ -82,11 +82,11 @@ int main(int argc,char **argv)
 
     if (mype == 0)
     {
-        fprintf(stderr,"%d: max = %d bytes, dmapp_get using DMAPP_DQW \n", mype, max);
+        fprintf(stderr,"%d: max = %d bytes, dmapp_put using DMAPP_DQW \n", mype, max);
         for (i=1; i<(max/16); i*=2)
         {
             t0 = MPI_Wtime();
-            status = dmapp_get(target, source, seg, rmpe, i, DMAPP_DQW);
+            status = dmapp_put(target, seg, rmpe, source, i, DMAPP_DQW);
             t1 = MPI_Wtime();
             assert(status==DMAPP_RC_SUCCESS);
             dt = t1-t0;
@@ -100,11 +100,11 @@ int main(int argc,char **argv)
 
     if (mype == 0)
     {
-        fprintf(stderr,"%d: max = %d bytes, dmapp_get using DMAPP_QW \n", mype, max);
+        fprintf(stderr,"%d: max = %d bytes, dmapp_put using DMAPP_QW \n", mype, max);
         for (i=1; i<(max/8); i*=2)
         {
             t0 = MPI_Wtime();
-            status = dmapp_get(target, source, seg, rmpe, i, DMAPP_QW);
+            status = dmapp_put(target, seg, rmpe, source, i, DMAPP_QW);
             t1 = MPI_Wtime();
             assert(status==DMAPP_RC_SUCCESS);
             dt = t1-t0;
@@ -118,11 +118,11 @@ int main(int argc,char **argv)
 
     if (mype == 0)
     {
-        fprintf(stderr,"%d: max = %d bytes, dmapp_get using DMAPP_DW \n", mype, max);
+        fprintf(stderr,"%d: max = %d bytes, dmapp_put using DMAPP_DW \n", mype, max);
         for (i=1; i<(max/4); i*=2)
         {
             t0 = MPI_Wtime();
-            status = dmapp_get(target, source, seg, rmpe, i, DMAPP_DW);
+            status = dmapp_put(target, seg, rmpe, source, i, DMAPP_DW);
             t1 = MPI_Wtime();
             assert(status==DMAPP_RC_SUCCESS);
             dt = t1-t0;
@@ -136,11 +136,11 @@ int main(int argc,char **argv)
 
     if (mype == 0)
     {
-        fprintf(stderr,"%d: max = %d bytes, dmapp_get using DMAPP_BYTE \n", mype, max);
+        fprintf(stderr,"%d: max = %d bytes, dmapp_put using DMAPP_BYTE \n", mype, max);
         for (i=1; i<max; i*=2)
         {
             t0 = MPI_Wtime();
-            status = dmapp_get(target, source, seg, rmpe, i, DMAPP_BYTE);
+            status = dmapp_put(target, seg, rmpe, source, i, DMAPP_BYTE);
             t1 = MPI_Wtime();
             assert(status==DMAPP_RC_SUCCESS);
             dt = t1-t0;

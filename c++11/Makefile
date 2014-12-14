@@ -1,26 +1,22 @@
 # You might need to read http://libcxx.llvm.org/ and/or
 # related Q&A on StackOverflow to get C++11 working.
 
-CXX      = clang++-3.4 #-v
+CXX      = clang++ #-v
 CXXFLAGS = -g -O2 -std=c++11 -stdlib=libc++
 LIBS     = -nodefaultlibs -lc++ -lc++abi  -lm -lc
 
 LD       = $(CXX)
 LDFLAGS  = $(CXXFLAGS)
 
-all: future.x packaged_task.x
+TESTS = future packaged_task threads lambda
 
-%.x: %.o
-	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+all: $(TESTS)
 
-%.o: %.cxx
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+%: %.cxx
+	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
-
-realclean: clean
-	-rm -f *.x
-
-distclean: realclean
+	-rm -f $(TESTS)
+	-rm -rf *.dSYM
 
