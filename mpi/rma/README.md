@@ -1,4 +1,4 @@
-= Key Features =
+# Key Features
 
 * Atomics, which were not present in MPI-2 at all.
 * Better synchronization: Local and remote completion are separated in MPI-3.
@@ -13,9 +13,9 @@ Jeff Squyres' blog has [http://blogs.cisco.com/performance/the-new-mpi-3-remote-
 
 In terms of how MPI-3 RMA maps to other PGAS runtimes, below are some approximate equivalences.  I can't assert they are all exactly right but they should be close enough for discussion purposes.
 
-== SHMEM ==
+## SHMEM
 
-=== Issues ===
+### Issues
 
 * There is not a portable way to export the stack for MPI-3 RMA but one can theoretically do it collectively with <tt>MPI_Win_create</tt>.  We assume that an implementation of SHMEM over MPI-3 RMA that would support communication to remote stack memory would have compiler support or non-standard extensions.  It is possible to ''cheat'' on some systems when it is known that remote registration is not ''required'' (i.e. RMA sits on top of active-message primitives or an RDMA interface that can accept remote virtual addresses).
 
@@ -25,7 +25,7 @@ In terms of how MPI-3 RMA maps to other PGAS runtimes, below are some approximat
 
 * OpenSHMEM does not have a finalize routine (Cray SHMEM does), which is a serious problem if <tt>MPI_Finalize</tt> is needed to cleanup network resources, etc.  It should be possible to use [http://linux.die.net/man/3/atexit atexit] to implement a proper collective cleanup routine but this violates some SHMEM users' expectations that SHMEM termination will always be non-collective.  Alternatively, if it is reasonable to terminate MPI with <tt>MPI_Abort(MPI_COMM_SELF,0)</tt>, then that is an alternative way to achieve the desired behavior (assuming <tt>MPI_Abort</tt> is properly acting only on the provided communicator).
 
-=== Global State ===
+### Global State
 
 This is <tt>shmem-globals.h</tt>
 <pre>
@@ -59,7 +59,7 @@ MPI_Aint translate_remote_address_to_sheap_disp(int pe, void * address);
 #endif
 </pre>
 
-=== Initialization ===
+### Initialization
 <pre>
 #include "shmem-globals.h"
 
@@ -112,7 +112,7 @@ void start_pes(int npes);
 }
 </pre>
 
-=== Utility Functions ===
+### Utility Functions
 
 <pre>
 #include "shmem-globals.h"
@@ -138,7 +138,7 @@ int shmem_my_pe(void)
 }
 </pre>
 
-=== Address Translation ===
+### Address Translation
 
 <pre>
 #include "shmem-globals.h"
@@ -177,7 +177,7 @@ void *shmalloc(size_t size)
 }
 </pre>
 
-=== Put and Get ===
+### Put and Get
 <pre>
 #include "shmem-globals.h"
 
@@ -200,7 +200,7 @@ void shmem_long_put(long *target, const long *source, size_t nelems, int pe)
 }
 </pre>
 
-=== Atomics ===
+### Atomics
 
 SHMEM atomics are blocking.
 
@@ -236,7 +236,7 @@ long shmem_long_cswap(long *target, long cond, long value, int pe)
 
 </pre>
 
-=== Synchronization ===
+### Synchronization
 <pre>
 #include "shmem-globals.h"
 
@@ -262,26 +262,26 @@ void shmem_barrier_all(void)
 }
 </pre>
 
-== ARMCI ==
+## ARMCI
 
 http://wiki.mpich.org/armci-mpi/index.php/Main_Page and content linked therefrom address everything.
 
-== Global Arrays ==
+## Global Arrays
 
 Unlike ARMCI, GA uses opaque data handles and thus all of the problems w.r.t. mapping ARMCI to MPI-RMA disappear.
 
 [http://www.mcs.anl.gov/research/projects/mpi/usingmpi2/ Using MPI-2] outlines an implementation of Global Arrays over MPI-2 RMA.  The primary issue seen there is the lack of remote atomic operations, which were added in MPI-3 RMA.
 
-== GASNet ==
+## GASNet
 
 MPI-3 RMA addresses most/all of the criticisms in [http://www.cs.berkeley.edu/~bonachea/upc/bonachea-duell-mpi.pdf Bonachea and Duell].
 
 MPI-3 does not provide active-messages but they have been implementable since MPI-2.1 using, e.g., Pthreads and Send-Recv (see [[MPI#Implementing_active-message_using_MPI_and_Pthreads|this]] for a crude example).  This - or intermittent polling - is how the GASNet MPI conduit, Charm++ and [[MADNESS]] all implement active messages over MPI 2-sided.
 
-== UPC ==
+## UPC
 
 The UPC runtime doesn't require active-messages although they are used in the BUPC runtime, which is why GASNet provides them.  The lack of any need for active-messages makes MPI-3 RMA a good match for UPC, at least in theory.  It is possible that one-sided memory allocation is an issue but with dynamic windows and the aid of a compiler that can insert intermittent polling, this should not be a serious issue.
 
-== CAF ==
+## CAF
 
 Because CAF does memory allocation collectively (and symmetrically), MPI-3 RMA is a good candidate for a CAF runtime.
