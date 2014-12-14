@@ -5,7 +5,7 @@ LIBS     =
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-all: atomics threads
+all: atomics #threads
 
 %: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
