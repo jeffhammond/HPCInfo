@@ -15,9 +15,6 @@ all: atomics.x
 
 clean:
 	-rm -f *.o
-
-realclean: clean
 	-rm -f *.x
 
-distclean: realclean
 
