@@ -17,3 +17,9 @@ Cray's Fortran compiler supports CAF and the performance is known to be good.  T
 ## Example Code 
 
 See ./coarray-f in this repo.
+
+On Cray systems, do this first:
+
+```
+module swap PrgEnv-pgi PrgEnv-cray
+```
