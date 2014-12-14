@@ -23,4 +23,4 @@ See ./shmem in this repo.
 
 ## Relationship to MPI-3 RMA
 
-See [[MPI3-RMA#SHMEM]] or the OSHMPI source noted above.
+See [MPI3-RMA](https://github.com/jeffhammond/HPCInfo/wiki/MPI3-RMA) or the OSHMPI source noted above.
