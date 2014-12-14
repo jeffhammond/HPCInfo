@@ -5,7 +5,9 @@ LIBS     =
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-all: atomics #threads
+TESTS = atomics #threads
+
+all: $(TESTS)
 
 %: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
@@ -15,6 +17,6 @@ all: atomics #threads
 
 clean:
 	-rm -f *.o
-	-rm -f *.x
+	-rm -f $(TESTS)
 
 
