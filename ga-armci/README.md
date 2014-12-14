@@ -8,7 +8,7 @@ See [GA](http://www.emsl.pnl.gov/docs/global/userinterface.shtml) and [ARMCI](ht
 
 See [hpcinchemistrytutorial](http://code.google.com/p/hpcinchemistrytutorial/) on Google Code for more examples.
 
-_If you have a network that isn't support by ARMCI or you like elegant code, you might be interested in [ARMCI-MPI](http://wiki.mpich.org/armci-mpi/index.php/Main_Page._
+_If you have a network that isn't support by ARMCI or you like elegant code, you might be interested in [ARMCI-MPI](http://wiki.mpich.org/armci-mpi/index.php/Main_Page)._
 
 ## Overview
 
