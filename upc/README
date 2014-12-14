@@ -1,3 +1,0 @@
-On Cray systems, do this first:
-
-> module swap PrgEnv-pgi PrgEnv-cray
