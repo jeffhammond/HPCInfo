@@ -4,12 +4,12 @@
 * Better synchronization: Local and remote completion are separated in MPI-3.
 * Request-based completion: Some applications (e.g. NWChem) can utilize non-bulk synchronization (TODO: post the code).
 * Dynamic window allocation: Collective window allocation is a show-stopper for some MPI clients (e.g. GASNet).
-* Symmetric window allocation: <tt>MPI_Win_create</tt> took user memory.  <tt>MPI_Win_allocate</tt> can allocate symmetric memory internally when it is prudent and possible to do so.
+* Symmetric window allocation: ```MPI_Win_create``` took user memory.  ```MPI_Win_allocate``` can allocate symmetric memory internally when it is prudent and possible to do so.
 * Memory model: MPI-2 RMA was not able to take full advantage of cache-coherent systems.  MPI-3 provides the '''unified''' model to address this.
 
-Jeff Squyres' blog has [http://blogs.cisco.com/performance/the-new-mpi-3-remote-memory-access-one-sided-interface/ another perspective] that may contain more/other features.
+Jeff Squyres' blog has [another perspective](http://blogs.cisco.com/performance/the-new-mpi-3-remote-memory-access-one-sided-interface/) that may contain more/other features.
 
-= Mapping to other PGAS runtimes =
+# Mapping to other PGAS runtimes
 
 In terms of how MPI-3 RMA maps to other PGAS runtimes, below are some approximate equivalences.  I can't assert they are all exactly right but they should be close enough for discussion purposes.
 
@@ -17,18 +17,18 @@ In terms of how MPI-3 RMA maps to other PGAS runtimes, below are some approximat
 
 ### Issues
 
-* There is not a portable way to export the stack for MPI-3 RMA but one can theoretically do it collectively with <tt>MPI_Win_create</tt>.  We assume that an implementation of SHMEM over MPI-3 RMA that would support communication to remote stack memory would have compiler support or non-standard extensions.  It is possible to ''cheat'' on some systems when it is known that remote registration is not ''required'' (i.e. RMA sits on top of active-message primitives or an RDMA interface that can accept remote virtual addresses).
+* There is not a portable way to export the stack for MPI-3 RMA but one can theoretically do it collectively with ```MPI_Win_create```.  We assume that an implementation of SHMEM over MPI-3 RMA that would support communication to remote stack memory would have compiler support or non-standard extensions.  It is possible to ''cheat'' on some systems when it is known that remote registration is not ''required'' (i.e. RMA sits on top of active-message primitives or an RDMA interface that can accept remote virtual addresses).
 
-* Instead of a static, pre-allocated symmetric heap (as shown below), one can allocate the symmetric heap dynamically using dynamic windows and attaching (via <tt>MPI_Win_attach</tt>) memory allocated symmetrically using <tt>mmap(MAP_FIXED,..)</tt> or using <tt>MPI_Win_create</tt>, but both will require allocation and perhaps deallocation to be collective, which is inconsistent with Cray SHMEM (at least).  There are more complicated ways to implement the symmetric heap in a manner consistent with vendor implementations of SHMEM that are limited only by the creativity of the implementer, not the semantics of MPI-3.
+* Instead of a static, pre-allocated symmetric heap (as shown below), one can allocate the symmetric heap dynamically using dynamic windows and attaching (via ```MPI_Win_attach```) memory allocated symmetrically using ```mmap(MAP_FIXED,..)``` or using ```MPI_Win_create```, but both will require allocation and perhaps deallocation to be collective, which is inconsistent with Cray SHMEM (at least).  There are more complicated ways to implement the symmetric heap in a manner consistent with vendor implementations of SHMEM that are limited only by the creativity of the implementer, not the semantics of MPI-3.
 
 * The optimal implementation of SHMEM depends on the nature of the MPI implementation, in particular whether or not relaxing ordering of RMA has an performance benefits.  Some comments in the code allude to this.
 
-* OpenSHMEM does not have a finalize routine (Cray SHMEM does), which is a serious problem if <tt>MPI_Finalize</tt> is needed to cleanup network resources, etc.  It should be possible to use [http://linux.die.net/man/3/atexit atexit] to implement a proper collective cleanup routine but this violates some SHMEM users' expectations that SHMEM termination will always be non-collective.  Alternatively, if it is reasonable to terminate MPI with <tt>MPI_Abort(MPI_COMM_SELF,0)</tt>, then that is an alternative way to achieve the desired behavior (assuming <tt>MPI_Abort</tt> is properly acting only on the provided communicator).
+* OpenSHMEM does not have a finalize routine (Cray SHMEM does), which is a serious problem if ```MPI_Finalize``` is needed to cleanup network resources, etc.  It should be possible to use [atexit](http://linux.die.net/man/3/atexit) to implement a proper collective cleanup routine but this violates some SHMEM users' expectations that SHMEM termination will always be non-collective.  Alternatively, if it is reasonable to terminate MPI with ```MPI_Abort(MPI_COMM_SELF,0)```, then that is an alternative way to achieve the desired behavior (assuming ```MPI_Abort``` is properly acting only on the provided communicator).
 
 ### Global State
 
-This is <tt>shmem-globals.h</tt>
-<pre>
+This is ```shmem-globals.h```
+```
 #ifndef SHMEM_GLOBALS_H
 #define SHMEM_GLOBALS_H
 
@@ -57,10 +57,10 @@ int world_size, world_rank;
 MPI_Aint translate_remote_address_to_sheap_disp(int pe, void * address);
 
 #endif
-</pre>
+```
 
 ### Initialization
-<pre>
+```
 #include "shmem-globals.h"
 
 MPI_Win symm_heap;
@@ -110,11 +110,11 @@ void start_pes(int npes);
 
   return;
 }
-</pre>
+```
 
 ### Utility Functions
 
-<pre>
+```
 #include "shmem-globals.h"
 
 int _num_pes(void)
@@ -136,11 +136,11 @@ int shmem_my_pe(void)
 {
   return world_rank;
 }
-</pre>
+```
 
 ### Address Translation
 
-<pre>
+```
 #include "shmem-globals.h"
 
 /* this should be a macro or static-inline for performance */
@@ -158,13 +158,13 @@ MPI_Aint translate_remote_address_to_sheap_disp(int pe, void * address)
 
   return disp;
 }
-</pre>
+```
 
 === Symmetric Heap Allocation ===
 
 Implementing a proper memory allocator is not trivial.  Instead, for illustrative purposes we use a stack allocator that only moves one way and abort when the memory is exhausted.
 
-<pre>
+```
 #include "shmem-globals.h"
 
 void *shmalloc(size_t size)
@@ -175,10 +175,10 @@ void *shmalloc(size_t size)
     MPI_Abort(MPI_COMM_WORLD, 1);
   return ptr;
 }
-</pre>
+```
 
 ### Put and Get
-<pre>
+```
 #include "shmem-globals.h"
 
 void shmem_long_put(long *target, const long *source, size_t nelems, int pe)
@@ -198,13 +198,13 @@ void shmem_long_put(long *target, const long *source, size_t nelems, int pe)
 
   return;
 }
-</pre>
+```
 
 ### Atomics
 
 SHMEM atomics are blocking.
 
-<pre>
+```
 #include "shmem-globals.h"
 
 long shmem_long_swap(long *target, long value, int pe)
@@ -220,7 +220,6 @@ long shmem_long_swap(long *target, long value, int pe)
   return result;
 }
 
-
 long shmem_long_cswap(long *target, long cond, long value, int pe)
 {
   long result;
@@ -233,11 +232,10 @@ long shmem_long_cswap(long *target, long cond, long value, int pe)
 
   return result;
 }
-
-</pre>
+```
 
 ### Synchronization
-<pre>
+```
 #include "shmem-globals.h"
 
 /* if instead of using shmem_info above to turn off ordering,
@@ -260,7 +258,7 @@ void shmem_barrier_all(void)
   MPI_Barrier(MPI_COMM_WORLD);
   return;
 }
-</pre>
+```
 
 ## ARMCI
 
@@ -270,13 +268,13 @@ http://wiki.mpich.org/armci-mpi/index.php/Main_Page and content linked therefrom
 
 Unlike ARMCI, GA uses opaque data handles and thus all of the problems w.r.t. mapping ARMCI to MPI-RMA disappear.
 
-[http://www.mcs.anl.gov/research/projects/mpi/usingmpi2/ Using MPI-2] outlines an implementation of Global Arrays over MPI-2 RMA.  The primary issue seen there is the lack of remote atomic operations, which were added in MPI-3 RMA.
+http://www.mcs.anl.gov/research/projects/mpi/usingmpi2/ outlines an implementation of Global Arrays over MPI-2 RMA.  The primary issue seen there is the lack of remote atomic operations, which were added in MPI-3 RMA.
 
 ## GASNet
 
 MPI-3 RMA addresses most/all of the criticisms in [http://www.cs.berkeley.edu/~bonachea/upc/bonachea-duell-mpi.pdf Bonachea and Duell].
 
-MPI-3 does not provide active-messages but they have been implementable since MPI-2.1 using, e.g., Pthreads and Send-Recv (see [[MPI#Implementing_active-message_using_MPI_and_Pthreads|this]] for a crude example).  This - or intermittent polling - is how the GASNet MPI conduit, Charm++ and [[MADNESS]] all implement active messages over MPI 2-sided.
+MPI-3 does not provide active-messages but they have been implementable since MPI-2.1 using, e.g., Pthreads and Send-Recv (see https://github.com/jeffhammond/HPCInfo/tree/master/mpi/active-messages for a crude example).  This - or intermittent polling - is how the GASNet MPI conduit, Charm++ and MADNESS all implement active messages over MPI 2-sided.
 
 ## UPC
 
