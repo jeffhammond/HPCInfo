@@ -12,5 +12,3 @@ DMAPP documentation:
 # Example Code
 
 You need to increase the symmetric heap size for these tests to run, e.g. using: ```export XT_SYMMETRIC_HEAP_SIZE=400M```
-
-See repo.
