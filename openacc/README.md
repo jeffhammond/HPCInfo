@@ -4,7 +4,7 @@ See the [OpenACC home page](http://www.openacc-standard.org/) for the latest spe
 
 ### OpenACC 2+
 
-[[Atomics in Different Programming Models]]
+[Atomics in Different Programming Models](https://github.com/jeffhammond/HPCInfo/wiki/Atomics-in-Different-Programming-Models)
 
 ## Implementations
 
