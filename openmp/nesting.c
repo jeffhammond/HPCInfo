@@ -4,7 +4,7 @@
 #include <math.h>
 #include <omp.h>
 
-void foo(void)
+static inline void foo(void)
 {
     printf("foo called by %d of %d\n", omp_get_thread_num(), omp_get_num_threads() );
 #pragma omp parallel
@@ -14,7 +14,7 @@ void foo(void)
     return;
 }
 
-void bar(void)
+static inline void bar(void)
 {
     printf("bar called by %d of %d\n", omp_get_thread_num(), omp_get_num_threads() );
 #pragma omp parallel
@@ -32,6 +32,8 @@ int main(int argc, char* argv[])
         foo();
         bar();
     }
+    fflush(stdout);
+    printf("=========================\n");
     fflush(stdout);
 #pragma omp parallel
     {
