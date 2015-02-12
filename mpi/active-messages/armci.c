@@ -26,7 +26,7 @@ typedef enum
     MSG_PUT,
     MSG_ACC,
     MSG_RMW,
-    MSG_FENCE,
+    MSG_FLUSH,
     MSG_CHT_EXIT
 } 
 msg_type_e;
@@ -99,11 +99,11 @@ void Poll(void)
 
     switch (info.type)
     {
-        case MSG_FENCE:
+        case MSG_FLUSH:
 #ifdef DEBUG
-            printf("MSG_FENCE \n");
+            printf("MSG_FLUSH \n");
 #endif
-            MPI_Send(NULL, 0, MPI_BYTE, source, MSG_FENCE_TAG, MSG_COMM_WORLD);
+            MPI_Send(NULL, 0, MPI_BYTE, source, MSG_FLUSH_TAG, MSG_COMM_WORLD);
             break;
 
         case MSG_GET:
@@ -185,13 +185,13 @@ void MSG_CHT_Exit(void)
     return;
 }
 
-void MSG_Win_fence(int target)
+void MSG_Win_flush(int target)
 {
     msg_info_t info;
-    info.type = MSG_FENCE;
+    info.type = MSG_FLUSH;
 
     MPI_Send(&info, sizeof(msg_info_t), MPI_BYTE, target, MSG_INFO_TAG, MSG_COMM_WORLD);
-    MPI_Recv(NULL, 0, MPI_BYTE, target, MSG_FENCE_TAG, MSG_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Recv(NULL, 0, MPI_BYTE, target, MSG_FLUSH_TAG, MSG_COMM_WORLD, MPI_STATUS_IGNORE);
 
     return;
 }
@@ -351,7 +351,7 @@ int main(int argc, char * argv[])
             memset(out, '\0', smallcount);
 
             MSG_Win_put(target, &win, 0, smallcount, MPI_BYTE, in);
-            MSG_Win_fence(target);
+            MSG_Win_flush(target);
             MSG_Win_get(target, &win, 0, smallcount, MPI_BYTE, out);
 
             int rc = memcmp(in, out, smallcount);
@@ -394,7 +394,7 @@ int main(int argc, char * argv[])
             printf("MSG_Win_put \n");
             fflush(stdout);
             MSG_Win_put(target, &win, 0, smallcount, type, in);
-            MSG_Win_fence(target);
+            MSG_Win_flush(target);
 
             for (int i=0; i<smallcount; i++)
                 in[i] = 12.0;
@@ -402,7 +402,7 @@ int main(int argc, char * argv[])
             printf("MSG_Win_acc \n");
             fflush(stdout);
             MSG_Win_acc(target, &win, 0, smallcount, type, op, in);
-            MSG_Win_fence(target);
+            MSG_Win_flush(target);
             MSG_Win_acc(target, &win, 0, smallcount, type, op, in);
             MSG_Win_fence(target);
             MSG_Win_acc(target, &win, 0, smallcount, type, op, in);
