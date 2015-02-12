@@ -5,13 +5,15 @@ LIBS     =
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-all: restrict
+TESTS = restrict warn-stack
+
+all: $(TESTS)
 
 %: %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
-	-rm -f *.x
+	-rm -f $(TESTS)
 	-rm -rf *.dSYM
 
