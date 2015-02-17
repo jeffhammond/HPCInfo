@@ -1,4 +1,4 @@
-DMAPP is a one-sided communication API designed by Cray that looks a lot like [[SHMEM]].  It is the basis for implementing SHMEM as well as the Cray [[UPC]] and [[CAF]] runtimes.
+DMAPP is a one-sided communication API designed by Cray that looks a lot like [SHMEM](https://github.com/jeffhammond/HPCInfo/tree/master/shmem).  It is the basis for implementing SHMEM as well as the Cray [UPC](https://github.com/jeffhammond/HPCInfo/tree/master/upc) and [Coarray Fortran](https://github.com/jeffhammond/HPCInfo/tree/master/coarray-f) runtimes.
 
 # API Documentation
 
