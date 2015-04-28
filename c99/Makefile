@@ -1,11 +1,11 @@
-CC      := gcc
-CFLAGS   = -g -O2 -std=c99
+CC      := icc
+CFLAGS   = -g -O3 -Wall -std=c99
 LIBS     =
 
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = restrict warn-stack
+TESTS = restrict warn-stack array-restrict
 
 all: $(TESTS)
 
