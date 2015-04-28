@@ -5,15 +5,20 @@ LIBS     =
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = restrict warn-stack array-restrict
+TESTS = restrict warn-stack array-restrict alias2d.o
 
 all: $(TESTS)
 
 %: %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 clean:
 	-rm -f *.o
 	-rm -f $(TESTS)
 	-rm -rf *.dSYM
+	-rm -f *.dwarf
+	-rm -f *.optrpt
 
