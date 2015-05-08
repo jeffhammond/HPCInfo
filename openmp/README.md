@@ -10,7 +10,7 @@ More information about OpenMP support in GCC can be found at http://gcc.gnu.org/
 
 The [LLNL OpenMP page](https://computing.llnl.gov/tutorials/openMP/) is the best description I've found anywhere.  Blaise Barney is awesome.
 
-NERSC has an [OpenMP tutorial)http://www.nersc.gov/assets/Uploads/IntroToOpenMP.pdf) as well.
+NERSC has an [OpenMP tutorial](http://www.nersc.gov/assets/Uploads/IntroToOpenMP.pdf) as well.
 
 # Open-Source Runtime Implementations
 
