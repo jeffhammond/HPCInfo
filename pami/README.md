@@ -35,7 +35,7 @@ The following diagram is extracted from those slides:
 
 # Source
 
-PAMI is part of the driver that you can download by following the directions [https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q#Source_Code here].
+PAMI is part of the driver that you can download by following the directions [here](https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q#Source_Code).
 
 # Examples
 
