@@ -1,51 +1,47 @@
-= Definition =
+# Definition
 
 PAMI stands for Parallel Active Messaging Interface and is produced by IBM.
 
-= Source Code =
+# Documentation
 
-See [[Blue Gene/Q#Source Code|Blue Gene/Q Source Code]] instructions for how to obtain the open-source implementation of PAMI for Blue Gene/Q.  The implementation on other platforms is not currently open-source.
+## Papers
 
-= Documentation =
+* [PAMI: A Parallel Active Message Interface for the Blue Gene/Q Supercomputer](http://www.computer.org/csdl/proceedings/ipdps/2012/4675/00/4675a763-abs.html)
+* [Acceleration of an Asynchronous Message Driven Programming Paradigm on IBM Blue Gene/Q](http://charm.cs.illinois.edu/newPapers/12-50/paper.pdf) (about the Charm++ implementation on PAMI)
 
-== Papers ==
+## User Community
 
-* [http://www.computer.org/csdl/proceedings/ipdps/2012/4675/00/4675a763-abs.html PAMI: A Parallel Active Message Interface for the Blue Gene/Q Supercomputer]
-* [http://charm.cs.illinois.edu/newPapers/12-50/paper.pdf Acceleration of an Asynchronous Message Driven Programming Paradigm on IBM Blue Gene/Q] (about the Charm++ implementation on PAMI)
+Please sign up for the [PAMI discussion](http://lists.alcf.anl.gov/mailman/listinfo/pami-discuss) list to interact with the PAMI user community.
 
-== User Community ==
+## API Documentation
 
-Please sign up for the [http://lists.alcf.anl.gov/mailman/listinfo/pami-discuss PAMI discussion] list to interact with the PAMI user community.
+See `pami.h`.
 
-== API Documentation ==
-
-See <tt>pami.h</tt>.
-
-== Doxygen ==
+## Doxygen
 
 EPFL hosts this at https://bgq1.epfl.ch/navigator/resources/doc/pami/index.html
 
-== Programming Guide ==
+## Programming Guide
 
-[http://publibfp.dhe.ibm.com/epubs/pdf/a2322733.pdf PAMI Programming Guide] was the first publicly available documentation of the PAMI API.  Please note that this document is about the AIX implementation of PAMI.  This document was originally full of errors and still may not be correct in all cases.  Please always verify syntax with <tt>pami.h</tt> on your system.
+[PAMI Programming Guide](http://publibfp.dhe.ibm.com/epubs/pdf/a2322733.pdf) was the first publicly available documentation of the PAMI API.  Please note that this document is about the AIX implementation of PAMI.  This document was originally full of errors and still may not be correct in all cases.  Please always verify syntax with `pami.h` on your system.
 
-= Portability =
+# Portability
 
-PAMI is described on slides 13 and 14 of [http://www.lanl.gov/orgs/hpc/salishan/salishan2011/1wisniewski.pdf Bob Wisniewski's Salishan 2011 talk].
+PAMI is described on slides 13 and 14 of [Bob Wisniewski's Salishan 2011 talk](http://www.lanl.gov/orgs/hpc/salishan/salishan2011/1wisniewski.pdf).
 
 The following diagram is extracted from those slides:
 
 [[Image:PAMI_architecture2.jpg|600px]]
 
-= Source =
+# Source
 
 PAMI is part of the driver that you can download by following the directions [https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q#Source_Code here].
 
-= Examples =
+# Examples
 
 I put all of my code online here: http://code.google.com/p/pami-examples/.  I do not intend to maintain the code listed below.
 
-== Using multiple clients ==
+## Using multiple clients
 
 PAMI supports multiple clients, e.g., MPI and ARMCI, MPI and UPC, MPI and CAF, etc.  Using a PAMI clients (e.g. MPI) with an SPI client (e.g. the lattice QCD codes) requires different resource control.
 
@@ -53,7 +49,7 @@ The client name 'MPI' is reserved by MPI and should not be used by any client th
 
 This test demonstrates how to use multiple clients:
 
-<pre>
+```
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -90,6 +86,6 @@ int main(int argc, char* argv[])
 
   return 0;
 }
-</pre>
+```
 
-You can submit with <tt> qsub -t 5 -n 1 --mode c1 --env PAMI_CLIENTS=CLIENT1,CLIENT2 ./clients.x </tt>.
+You can submit with `qsub -t 5 -n 1 --mode c1 --env PAMI_CLIENTS=CLIENT1,CLIENT2 ./clients.x`.
