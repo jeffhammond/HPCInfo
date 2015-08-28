@@ -1,20 +1,20 @@
-OPT	     = -g -O2 -fopenmp
-CC       = gcc-4.9
-CFLAGS   = $(OPT) -std=gnu99
-FC	 	 = gfortran-4.9
+OPT	 = -g -O2 -fopenmp
+CC       = gcc-5
+CFLAGS   = $(OPT) -std=gnu11
+FC	 = gfortran-4.9
 FFLAGS   = $(OPT)
 LD       = $(CC)
 LDFLAGS  = $(OPT)
-LIBS     = 
+LIBS     =
 
-TESTS = matrix fusion nesting
+TESTS = matrix fusion nesting tls
 
 all: $(TESTS)
 
 %: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
-%: %.c 
+%: %.c
 	$(CC) $(CFLAGS) $< -o $@
 
 %: %.f90
