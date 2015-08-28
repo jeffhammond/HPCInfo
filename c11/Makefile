@@ -1,11 +1,11 @@
-CC       = gcc-4.9
-CFLAGS   = -g -O2 -std=c11
+CC       = gcc-5
+CFLAGS   = -g -O2 -std=c11 -fopenmp
 LIBS     =
 
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = atomics #threads
+TESTS = atomics tls #threads
 
 all: $(TESTS)
 
