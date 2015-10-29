@@ -17,5 +17,4 @@ program main
     print*,'section 2'
     !$omp end sections
     !$omp end parallel
-    return
 end program main

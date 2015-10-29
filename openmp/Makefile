@@ -7,7 +7,7 @@ LD       = $(CC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = matrix fusion nesting tls
+TESTS = matrix fusion nesting tls distribute
 
 all: $(TESTS)
 
