@@ -1,7 +1,7 @@
-OPT	 = -g -O2 -fopenmp
-CC       = gcc-5
-CFLAGS   = $(OPT) -std=gnu11
-FC	 = gfortran-4.9
+OPT	 = -O3 -qopenmp
+CC       = icc
+CFLAGS   = $(OPT) -std=c99
+FC	 = ifort
 FFLAGS   = $(OPT)
 LD       = $(CC)
 LDFLAGS  = $(OPT)
