@@ -27,7 +27,7 @@ EPFL hosts this at https://bgq1.epfl.ch/navigator/resources/doc/pami/index.html
 
 # Portability
 
-PAMI is described on slides 13 and 14 of [Bob Wisniewski's Salishan 2011 talk](http://www.lanl.gov/orgs/hpc/salishan/salishan2011/1wisniewski.pdf).
+PAMI is described on slides 13 and 14 of [Bob Wisniewski's Salishan 2011 talk](http://www.lanl.gov/conferences/salishan/salishan2011/1wisniewski.pdf).
 
 # Source
 
