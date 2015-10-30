@@ -29,10 +29,6 @@ EPFL hosts this at https://bgq1.epfl.ch/navigator/resources/doc/pami/index.html
 
 PAMI is described on slides 13 and 14 of [Bob Wisniewski's Salishan 2011 talk](http://www.lanl.gov/orgs/hpc/salishan/salishan2011/1wisniewski.pdf).
 
-The following diagram is extracted from those slides:
-
-[[Image:PAMI_architecture2.jpg|600px]]
-
 # Source
 
 PAMI is part of the driver that you can download by following the directions [here](https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q#Source_Code).
