@@ -50,6 +50,17 @@ The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more 
              --prefix=$HOME/OFI/install-ofi-gcc-gni-edison 
 ```
 
+### Criterion
+
+This is required for unit testing.  See [this](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-running-the-unit-tests-(gnitest)) for details.
+
+One must disable internationalization because of a problem with `msgmerge --lang=fr`.  See [this](https://github.com/Snaipe/Criterion/issues/77) for details.
+
+```
+cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
+         -DCMAKE_INSTALL_PREFIX:PATH=$HOME/OFI/install-Criterion -DI18N=OFF
+```
+
 ### fabtests
 
 ```sh
