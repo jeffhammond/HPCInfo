@@ -109,7 +109,10 @@ _This is very much a work in progress_
 
 ### Open-MPI
 
-TODO
+Ignore this for now.
+```sh
+../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran --with-libfabric=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori --disable-shared --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gni-xpmem-cori --with-xpmem=/opt/cray/xpmem/default --with-slurm --disable-dlopen
+```
 
 ### Sandia SHMEM
 
