@@ -8,7 +8,7 @@ See the [home page](http://ofiwg.github.io/libfabric/) for details.
 ## libfabric (OFI implementation)
 
 * [Main libfabric](https://github.com/ofiwg/libfabric)
-* [Cray libfabric](https://github.com/ofi-cray/libfabric-cray)* 
+* [Cray libfabric](https://github.com/ofi-cray/libfabric-cray)
 
 ## fabtests (OFI test suite)
 
