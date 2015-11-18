@@ -44,9 +44,10 @@ Use Cray's libfabric until it is merged upstream.
 The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more recent version than the GCC that comes with the system.
 
 ```sh
-../configure CC=gcc --disable-sockets --enable-gni \
-                    --enable-static --disable-shared \
-                    --prefix=$HOME/OFI/install-ofi-gcc-gni-edison 
+../configure CC=gcc \
+             --disable-sockets --enable-gni \
+             --enable-static --disable-shared \
+             --prefix=$HOME/OFI/install-ofi-gcc-gni-edison 
 ```
 
 ### fabtests
@@ -55,6 +56,7 @@ The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more 
 ../configure CC=gcc \
              --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-edison \
              --with-pmi=/opt/cray/pmi/default \
+             --prefix=$HOME/OFI/install-fabtest-gcc-gni-cori \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
                       -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
                       -ldl -lrt"
