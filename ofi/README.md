@@ -52,6 +52,20 @@ The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more 
 
 ### Criterion
 
+#### Right
+
+You must use version 1.2.2.  This version uses autotools instead of CMake.   However, to run `./autogen.sh`, you need to install a more recent version of `gettext` (e.g. `0.19.6`).  Then you build as follows.
+
+```
+../configure CC=gcc --prefix=$HOME/OFI/install-Criterion-v1.2.2 && make -j20 && make install
+```
+
+`make check` fails, but it appears to be a build system problem, which is not worth reporting due to the age of this version of Criterion.
+
+#### Wrong
+
+*Do not use the latest version!*
+
 This is required for unit testing.  See [this](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-running-the-unit-tests-(gnitest)) for details.
 
 One must disable internationalization because of a problem with `msgmerge --lang=fr`.  See [this](https://github.com/Snaipe/Criterion/issues/77) for details.
@@ -68,6 +82,7 @@ cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
              --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-edison \
              --with-pmi=/opt/cray/pmi/default \
              --prefix=$HOME/OFI/install-fabtest-gcc-gni-cori \
+             --with-criterion=/global/homes/j/jhammond/OFI/install-Criterion-v1.2.2 \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
                       -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
                       -ldl -lrt"
