@@ -21,7 +21,13 @@ OFI
 
 # Building stuff
 
-## Cray XC systems (Aries network)
+## Generic generic (sockets provider)
+
+
+## Intel networks (i.e. PSM and PSM2 providers)
+
+
+## Cray XC systems (uGNI provider for Aries)
 
 Use Cray's libfabric until it is merged upstream.
 
@@ -33,3 +39,15 @@ The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more 
 ../configure CC=gcc --disable-sockets --enable-gni --enable-static --disable-shared \
                     --prefix=$HOME/OFI/install-ofi-gcc-gni-edison 
 ```
+
+### MPICH
+
+_This is very much a work in progress_
+
+### Open-MPI
+
+TODO
+
+### Sandia SHMEM
+
+TODO
