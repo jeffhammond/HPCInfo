@@ -39,13 +39,25 @@ See the [home page](http://ofiwg.github.io/libfabric/) for details.
 
 Use Cray's libfabric until it is merged upstream.
 
-### OFI
+### libfabric
 
 The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more recent version than the GCC that comes with the system.
 
 ```sh
-../configure CC=gcc --disable-sockets --enable-gni --enable-static --disable-shared \
+../configure CC=gcc --disable-sockets --enable-gni \
+                    --enable-static --disable-shared \
                     --prefix=$HOME/OFI/install-ofi-gcc-gni-edison 
+```
+
+### fabtests
+
+```sh
+../configure CC=gcc \
+             --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-edison \
+             --with-pmi=/opt/cray/pmi/default \
+             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -ldl -lrt"
 ```
 
 ### MPICH
