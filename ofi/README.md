@@ -19,6 +19,7 @@ See the [home page](http://ofiwg.github.io/libfabric/) for details.
 
 * [MPICH](http://git.mpich.org/mpich.git/)
 * [Open-MPI](https://github.com/open-mpi/ompi.git)
+* Intel MPI ([Documentation](https://software.intel.com/en-us/node/561773))
 
 ## Other OFI clients
 
