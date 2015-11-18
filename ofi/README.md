@@ -93,6 +93,8 @@ Note that this test runs for a while and provides not incremental status update,
 
 ### fabtests
 
+_This is not working for me yet._
+
 ```sh
 ../configure CC=gcc \
              --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-edison \
@@ -107,9 +109,32 @@ Note that this test runs for a while and provides not incremental status update,
 
 _This is very much a work in progress_
 
+```sh
+../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran \
+             --with-ofi=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori \
+             --with-device=ch3:nemesis:ofi \
+             --disable-shared \
+             --prefix=$HOME/MPI/install-mpich-gcc-ofi-gni-cori \
+             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -ldl -lrt"
+```
+
 ### Open-MPI
 
+See [Cray's docs](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-Running-OpenMPI).
+
+_This is very much a work in progress_
+
+```sh
+../configure \
+             --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-cori \
+             --disable-shared \
+             --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gcc-gni-cori
+```
+
 Ignore this for now.
+
 ```sh
 ../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran --with-libfabric=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori --disable-shared --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gni-xpmem-cori --with-xpmem=/opt/cray/xpmem/default --with-slurm --disable-dlopen
 ```
