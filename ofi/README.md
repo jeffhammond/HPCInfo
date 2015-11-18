@@ -1,6 +1,8 @@
 OFI
 ===
 
+See the [home page](http://ofiwg.github.io/libfabric/) for details.
+
 # Git repositories
 
 ## libfabric (OFI implementation)
