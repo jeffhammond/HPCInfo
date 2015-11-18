@@ -82,9 +82,12 @@ The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more 
 Assuming all goes well until this point, you can run the unit tests like this
 (grab a compute node with e.g. `salloc -N 1 -p shared -t 00:30:00`):
 ```sh
-jhammond@nid02266:~/OFI/libfabric/build-cori> ../prov/gni/test/run_gnitest
 [----] Warning! This test crashed during its setup or teardown.
 [====] Synthesis: Tested: 316 | Passing: 316 | Failing: 0 | Crashing: 0 
+
+real	3m0.046s
+user	1m10.940s
+sys	0m40.079s
 ```
 Note that this test runs for a while and provides not incremental status update, so be patient.
 
