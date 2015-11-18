@@ -39,18 +39,9 @@ See the [home page](http://ofiwg.github.io/libfabric/) for details.
 
 Use Cray's libfabric until it is merged upstream.
 
-### libfabric
-
-The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more recent version than the GCC that comes with the system.
-
-```sh
-../configure CC=gcc \
-             --disable-sockets --enable-gni \
-             --enable-static --disable-shared \
-             --prefix=$HOME/OFI/install-ofi-gcc-gni-edison 
-```
-
 ### Criterion
+
+This is required for unit testing.  See [this](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-running-the-unit-tests-(gnitest)) for details.
 
 #### Right
 
@@ -66,14 +57,36 @@ You must use version 1.2.2.  This version uses autotools instead of CMake.   How
 
 *Do not use the latest version!*
 
-This is required for unit testing.  See [this](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-running-the-unit-tests-(gnitest)) for details.
-
 One must disable internationalization because of a problem with `msgmerge --lang=fr`.  See [this](https://github.com/Snaipe/Criterion/issues/77) for details.
 
 ```
 cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
          -DCMAKE_INSTALL_PREFIX:PATH=$HOME/OFI/install-Criterion -DI18N=OFF
 ```
+
+### libfabric
+
+The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more recent version than the GCC that comes with the system.
+
+```sh
+../configure CC=gcc \
+             --disable-sockets --enable-gni \
+             --enable-static --disable-shared \
+             --with-criterion=/global/homes/j/jhammond/OFI/install-Criterion-v1.2.2 \
+             --prefix=$HOME/OFI/install-ofi-gcc-gni-edison \
+             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -ldl -lrt"
+```
+
+Assuming all goes well until this point, you can run the unit tests like this
+(grab a compute node with e.g. `salloc -N 1 -p shared -t 00:30:00`):
+```sh
+jhammond@nid02266:~/OFI/libfabric/build-cori> ../prov/gni/test/run_gnitest
+[----] Warning! This test crashed during its setup or teardown.
+[====] Synthesis: Tested: 316 | Passing: 316 | Failing: 0 | Crashing: 0 
+```
+Note that this test runs for a while and provides not incremental status update, so be patient.
 
 ### fabtests
 
@@ -82,7 +95,6 @@ cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
              --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-edison \
              --with-pmi=/opt/cray/pmi/default \
              --prefix=$HOME/OFI/install-fabtest-gcc-gni-cori \
-             --with-criterion=/global/homes/j/jhammond/OFI/install-Criterion-v1.2.2 \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
                       -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
                       -ldl -lrt"
