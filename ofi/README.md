@@ -144,8 +144,8 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
              --without-verbs --without-fca --without-openib --without-mxm --without-ucx \
              --without-portals4 --without-mx --without-psm --without-psm2 \
              --without-udreg --without-ugni \
-             --without-sge --without-loadleveler --without-tm \
-             --without-pvfs2 \
+             --without-sge --without-loadleveler --without-tm --without-lsf \
+             --without-pvfs2 --without-plfs \
              --without-cuda --disable-oshmem \
              --disable-mpi-fortran --disable-oshmem-fortran
 ```
