@@ -125,8 +125,6 @@ _This is very much a work in progress_
 
 See [Cray's docs](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-Running-OpenMPI).
 
-_This is very much a work in progress_
-
 ```sh
 ../configure \
              --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-cori \
@@ -134,10 +132,22 @@ _This is very much a work in progress_
              --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gcc-gni-cori
 ```
 
-Ignore this for now.
+Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not OFI.
 
 ```sh
-../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran --with-libfabric=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori --disable-shared --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gni-xpmem-cori --with-xpmem=/opt/cray/xpmem/default --with-slurm --disable-dlopen
+../configure --with-libfabric=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori \
+             --enable-mca-static=mtl-ofi \
+             --enable-mca-no-build=btl-openib,btl-vader,btl-ugni,btl-tcp \
+             --enable-static --disable-shared --disable-dlopen \
+             --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gcc-gni-xpmem-cori \
+             --with-cray-pmi --with-alps --with-cray-xpmem --with-slurm \
+             --without-verbs --without-fca --without-openib --without-mxm --without-ucx \
+             --without-portals4 --without-mx --without-psm --without-psm2 \
+             --without-udreg --without-ugni \
+             --without-sge --without-loadleveler --without-tm \
+             --without-pvfs2 \
+             --without-cuda --disable-oshmem \
+             --disable-mpi-fortran --disable-oshmem-fortran
 ```
 
 ### Sandia SHMEM
