@@ -155,4 +155,14 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
 
 ### Sandia SHMEM
 
-TODO
+```sh
+../configure \
+             --with-xpmem=/opt/cray/xpmem/default  \
+             --with-ofi=$HOME/OFI/install-ofi-gcc-gni-cori \
+             --with-pmi=/opt/cray/pmi/default \
+             --enable-static \
+             --prefix=$HOME/SHMEM/install-sandia-shmem-ofi-xpmem-icc \
+             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -ldl -lrt"
+```
