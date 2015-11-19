@@ -165,7 +165,8 @@ You need to `module load PrgEnv-intel` if you use `cc` and `ftn` used instead of
             --with-xpmem=/opt/cray/xpmem/default  \
             --with-ofi=$HOME/OFI/install-ofi-gcc-gni-cori \
             --enable-remote-virtual-addressing \
-            --enable-static \
+            --enable-static --disable-shared \
+            --disable-fortran \
             --prefix=$HOME/SHMEM/install-sandia-shmem-ofi-xpmem-icc \
             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
