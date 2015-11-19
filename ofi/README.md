@@ -143,7 +143,7 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
              --with-cray-pmi --with-alps --with-cray-xpmem --with-slurm \
              --without-verbs --without-fca --without-mxm --without-ucx \
              --without-portals4 --without-psm --without-psm2 \
-             --without-udreg --without-ugni \
+             --without-udreg --without-ugni --without-munge \
              --without-sge --without-loadleveler --without-tm --without-lsf \
              --without-pvfs2 --without-plfs \
              --without-cuda --disable-oshmem \
