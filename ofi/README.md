@@ -155,11 +155,32 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
 
 ### Sandia SHMEM
 
+#### Cray compiler wrappers
+
 ```sh
-../configure \
+module load PrgEnv-intel
+../configure CC=cc FC=ftn \
+             --with-pmi=/opt/cray/pmi/default \
              --with-xpmem=/opt/cray/xpmem/default  \
              --with-ofi=$HOME/OFI/install-ofi-gcc-gni-cori \
+             --enable-remote-virtual-addressing \
+             --enable-static \
+             --prefix=$HOME/SHMEM/install-sandia-shmem-ofi-xpmem-icc \
+             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -ldl -lrt"
+```
+
+#### Explicit compilers
+
+`LDFLAGS` is required here.
+
+```sh
+../configure CC=icc FC=ifort \
              --with-pmi=/opt/cray/pmi/default \
+             --with-xpmem=/opt/cray/xpmem/default  \
+             --with-ofi=$HOME/OFI/install-ofi-gcc-gni-cori \
+             --enable-remote-virtual-addressing \
              --enable-static \
              --prefix=$HOME/SHMEM/install-sandia-shmem-ofi-xpmem-icc \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
