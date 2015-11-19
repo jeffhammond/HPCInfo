@@ -132,7 +132,7 @@ See [Cray's docs](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-R
              --prefix=$HOME/MPI/install-ompi-ofi-gcc-gni-cori
 ```
 
-Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not OFI.
+Unfortunately, this (above) leads to an `mpicc` that indicates support for IB Verbs, not OFI.
 
 ```sh
 ../configure --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-cori \
@@ -152,6 +152,8 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
                       -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
                       -ldl -lrt"
 ```
+
+This (above) is sort of working.  I can run with `srun` but not `mpirun`.  There are problems related to shared-memory file backing in the global filesystem, the inability to pass MCA parameters via `srun` (or so I think), and correctness issues with larger messages.
 
 ### Sandia SHMEM
 
