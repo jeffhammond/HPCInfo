@@ -72,7 +72,7 @@ The uGNI provider uses C11 atomics, so you must `module load gcc` to get a more 
 ../configure CC=gcc \
              --disable-sockets --enable-gni \
              --enable-static --disable-shared \
-             --with-criterion=/global/homes/j/jhammond/OFI/install-Criterion-v1.2.2 \
+             --with-criterion=$HOME/OFI/install-Criterion-v1.2.2 \
              --prefix=$HOME/OFI/install-ofi-gcc-gni-edison \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
                       -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
@@ -112,7 +112,7 @@ _This is very much a work in progress_
 
 ```sh
 ../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran \
-             --with-ofi=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori \
+             --with-ofi=$HOME/OFI/install-ofi-gcc-gni-cori \
              --with-device=ch3:nemesis:ofi \
              --disable-shared \
              --prefix=$HOME/MPI/install-mpich-gcc-ofi-gni-cori \
@@ -129,17 +129,17 @@ See [Cray's docs](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-R
 ../configure \
              --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-cori \
              --disable-shared \
-             --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gcc-gni-cori
+             --prefix=$HOME/MPI/install-ompi-ofi-gcc-gni-cori
 ```
 
 Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not OFI.
 
 ```sh
-../configure --with-libfabric=/global/homes/j/jhammond/OFI/install-ofi-gcc-gni-cori \
+../configure --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-cori \
              --enable-mca-static=mtl-ofi \
              --enable-mca-no-build=btl-openib,btl-vader,btl-ugni,btl-tcp \
              --enable-static --disable-shared --disable-dlopen \
-             --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gcc-gni-xpmem-cori \
+             --prefix=$HOME/MPI/install-ompi-ofi-gcc-gni-xpmem-cori \
              --with-cray-pmi --with-alps --with-cray-xpmem --with-slurm \
              --without-verbs --without-fca --without-mxm --without-ucx \
              --without-portals4 --without-psm --without-psm2 \
@@ -147,7 +147,10 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
              --without-sge --without-loadleveler --without-tm --without-lsf \
              --without-pvfs2 --without-plfs \
              --without-cuda --disable-oshmem \
-             --disable-mpi-fortran --disable-oshmem-fortran
+             --disable-mpi-fortran --disable-oshmem-fortran \
+             LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -ldl -lrt"
 ```
 
 ### Sandia SHMEM
