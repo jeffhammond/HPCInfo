@@ -141,8 +141,8 @@ Unfortunately, this leads to an `mpicc` that indicates support for IB Verbs, not
              --enable-static --disable-shared --disable-dlopen \
              --prefix=/global/homes/j/jhammond/MPI/install-ompi-ofi-gcc-gni-xpmem-cori \
              --with-cray-pmi --with-alps --with-cray-xpmem --with-slurm \
-             --without-verbs --without-fca --without-openib --without-mxm --without-ucx \
-             --without-portals4 --without-mx --without-psm --without-psm2 \
+             --without-verbs --without-fca --without-mxm --without-ucx \
+             --without-portals4 --without-psm --without-psm2 \
              --without-udreg --without-ugni \
              --without-sge --without-loadleveler --without-tm --without-lsf \
              --without-pvfs2 --without-plfs \
