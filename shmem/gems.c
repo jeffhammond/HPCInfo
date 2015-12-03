@@ -1,4 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#if (_SHMEM_MAJOR_VERSION==1) && (_SHMEM_MAJOR_VERSION<3)
+static void * shmem_malloc(size_t n) { return shmalloc(n); }
+static void shmem_free(void* p) { return shfree(p); }
+#endif
 /***************************************************************/
 #include <shmem.h>
 int main(void) {
@@ -12,7 +18,7 @@ int main(void) {
     /* global synchronization of execution and data */
     shmem_barrier_all();
     /* observe the result of the store */
-    if (my_pe()==1) printf(“A@1=%d\n”,*A);
+    if (my_pe()==1) printf("A@1=%d\n",*A);
     shmem_free(A);
     shmem_finalize();
     return 0;
