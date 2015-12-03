@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 /***************************************************************/
 #include <upc.h>
 int main(void) {
@@ -11,7 +12,7 @@ int main(void) {
     /* global synchronization of execution and data */
     upc_barrier;
     /* observe the result of the store */
-    if (MYTHREAD==1) printf(“A@1=%d\n”,A[1]);
+    if (MYTHREAD==1) printf("A@1=%d\n",A[1]);
     upc_all_free(A);
     return 0;
 }
