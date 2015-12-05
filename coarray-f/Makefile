@@ -1,9 +1,12 @@
 # Cray XE6
-FTN      = ftn -h caf
-LIBS     = -lhugetlbfs
+#FTN     := ftn -h caf
+#LIBS    := -lhugetlbfs
 # Intel
-#FTN      = ifort -free -std08
-#LIBS     =
+#FTN     := ifort -free -std08
+#LIBS    :=
+# GCC
+FTN     := gfortran -ffree-form -fcoarray=single
+LIBS    :=
 
 FTNFLAGS = -O2
 LD       = $(FTN)
