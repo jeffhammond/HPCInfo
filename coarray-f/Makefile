@@ -6,7 +6,7 @@
 #LIBS    :=
 # GCC
 FTN     := gfortran -ffree-form -fcoarray=single
-LIBS    :=
+LIBS    := -lcaf_single
 
 FTNFLAGS = -O2
 LD       = $(FTN)
