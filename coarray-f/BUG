@@ -1,0 +1,9 @@
+gfortran -ffree-form -fcoarray=single -O2 -c atomic.f -o atomic.o
+gfortran -ffree-form -fcoarray=single -O2 atomic.o  -o atomic.x
+Undefined symbols for architecture x86_64:
+  "_sync_all_", referenced from:
+      _MAIN__ in atomic.o
+ld: symbol(s) not found for architecture x86_64
+collect2: error: ld returned 1 exit status
+make: *** [atomic.x] Error 1
+rm atomic.o
