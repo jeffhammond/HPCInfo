@@ -5,11 +5,12 @@
 int main(void) {
     int np = omp_get_max_threads();
     if (np<2) exit(1);
-    /* allocate from the heap with global visibility */
+    /* allocate shared pointers */
     int ** A = malloc(np*sizeof(int*));
     #pragma omp parallel shared(A)
     {
         int me = omp_get_thread_num();
+        /* allocate per-thread data */
         A[me] = malloc(sizeof(int));
         #pragma omp barrier
         int B = 134;
