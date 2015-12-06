@@ -10,9 +10,6 @@
 
 #ifdef MPI
 #   include <mpi.h>
-#   ifdef HPM
-#      include "hpm.h"
-#   endif
 #endif
 
 #include "getticks.c"
@@ -30,9 +27,6 @@ int main(int argc, char* argv[])
     int provided;
     MPI_Init_thread( &argc , &argv , MPI_THREAD_FUNNELED , &provided );
     MPI_Comm_rank( MPI_COMM_WORLD , &rank );
-#endif
-#ifdef HPM
-    HPM_Init();
 #endif
 
     int min = ( argc>1 ? atoi(argv[1]) : 2 );
@@ -106,23 +100,14 @@ int main(int argc, char* argv[])
                     B[i*n+j] = 0.0;
 
             /* reference - memcpy */
-#ifdef HPM
-            HPM_Start(name0);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ )
                 memcpy( B , A , N );
 
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name0);
-#endif
             d0[n] = (t1-t0)/REPEAT;
 
             /* reference - direct copy */
-#ifdef HPM
-            HPM_Start(name1);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ )
             {
@@ -134,15 +119,9 @@ int main(int argc, char* argv[])
                         B[i*n+j] = A[i*n+j];
             }
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name1);
-#endif
             d1[n] = (t1-t0)/REPEAT;
 
             /* basic w/ stride-1 stores */
-#ifdef HPM
-            HPM_Start(name2);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ )
             {
@@ -154,9 +133,6 @@ int main(int argc, char* argv[])
                         B[i*n+j] = A[j*n+i];
             }
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name2);
-#endif
             d2[n] = (t1-t0)/REPEAT;
 
             /* verify */
@@ -165,9 +141,6 @@ int main(int argc, char* argv[])
                     assert( B[i*n+j] == A[j*n+i] );
 
             /* basic w/ stride-1 loads */
-#ifdef HPM
-            HPM_Start(name3);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ )
             {
@@ -179,9 +152,6 @@ int main(int argc, char* argv[])
                         B[i*n+j] = A[j*n+i];
             }
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name3);
-#endif
             d3[n] = (t1-t0)/REPEAT;
 
             /* verify */
@@ -190,9 +160,6 @@ int main(int argc, char* argv[])
                     assert( B[i*n+j] == A[j*n+i] );
 
             /* pragma unroll 4x4 + s1 loads */
-#ifdef HPM
-            HPM_Start(name4);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ ) {
 #ifdef OMP
@@ -207,9 +174,6 @@ int main(int argc, char* argv[])
                         B[i*n+j] = A[j*n+i];
             }
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name4);
-#endif
             d4[n] = (t1-t0)/REPEAT;
 
             /* verify */
@@ -218,9 +182,6 @@ int main(int argc, char* argv[])
                     assert( B[i*n+j] == A[j*n+i] );
 
             /* manual unroll 4x4 + s1 loads */
-#ifdef HPM
-            HPM_Start(name5);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ ) {
 #ifdef OMP
@@ -268,9 +229,6 @@ int main(int argc, char* argv[])
               }
             }
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name5);
-#endif
             d5[n] = (t1-t0)/REPEAT;
 
             /* verify */
@@ -279,9 +237,6 @@ int main(int argc, char* argv[])
                     assert( B[i*n+j] == A[j*n+i] );
 
             /* manual unroll 4x4 and vectorize + s1 loads */
-#ifdef HPM
-            HPM_Start(name6);
-#endif
             t0 = getticks();
             for ( int t=0 ; t<REPEAT ; t++ ) {
 #ifdef OMP
@@ -373,9 +328,6 @@ int main(int argc, char* argv[])
               }
             }
             t1 = getticks();
-#ifdef HPM
-            HPM_Stop(name6);
-#endif
             d6[n] = (t1-t0)/REPEAT;
 
             /* verify */
@@ -429,11 +381,6 @@ int main(int argc, char* argv[])
         free(d1);
         free(d0);
     }
-
-#ifdef HPM
-    HPM_Print_Flops();
-    HPM_Print();
-#endif
 
 #ifdef MPI
     MPI_Finalize();
