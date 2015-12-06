@@ -1,6 +1,6 @@
 OPT	 = -O3
 CC       = mpicc
-CFLAGS   = $(OPT) -std=c99
+CFLAGS   = $(OPT) -std=c99 -Wall
 LD       = $(CC)
 LDFLAGS  = $(OPT)
 LIBS     =
