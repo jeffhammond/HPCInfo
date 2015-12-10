@@ -123,6 +123,7 @@ export USE_PMI2_API=yes # Howard says use this.
                      -I/opt/cray/pmi/default/include" \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
                       -L/opt/cray/pmi/default/lib64 -lpmi \
+                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
                       -ldl -lrt"
 ```
 
