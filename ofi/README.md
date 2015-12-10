@@ -131,6 +131,12 @@ export USE_PMI2_API=yes # Howard says use this.
 * Need Cray PMI even with SLURM.
 * Need OFI netmod to work with PMI2.
 
+#### Debugging
+
+```sh
+export FI_LOG_LEVEL=trace
+```
+
 ### Open-MPI
 
 See [Cray's docs](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-Running-OpenMPI).
