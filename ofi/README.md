@@ -111,15 +111,24 @@ _This is not working for me yet._
 _This is very much a work in progress_
 
 ```sh
+export MPID_NO_PMI=yes  # Howard says this is required, i.e. --with-no-pmi is ignored.
+export USE_PMI2_API=yes # Howard says use this.
 ../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran \
              --with-ofi=$HOME/OFI/install-ofi-gcc-gni-cori \
              --with-device=ch3:nemesis:ofi \
+             --with-pm=no \
              --disable-shared \
              --prefix=$HOME/MPI/install-mpich-gcc-ofi-gni-cori \
+             CFLAGS="-I/opt/cray/ugni/default/include \
+                     -I/opt/cray/pmi/default/include" \
              LDFLAGS="-L/opt/cray/ugni/default/lib64 -lugni \
-                      -L/opt/cray/alps/default/lib64 -lalps -lalpslli -lalpsutil \
+                      -L/opt/cray/pmi/default/lib64 -lpmpi \
                       -ldl -lrt"
 ```
+
+* Cray MPI can be launched with Hydra on a single node only.
+* Need Cray PMI even with SLURM.
+* Need OFI netmod to work with PMI2.
 
 ### Open-MPI
 
