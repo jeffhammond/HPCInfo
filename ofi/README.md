@@ -1,7 +1,13 @@
 OFI
 ===
 
+# Documentation and Papers
+
 See the [home page](http://ofiwg.github.io/libfabric/) for details.
+
+## Cray OFI Provider
+
+* [An Implementation of OFI Libfabric in Support of Multithreaded PGAS Solutions](http://dx.doi.org/10.1109/PGAS.2015.14) ([slides](http://hpcl.seas.gwu.edu/pgas15/slides/pgas15_pres_OFI.pptx.pdf)).
 
 # Git repositories
 
