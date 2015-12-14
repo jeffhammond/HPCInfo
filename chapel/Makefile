@@ -1,7 +1,7 @@
 CHPL      = chpl
 CHPLFLAGS =
 
-all: gems.x
+all: gems.x exit.x
 
 %.x: %.chpl
 	$(CHPL) $(CHPLFLAGS) $< -o $@
