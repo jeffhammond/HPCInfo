@@ -1,6 +1,11 @@
-#!/bin/bash +x
-
 OPT	 = -O3
+
+# Unused
+#ifeq ($(shell uname),Darwin) 
+#    HAVE_MAC = y
+#else
+#    HAVE_MAC = n
+#endif
 
 HAVE_INTEL = $(shell which icpc)
 HAVE_CLANG = $(shell which clang++)
