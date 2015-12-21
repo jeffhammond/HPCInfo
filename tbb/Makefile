@@ -8,10 +8,10 @@ HAVE_GCC5  = $(shell which g++-5)
 ifeq ($(HAVE_INTEL),) 
   ifeq ($(HAVE_CLANG),) 
     ifeq ($(HAVE_GCC5),) 
-      # last choice
+      # last choice - should be fine on Linux but bad on Mac
       CXX=g++
     else
-      # second-to-last choice
+      # second-to-last choice - here because of Mac
       CXX=g++-5
     endif
   else
