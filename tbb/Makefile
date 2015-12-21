@@ -2,18 +2,24 @@
 
 OPT	 = -O3
 
-# This is only here to test the logic
-#HAVE_GCC5  = $(shell which g++-5)
-#ifeq ($(HAVE_GCC5),) 
-#  CXX=clang++
-#else
-#  CXX=g++-5
-#endif
-
 HAVE_INTEL = $(shell which icpc)
+HAVE_CLANG = $(shell which clang++)
+HAVE_GCC5  = $(shell which g++-5)
 ifeq ($(HAVE_INTEL),) 
-  CXX=clang++
+  ifeq ($(HAVE_CLANG),) 
+    ifeq ($(HAVE_GCC5),) 
+      # last choice
+      CXX=g++
+    else
+      # second-to-last choice
+      CXX=g++-5
+    endif
+  else
+    # second choice
+    CXX=clang++
+  endif
 else
+  # first choice
   CXX=icpc
 endif
 
