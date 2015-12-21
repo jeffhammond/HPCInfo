@@ -1,14 +1,21 @@
+#!/bin/bash +x
+
 OPT	 = -O3
 
-CXX = if [ x"$(shell which icpc)" != x"" ] ; then       \
-        echo "icpc" ;                                   \
-      elif [ x"$(shell which g++-5)" != x"" ] ; then    \
-        echo "g++-5" ;                                  \
-      elif [ x"$(shell which clang++)" != x"" ] ; then  \
-        echo "clang++" ;                                \
-      else                                              \
-        echo "false" ;                                  \
-      endif
+# This is only here to test the logic
+#HAVE_GCC5  = $(shell which g++-5)
+#ifeq ($(HAVE_GCC5),) 
+#  CXX=clang++
+#else
+#  CXX=g++-5
+#endif
+
+HAVE_INTEL = $(shell which icpc)
+ifeq ($(HAVE_INTEL),) 
+  CXX=clang++
+else
+  CXX=icpc
+endif
 
 # Assume these flags work with all compilers, which should
 # at least be true for GCC, Clang and Intel.
