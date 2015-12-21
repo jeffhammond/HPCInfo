@@ -1,16 +1,24 @@
 OPT	 = -O3
 
-CXX = if test -e icpc ; then echo "icpc" ; else echo "clang++" ; fi
+CXX = if [ x"$(shell which icpc)" != x"" ] ; then       \
+        echo "icpc" ;                                   \
+      elif [ x"$(shell which g++-5)" != x"" ] ; then    \
+        echo "g++-5" ;                                  \
+      elif [ x"$(shell which clang++)" != x"" ] ; then  \
+        echo "clang++" ;                                \
+      else                                              \
+        echo "false" ;                                  \
+      endif
+
+# Assume these flags work with all compilers, which should
+# at least be true for GCC, Clang and Intel.
+CXXFLAGS = $(OPT) -std=c++11
 
 ifeq ($(CXX),icpc)
-    CXX      = icpc
-    CXXFLAGS = $(OPT) -std=c++11
     # These are for recent releases of the Intel compiler
     INCLUDE  = -tbb
     LIBS     = -tbb
 else
-    CXX	 = clang++
-    CXXFLAGS = $(OPT) -std=c++11
     # These are for Homebrew OSS TBB
     INCLUDE  = -I/usr/local/include
     LIBS     = -L/usr/local/lib
