@@ -24,6 +24,7 @@ int main(void) {
     if (me==1) printf("A@1=%d\n",*Abuf);
     MPI_Win_unlock_all(Awin);
     MPI_Win_free(&Awin);
+    MPI_Finalize();
     return 0;
 }
 /***************************************************************/
