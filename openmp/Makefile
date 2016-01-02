@@ -1,11 +1,11 @@
-OPT	 = -O3 -qopenmp
-CC       = icc
-CFLAGS   = $(OPT) -std=c99
-FC	 = ifort
-FFLAGS   = $(OPT)
-LD       = $(CC)
-LDFLAGS  = $(OPT)
-LIBS     =
+OPT	 := -O3 -qopenmp
+CC       := icc
+CFLAGS   := $(OPT) -std=c99
+FC	 := ifort
+FFLAGS   := $(OPT)
+LD       := $(CC)
+LDFLAGS  := $(OPT)
+LIBS     :=
 
 TESTS = matrix fusion nesting tls gems gems2 # distribute
 
