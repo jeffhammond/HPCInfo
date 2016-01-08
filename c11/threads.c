@@ -9,16 +9,12 @@
 #else
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include <threads.h>
-
-#include <assert.h>
 
 int main(int argc, char **argv)
 {
+    thrd_t t;
     printf("success!\n");
-
     return 0;
 }
 

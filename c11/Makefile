@@ -1,11 +1,11 @@
-CC       = gcc-5
-CFLAGS   = -g -O2 -std=c11 #-fopenmp
+CC       = clang-3.6
+CFLAGS   = -g -O2 -std=c11
 LIBS     =
 
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = atomics tls #threads
+TESTS = atomics threads
 
 all: $(TESTS)
 
