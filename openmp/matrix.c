@@ -2,7 +2,13 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
+
+#ifdef _OPENMP
 #include <omp.h>
+#else
+#warning No OpenMP support available!
+double omp_get_wtime() { return 0.0; }
+#endif
 
 int main(int argc, char* argv[])
 {
