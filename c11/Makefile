@@ -1,5 +1,5 @@
 CC       = gcc-5
-CFLAGS   = -g -O2 -std=c11 -fopenmp
+CFLAGS   = -g -O2 -std=c11 #-fopenmp
 LIBS     =
 
 LD       = $(CC)
