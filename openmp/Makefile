@@ -7,7 +7,7 @@ LD       := $(CC)
 LDFLAGS  := $(OPT)
 LIBS     :=
 
-TESTS = matrix fusion nesting tls gems gems2 # distribute
+TESTS = matrix fusion nesting tls gems gems2 flush # distribute
 
 all: $(TESTS)
 

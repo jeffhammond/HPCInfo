@@ -1,28 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 /***************************************************************/
 #include <omp.h>
-int main(void) {
-    int np = omp_get_max_threads();
-    if (np<2) exit(1);
-    /* allocate shared pointers */
-    int ** A = malloc(np*sizeof(int*));
-    #pragma omp parallel shared(A)
-    {
-        int me = omp_get_thread_num();
-        /* allocate per-thread data */
-        A[me] = malloc(sizeof(int));
-        #pragma omp barrier
-        int B = 134;
-        /* store local data B at PE 0 into A at PE 1 */
-        if (me==0) A[1][0] = B;
-        /* global synchronization of execution and data */
-        #pragma omp barrier
-        /* observe the result of the store */
-        if (me==1) printf("A@1=%d\n",A[1][0]); fflush(stdout);
-        free(A[me]);
-    }
-    free(A);
-    return 0;
+void ** ompx_calloc(size_t bytes)
+{
+  int np = omp_get_max_threads();
+  void ** ptrs = malloc(np*sizeof(void*));
+  #pragma omp parallel shared(ptrs)
+  {
+    int me = omp_get_thread_num();
+    ptrs[me] = malloc(bytes);
+    memset(ptrs[me],0,bytes);
+  }
+  return ptrs;
 }
+void ompx_free(void ** ptrs)
+{
+  #pragma omp parallel shared(ptrs)
+  {
+    int me = omp_get_thread_num();
+    free(ptrs[me]);
+  }
+  free(ptrs);
+}
+int main(int argc, char* argv[]) {
+  int n = (argc>1) ? atoi(argv[1]) : 1<<20;
+  int np = omp_get_max_threads();
+  if (np<2) exit(1);
+  int ** A = ompx_calloc(n*sizeof(int));
+  #pragma omp parallel shared(A)
+  {
+     /* threaded computation */
+  }
+  ompx_free(A);
+  return 0;
+}
+
 /***************************************************************/
