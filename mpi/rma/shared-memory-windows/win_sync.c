@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <mpi.h>
 
-/* This function synchronizes process i with process j
- * in such a way that this function returns on process j
- * only after it has been called on process i.
+/* This function synchronizes process rank i with process rank j
+ * in such a way that this function returns on process rank j
+ * only after it has been called on process rank i.
  *
  * No additional semantic guarantees are provided.
  *
- * The process ranks are with respect to the input communication. */
+ * The process ranks are with respect to the input communicat (comm). */
 
 int p2p_xsync(int i, int j, MPI_Comm comm)
 {
@@ -35,10 +35,9 @@ int p2p_xsync(int i, int j, MPI_Comm comm)
 
 int coll_check_equal(int val, MPI_Comm comm)
 {
-    int min, max;
-    MPI_Allreduce(&val, &min, 1, MPI_INT, MPI_MIN, comm);
-    MPI_Allreduce(&val, &max, 1, MPI_INT, MPI_MAX, comm);
-    return (min==max ? 1 : 0);
+    int minmax[2] = {-val,val};
+    MPI_Allreduce(MPI_IN_PLACE, minmax, 2, MPI_INT, MPI_MAX, comm);
+    return ((-minmax[0])==minmax[1] ? 1 : 0);
 }
 
 int main(int argc, char * argv[])

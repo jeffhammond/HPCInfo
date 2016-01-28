@@ -1,6 +1,6 @@
-OPT	 := -O3 -qopenmp
-CC       := icc
-CFLAGS   := $(OPT) -std=c99
+OPT	 := -O3 -fopenmp
+CC       := clang-omp
+CFLAGS   := $(OPT) -std=c11
 FC	 := ifort
 FFLAGS   := $(OPT)
 LD       := $(CC)
