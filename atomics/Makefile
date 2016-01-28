@@ -11,7 +11,7 @@ LIBS      =
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS =
+TESTS = c11_atomic_counter
 
 all: $(TESTS)
 
