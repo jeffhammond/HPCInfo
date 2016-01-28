@@ -1,17 +1,17 @@
-OFLAGS   := -O3 -Wall
+OFLAGS   := -O3 -Wall -fopenmp
 
-CC       := gcc
-CXX      := g++
+CC       := gcc-5
+CXX      := g++-5
 
 CFLAGS   := $(OFLAGS) -std=gnu11
 CXXFLAGS := $(OFLAGS) -std=gnu++11
 
-LIBS      = -lpthread
+LIBS     = #-lpthread
 
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = c11_atomic_counter
+TESTS = omp_atomic_counter # c11_atomic_counter
 
 all: $(TESTS)
 
