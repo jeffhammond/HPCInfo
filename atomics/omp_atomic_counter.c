@@ -38,8 +38,12 @@ static void * fight(void * input)
 
     uint64_t t0 = GetTimeBase();
     for (int i=0; i<count; i++) {
+#if 0
         #pragma omp atomic capture
         rval = counter++;
+#else
+        rval = __sync_fetch_and_add(&counter,1);
+#endif
     }
     uint64_t t1 = GetTimeBase();
 
