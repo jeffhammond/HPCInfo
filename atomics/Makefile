@@ -1,12 +1,12 @@
 OFLAGS   := -O3 -Wall
 
-CC       := gcc-5
-CXX      := g++-5
+CC       := gcc
+CXX      := g++
 
-CFLAGS   := $(OFLAGS) -std=c11
-CXXFLAGS := $(OFLAGS) -std=c++11
+CFLAGS   := $(OFLAGS) -std=gnu11
+CXXFLAGS := $(OFLAGS) -std=gnu++11
 
-LIBS      =
+LIBS      = -lpthread
 
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)

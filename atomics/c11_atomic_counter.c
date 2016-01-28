@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdint.h>
+#include <inttypes.h> /* PRIu64 */
+//#include <string.h>
 #include <assert.h>
 #include <pthread.h>
-#include <unistd.h>
+#include <unistd.h> /* sleep() */
 
 #ifdef __STDC_NO_ATOMICS__
 #error You need a real C11 compiler!
@@ -12,9 +14,15 @@
 #endif
 
 /* if this does not work, use Kaz's getticks() */
-#include "immintrin.h"
-static inline int64_t GetTimeBase(void) {
-    return __int64 _rdtsc(void);
+static inline uint64_t GetTimeBase(void)
+{
+#if defined(__x86_64__)
+  unsigned hi, lo;
+  __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
+  return ( (unsigned long long)lo)|( ((unsigned long long)hi)<<32 );
+#else
+#error GetTimeBase not available for your architecture.
+#endif
 }
 
 static int num_threads;
@@ -22,7 +30,6 @@ static pthread_t * pool;
 
 static pthread_barrier_t barrier;
 static _Atomic uint_fast64_t counter;
-static uint64_t slowcounter;
 
 static const int debug = 1;
 
@@ -41,12 +48,12 @@ static void * fight(void * input)
     int tid = get_thread_id();
 
     if (debug) {
-        printf("%d: before pthread_barrier 1 \n", tid);
+        printf("%d: before pthread_barrier_wait 1 \n", tid);
     }
-    rc = pthread_barrier(&barrier);
+    rc = pthread_barrier_wait(&barrier);
     assert(rc==0);
     if (debug) {
-        printf("%d: after  pthread_barrier 1 \n", tid);
+        printf("%d: after  pthread_barrier_wait 1 \n", tid);
         fflush(stdout);
     }
 
@@ -54,25 +61,27 @@ static void * fight(void * input)
 
     uint64_t rval;
 
-    int64_t t0 = GetTimeBase();
+    uint64_t t0 = GetTimeBase();
     for (int i=0; i<count; i++) {
         rval = atomic_fetch_add_explicit(&counter, 1, memory_order_relaxed);
     }
-    int64_t t1 = GetTimeBase();
+    uint64_t t1 = GetTimeBase();
 
     if (debug) {
-        printf("%d: before pthread_barrier 2 \n", tid);
+        printf("%d: before pthread_barrier_wait 2 \n", tid);
     }
-    rc = pthread_barrier(&barrier);
+    rc = pthread_barrier_wait(&barrier);
     assert(rc==0);
     if (debug) {
-        printf("%d: after  pthread_barrier 2 \n", tid);
+        printf("%d: after  pthread_barrier_wait 2 \n", tid);
         fflush(stdout);
     }
 
     int64_t dt = t1-t0;
-    printf("%2d: %d calls to %s took %llu cycles per call \n", tid, count,
-           "C11 atomic_fetch_add_explicit(memory_order_relaxed)", dt/count);
+    printf("%2d: %d calls to %s took %" PRIu64 " cycles per call (rval=%" PRIu64 ")\n",
+           tid, count,
+           "C11 atomic_fetch_add_explicit(memory_order_relaxed)",
+           dt/count, rval);
     fflush(stdout);
 
     pthread_exit(NULL);
@@ -124,9 +133,9 @@ int main(int argc, char * argv[])
         fflush(stdout);
     }
 
-    uint64_t atomic_load_explicit(&counter, memory_order_seq_cst);
+    uint64_t rval = atomic_load_explicit(&counter, memory_order_seq_cst);
 
-    printf("final value of counter is %llu \n", rval);
+    printf("final value of counter is %" PRIu64 " \n", rval);
 
     free(pool);
 
