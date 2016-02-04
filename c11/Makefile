@@ -1,11 +1,11 @@
-CC       = clang-3.6
-CFLAGS   = -g -O2 -std=c11
+CC       = gcc-5
+CFLAGS   = -O3 -Wall -std=c11
 LIBS     =
 
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = atomics threads
+TESTS = atomics ieee threads
 
 all: $(TESTS)
 
