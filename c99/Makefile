@@ -5,7 +5,7 @@ LIBS     =
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = restrict warn-stack array-restrict alias2d.o
+TESTS = arrays restrict warn-stack array-restrict alias2d.o
 
 all: $(TESTS)
 
