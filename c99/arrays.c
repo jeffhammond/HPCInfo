@@ -5,9 +5,9 @@
  * The first one looks more like the cast below.
  * The second format does not work as a cast below. */
 #if 1
-void print2(int m, int n, double (*A)[n])
+void print2(int m, int n, double (* const restrict A)[n])
 #else
-void print2(int m, int n, double A[][n])
+void print2(int m, int n, double (A[restrict])[n])
 #endif
 {
     for(int i=0; i<m; i++)
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     int m = (argc>1) ? atoi(argv[1]) : 10;
     int n = (argc>2) ? atoi(argv[2]) : 5;
 
-    double * A = (double*)malloc(m*n*sizeof(double));
+    double * restrict A = (double*)malloc(m*n*sizeof(double));
     for(int i=0; i<(m*n); i++)
         A[i] = (double)i;
 
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     print1(m,n,A);
     print2(m,n,(double (*)[n])A);
 
-    print1(m,n,(double*)B);
+    print1(m,n,(double * restrict)B);
     print2(m,n,B);
 
     free(B);
