@@ -1,11 +1,11 @@
-CC       = gcc-5
+CC       = clang-3.7
 CFLAGS   = -O3 -Wall -std=c11
 LIBS     =
 
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = atomics ieee threads
+TESTS = atomics ieee alloc # threads
 
 all: $(TESTS)
 
@@ -18,5 +18,6 @@ all: $(TESTS)
 clean:
 	-rm -f *.o
 	-rm -f $(TESTS)
+	-rm -rf *.dSYM
 
 

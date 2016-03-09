@@ -5,7 +5,7 @@
 #FTN     := ifort -free -std08
 #LIBS    :=
 # GCC
-FTN     := gfortran -ffree-form -fcoarray=single
+FTN     := gfortran-6 -ffree-form -fcoarray=single
 LIBS    := -lcaf_single
 
 FTNFLAGS = -O2
