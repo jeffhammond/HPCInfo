@@ -18,6 +18,16 @@ See the [UPC specification repo on Google Code](http://code.google.com/p/upc-spe
 
 [GWU UPC page](http://upc.gwu.edu/)
 
+### Examples
+
+This is an example with PRK Transpose.
+
+```
+numactl -m 1 upcrun -q -N 1 -n 120 -c 120 \
+-shared-heap 800M -shared-heap-max 15000M \
+./UPC/Transpose/transpose 10 $((60*320)) 32
+```
+
 ## Sample Programs 
 
 If you have a [Cray](https://github.com/jeffhammond/HPCInfo/wiki/Cray) machine and do ```module load PrgEnv-cray```, you can use the Makefile.
