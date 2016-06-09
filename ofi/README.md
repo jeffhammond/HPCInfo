@@ -35,11 +35,101 @@ See the [home page](http://ofiwg.github.io/libfabric/) for details.
 
 # Building stuff
 
-## Generic generic (sockets provider)
+## Generic (sockets provider)
 
+```sh
+../configure CC=clang \
+             --enable-sockets \
+             --prefix=$HOME/OFI/install-sockets
+```
 
-## Intel networks (i.e. PSM and PSM2 providers)
+## Intel Omni Path (PSM2 provider)
 
+### libfabric
+
+```sh
+../configure CC=icc \
+             --disable-sockets --enable-psm2 \
+             --prefix=$HOME/OFI/install-ofi-psm2
+```
+
+### MPICH
+
+```sh
+../configure CC=icc CXX=icpc FC=ifort F77=ifort \
+             --with-ofi=$HOME/OFI/install-ofi-psm2 \
+             --with-device=ch3:nemesis:ofi \
+             --prefix=$HOME/MPI/install-mpich-ofi-psm2 \
+```
+
+### Open-MPI
+
+```sh
+../configure CC=icc CXX=icpc FC=ifort \
+             --with-libfabric=/home/jrhammo/OFI/install-psm2 \
+             --with-slurm \
+             --prefix=/home/jrhammo/OpenMPI/install-ofi-psm2-slurm
+```
+
+I observed bugs in MPI-3 RMA when using PSM2 provided by CentOS package manager...
+
+#### PSM2
+
+1) Download [OPA-PSM2](https://github.com/01org/opa-psm2) from Github.
+
+2) Install [UUID](https://sourceforge.net/projects/libuuid/) from source (harder) or package manager (easier, but requires root).
+
+3) Hack OPA-PSM2's `buildflags.mak` something like the following, at least for Intel compilers on KNL.  Note that this is a kluge and a better solution is certainly possible.
+
+```sh
+diff --git a/buildflags.mak b/buildflags.mak
+index 06752c0..d770ed3 100644
+--- a/buildflags.mak
++++ b/buildflags.mak
+@@ -80,6 +80,10 @@ else
+	anerr := $(error Unknown Fortran compiler arch: ${FCARCH})
+endif # gfortran
++# JEFF
++CC=icc
++CCARCH=icc
++
+BASECFLAGS += $(BASE_FLAGS)
+LDFLAGS += $(BASE_FLAGS)
+ASFLAGS += $(BASE_FLAGS)
+@@ -88,6 +92,9 @@ LDFLAGS += -Wl,--version-script psm2_linker_script.map
+WERROR := -Werror
+INCLUDES := -I. -I$(top_srcdir)/include -I$(top_srcdir)/mpspawn
+-I$(top_srcdir)/include/$(os)-$(arch)
++# JEFF
++INCLUDES += -I$(HOME)/PSM2/deps/include
++
+BASECFLAGS +=-Wall $(WERROR)
+#
+@@ -126,6 +133,9 @@ else
+   $(error SSE4.2 compiler support required )
+endif
++# JEFF
++BASECFLAGS = -Wall -xMIC-AVX512 -g3
++
+ifneq (,${PSM_DEBUG})
+   BASECFLAGS += -O -g3 -DPSM_DEBUG -D_HFI_DEBUGGING -funit-at-a-time
+-Wp,-D_FORTIFY_SOURCE=2
+else
+@@ -147,11 +157,13 @@ endif
+BASECFLAGS += -fpic -fPIC -D_GNU_SOURCE
+-ifeq ($CC,gcc)
++ifeq (${CC},gcc)
+   BASECFLAGS += -funwind-tables
+endif
+-EXTRA_LIBS = -luuid
++# JEFF
++#EXTRA_LIBS = -luuid
++EXTRA_LIBS = -L$(HOME)/PSM2/deps/lib -luuid
+ifneq (,${PSM_VALGRIND})
+   CFLAGS += -DPSM_VALGRIND
+```
+
+4) Run Open-MPI with `LD_PRELOAD=$HOME/PSM2/opa-psm2/libpsm2.so` in your environment.
 
 ## Cray XC systems (uGNI provider for Aries)
 
@@ -154,7 +244,7 @@ See [Cray's docs](https://github.com/ofi-cray/libfabric-cray/wiki/Building-and-R
              --prefix=$HOME/MPI/install-ompi-ofi-gcc-gni-cori
 ```
 
-Unfortunately, this (above) leads to an `mpicc` that indicates support for IB Verbs, not OFI.
+Unfortunately, this (above) leads to an `mpicc` that indicates support for IB Verbs, not OFI, so I disabled everything unrelated as follows.  Of course, Open-MPI experts know better ways to select the underlying conduit, but I am not an Open-MPI expert.
 
 ```sh
 ../configure --with-libfabric=$HOME/OFI/install-ofi-gcc-gni-cori \
