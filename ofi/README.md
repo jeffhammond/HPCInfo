@@ -55,12 +55,26 @@ See the [home page](http://ofiwg.github.io/libfabric/) for details.
 
 ### MPICH
 
+Ch3 (git master):
+
 ```sh
 ../configure CC=icc CXX=icpc FC=ifort F77=ifort \
              --with-ofi=$HOME/OFI/install-ofi-psm2 \
              --with-device=ch3:nemesis:ofi \
              --prefix=$HOME/MPI/install-mpich-ofi-psm2 \
 ```
+
+Ch4 (dev/ch4/stable):
+
+```sh
+../configure CC=icc CXX=icpc FC=ifort F77=ifort \
+             --with-ofi=/home2/jrhammo/OFI/install-psm2 \
+             --with-libfabric=/home2/jrhammo/OFI/install-psm2 \
+             --with-device=ch4:ofi \
+             --prefix=/home2/jrhammo/MPICH/install-ch4-ofi-psm2
+```
+
+This is not working yet.
 
 ### Open-MPI
 
