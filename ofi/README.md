@@ -70,7 +70,7 @@ Ch4 (dev/ch4/stable):
 ../configure CC=icc CXX=icpc FC=ifort F77=ifort \
              --with-ofi=/home2/jrhammo/OFI/install-psm2 \
              --with-libfabric=/home2/jrhammo/OFI/install-psm2 \
-             --with-device=ch4:ofi \
+             --with-device=ch4:ofi --with-ch4-netmod-ofi-args=no-data \
              --prefix=/home2/jrhammo/MPICH/install-ch4-ofi-psm2
 ```
 
