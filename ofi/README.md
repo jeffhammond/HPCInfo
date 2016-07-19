@@ -74,8 +74,6 @@ Ch4 (dev/ch4/stable):
              --prefix=/home2/jrhammo/MPICH/install-ch4-ofi-psm2
 ```
 
-This is not working yet.
-
 ### Open-MPI
 
 ```sh
