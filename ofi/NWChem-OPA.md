@@ -84,7 +84,7 @@ Now build Casper:
 ```sh
 cd $NWCHEM_ROOT/casper/
 ./autogen.sh # if this fails, upgrade Autotools
-mkdir $NWCHEM_ROOT/casper/buid
+mkdir $NWCHEM_ROOT/casper/build
 cd $NWCHEM_ROOT/casper/build
 ../configure CC=$NWCHEM_ROOT/deps/bin/mpicc --prefix=$NWCHEM_ROOT/deps 
 make -j8 install
