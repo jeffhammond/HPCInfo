@@ -103,7 +103,7 @@ Now build ARMCI-MPI:
 ```sh
 cd $NWCHEM_ROOT/armci-mpi/
 ./autogen.sh # if this fails, upgrade Autotools
-mkdir $NWCHEM_ROOT/armci-mpi/buid
+mkdir $NWCHEM_ROOT/armci-mpi/build
 cd $NWCHEM_ROOT/armci-mpi/build
 ../configure MPICC=$NWCHEM_ROOT/deps/bin/mpicc MPIEXEC=$NWCHEM_ROOT/deps/bin/mpirun \
              --enable-win-allocate --enable-explicit-progress \
