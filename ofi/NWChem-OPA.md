@@ -32,7 +32,7 @@ unzip master.zip
 mv libfabric-master libfabric
 ```
 
-For Intel Omni Path, we use `--enable-psm2`.  For other networks, we need to do something else.  See `../configure --help` for details.
+For Intel Omni Path, we use `--enable-psm2`.  For Intel True Scale, use `--enable-psm` instead.  For other networks, we need to do something else.  See `../configure --help` for details.
 ```sh
 cd $NWCHEM_ROOT/libfabric/
 ./autogen.sh # if this fails, upgrade Autotools
