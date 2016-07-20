@@ -23,7 +23,7 @@ AUTOMAKE_VERSION=1.15
 If Git is installed, do this:
 ```sh
 cd $NWCHEM_ROOT
-git clone https://github.com/ofiwg/libfabric.git
+git clone --depth 10 https://github.com/ofiwg/libfabric.git
 ```
 If Git is not installed, do this:
 ```sh
