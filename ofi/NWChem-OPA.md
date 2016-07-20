@@ -123,6 +123,60 @@ export LD_PRELOAD=$NWCHEM_ROOT/deps/lib/libcasper.so
 
 ## NWChem
 
+Download NWChem from http://www.nwchem-sw.org/index.php/Download.  If PNNL's website is down, you can download https://github.com/jeffhammond/nwchem/archive/master.zip instead.
 
+However you get NWChem, please set `$NWCHEM_TOP` to its location.
+
+```
+export NWCHEM_TARGET=LINUX64
+export NWCHEM_MODULES=all
+export NWCHEM_TOP=${NWCHEM_ROOT}/nwchem
+
+export USE_MPI=y
+export ARMCI_NETWORK=ARMCI
+export EXTERNAL_ARMCI_PATH=${NWCHEM_ROOT}/deps
+
+# required for NWPW but not otherwise
+export USE_MPIF=y
+export USE_MPIF4=y
+
+MPI_DIR=${NWCHEM_ROOT}/deps
+export MPI_LIB="${MPI_DIR}/lib"
+export MPI_INCLUDE="${MPI_DIR}/include"
+
+# the following are not necessary if you use CC=mpicc, but that isn't not recommended
+MPICH_LIBS="-lmpifort -lmpi"
+SYS_LIBS="-ldl -lrt -lpthread -static-intel"
+export LIBMPI="-L${MPI_DIR}/lib -Wl,-rpath -Wl,${MPI_DIR}/lib ${MPICH_LIBS} ${SYS_LIBS}"
+
+export CC=icc
+export FC=ifort
+export F77=ifort
+export BLASOPT="-mkl=parallel -qopenmp"
+export USE_OPENMP=T
+```
+
+Now you can try to compiler NWChem...
+```
+cd $NWCHEM_TOP/src
+make nwchem_config
+make -j8
+```
+
+This may fail in one of two places.  If it fails in GA configure, do this:
+```
+cd $NWCHEM_TOP/src/tools/build
+../ga-5-4/configure --prefix=$NWCHEM_TOP/src/tools/install --with-tcgmsg --with-mpi \
+                    CC=$NWCHEM_ROOT/deps/bin/mpicc MPICC=$NWCHEM_ROOT/deps/bin/mpicc \
+                    CXX=$NWCHEM_ROOT/deps/bin/mpicxx MPICXX=$NWCHEM_ROOT/deps/bin/mpicxx \
+                    F77=$NWCHEM_ROOT/deps/bin/mpifort MPIF77=$NWCHEM_ROOT/deps/bin/mpifort \
+                    --with-armci=$NWCHEM_ROOT/deps \
+                    --enable-peigs --enable-underscoring --disable-mpi-tests \
+                    --without-scalapack --without-lapack --with-blas8=$BLASOPT
+make -j8 install
+```
+If this fails, email Jeff to debug.
+
+If NWChem fails to link, email to Jeff to debug.  It is likely something trivial to fix but not easy to enumerate in advance.
 
 # Running jobs
