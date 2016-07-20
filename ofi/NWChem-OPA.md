@@ -3,6 +3,7 @@
 Set this however you like.  It will be used by all of the remaining commands.
 ```sh
 export NWCHEM_ROOT=$HOME/NWCHEM
+mkdir $NWCHEM_ROOT
 ```
 
 ## Autotools
