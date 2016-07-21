@@ -159,7 +159,7 @@ export EXTERNAL_ARMCI_PATH=${NWCHEM_ROOT}/deps
 export USE_MPIF=y
 export USE_MPIF4=y
 
-MPI_DIR=${NWCHEM_ROOT}/deps
+MPI_DIR=${MPI_ROOT}
 export MPI_LIB="${MPI_DIR}/lib"
 export MPI_INCLUDE="${MPI_DIR}/include"
 
