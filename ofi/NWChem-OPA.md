@@ -130,7 +130,7 @@ make -j8 install
 
 At this point, it is prudent to verify ARMCI-MPI is working:
 ```sh
-make check MPIEXEC="$NWCHEM_ROOT/deps/bin/mpirun -n 2"
+make check MPIEXEC="$MPI_ROOT/bin/mpirun -n 2"
 ```
 
 You can try a second time with Casper active, but this might require you to run ARMCI-MPI tests manually to get the right number of MPI processes.  Skip this step if you are confused.
