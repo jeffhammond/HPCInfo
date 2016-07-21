@@ -43,7 +43,20 @@ cd $NWCHEM_ROOT/libfabric/build
 make -j8 install
 ```
 
-## MPICH
+## MPI
+
+Use Intel MPI for now.  The MPICH stuff will be useful when it is ready.
+
+### Intel MPI
+
+```
+export MPI_ROOT=$I_MPI_ROOT/intel64
+export MPICC=$MPI_ROOT/bin/mpiicc
+export MPICXX=$MPI_ROOT/bin/mpiicpc
+export MPIFC=$MPI_ROOT/bin/mpiifort
+```
+
+### MPICH
 
 If Git is installed, do this:
 ```sh
@@ -63,6 +76,10 @@ cd $NWCHEM_ROOT/mpich-ch4/build
              --with-device=ch4:ofi --with-ch4-netmod-ofi-args=no-data \
              --prefix=$NWCHEM_ROOT/deps 
 make -j8 install
+export MPI_ROOT=$NWCHEM_ROOT/deps
+export MPICC=$MPI_ROOT/bin/mpicc
+export MPICXX=$MPI_ROOT/bin/mpicxx
+export MPIFC=$MPI_ROOT/bin/mpifort
 ```
 
 ## Casper
@@ -86,7 +103,7 @@ cd $NWCHEM_ROOT/casper/
 ./autogen.sh # if this fails, upgrade Autotools
 mkdir $NWCHEM_ROOT/casper/build
 cd $NWCHEM_ROOT/casper/build
-../configure CC=$NWCHEM_ROOT/deps/bin/mpicc --prefix=$NWCHEM_ROOT/deps 
+../configure CC=$MPICC --prefix=$NWCHEM_ROOT/deps 
 make -j8 install
 ```
 
@@ -105,7 +122,7 @@ cd $NWCHEM_ROOT/armci-mpi/
 ./autogen.sh # if this fails, upgrade Autotools
 mkdir $NWCHEM_ROOT/armci-mpi/build
 cd $NWCHEM_ROOT/armci-mpi/build
-../configure MPICC=$NWCHEM_ROOT/deps/bin/mpicc MPIEXEC=$NWCHEM_ROOT/deps/bin/mpirun \
+../configure MPICC=$MPICC MPIEXEC=$MPI_ROOT/bin/mpirun \
              --enable-win-allocate --enable-explicit-progress \
              --prefix=$NWCHEM_ROOT/deps
 make -j8 install
@@ -120,7 +137,7 @@ You can try a second time with Casper active, but this might require you to run 
 ```sh
 export CSP_NG=1
 export LD_PRELOAD=$NWCHEM_ROOT/deps/lib/libcasper.so
-make check MPIEXEC="$NWCHEM_ROOT/deps/bin/mpirun -n 4 -genv CSP_NG 1 -genv LD_PRELOAD $NWCHEM_ROOT/deps/lib/libcasper.so"
+make check MPIEXEC="$MPI_ROOT/bin/mpirun -n 4 -genv CSP_NG 1 -genv LD_PRELOAD $NWCHEM_ROOT/deps/lib/libcasper.so"
 ```
 
 ## NWChem
@@ -169,9 +186,9 @@ This may fail in one of two places.  If it fails in GA configure, do this:
 ```sh
 cd $NWCHEM_TOP/src/tools/build
 ../ga-5-4/configure --prefix=$NWCHEM_TOP/src/tools/install --with-tcgmsg --with-mpi \
-                    CC=$NWCHEM_ROOT/deps/bin/mpicc MPICC=$NWCHEM_ROOT/deps/bin/mpicc \
-                    CXX=$NWCHEM_ROOT/deps/bin/mpicxx MPICXX=$NWCHEM_ROOT/deps/bin/mpicxx \
-                    F77=$NWCHEM_ROOT/deps/bin/mpifort MPIF77=$NWCHEM_ROOT/deps/bin/mpifort \
+                    CC=$MPICC MPICC=$MPICC \
+                    CXX=$MPICXX MPICXX=$MPICXX \
+                    F77=$MPIFC MPIF77=$MPIFC \
                     --with-armci=$NWCHEM_ROOT/deps \
                     --enable-peigs --enable-underscoring --disable-mpi-tests \
                     --without-scalapack --without-lapack --with-blas8=$BLASOPT
