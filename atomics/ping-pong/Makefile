@@ -1,6 +1,6 @@
 OFLAGS   := -O3 -fopenmp -Wall
 
-#OFLAGS   += -DSEQUENTIAL_CONSISTENCY
+OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
 #CC       := gcc-6
 #CXX      := g++-6

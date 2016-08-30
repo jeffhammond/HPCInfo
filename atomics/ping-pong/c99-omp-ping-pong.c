@@ -9,13 +9,14 @@
 #endif
 
 #ifdef SEQUENTIAL_CONSISTENCY
-#define OMP_ATOMIC_LOAD  _Pragma("omp atomic seq_cst")
-#define OMP_ATOMIC_STORE _Pragma("omp atomic seq_cst")
+#define OMP_ATOMIC_LOAD  _Pragma("omp atomic read seq_cst")
+#define OMP_ATOMIC_STORE _Pragma("omp atomic write seq_cst")
+#define OMP_FLUSH
 #else
 #define OMP_ATOMIC_LOAD  _Pragma("omp atomic read")
 #define OMP_ATOMIC_STORE _Pragma("omp atomic write")
+#define OMP_FLUSH        _Pragma("omp flush")
 #endif
-#define OMP_FLUSH _Pragma("omp flush")
 
 int main(int argc, char * argv[])
 {
