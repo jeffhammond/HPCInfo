@@ -13,23 +13,35 @@
 # error No OpenMP support!
 #endif
 
+#ifdef SEQUENTIAL_CONSISTENCY
+auto load_model  = std::memory_order_seq_cst;
+auto store_model = std::memory_order_seq_cst;
+#else
+auto load_model  = std::memory_order_acquire;
+auto store_model = std::memory_order_release;
+#endif
+
 int main(int argc, char * argv[])
 {
-    /// ensure we use an even number of threads
-    {
-        int nt = omp_get_max_threads();
-        if (nt == 1) {
-            std::cout << "You must use more than " << nt << " threads" << std::endl;
-            abort();
-        }
-        if (nt % 2 != 0) omp_set_num_threads(nt-1);
+    int nt = omp_get_max_threads();
 #if 1
-        /// temporary limitation
-        if (nt != 2) omp_set_num_threads(2);
+    if (nt != 2) omp_set_num_threads(2);
+#else
+    if (nt < 2)      omp_set_num_threads(2);
+    if (nt % 2 != 0) omp_set_num_threads(nt-1);
 #endif
-    }
 
     int iterations = (argc>1) ? atoi(argv[1]) : 100;
+
+    std::cout << "thread ping-pong benchmark\n";
+    std::cout << "num threads  = " << nt << "\n";
+    std::cout << "iterations   = " << iterations << "\n";
+#ifdef SEQUENTIAL_CONSISTENCY
+    std::cout << "memory model = " << "seq_cst" << "\n";
+#else
+    std::cout << "memory model = " << "acq-rel" << "\n";
+#endif
+    std::cout << std::endl;
 
     std::atomic<int> left_ready  = {-1};
     std::atomic<int> right_ready = {-1};
@@ -55,23 +67,23 @@ int main(int argc, char * argv[])
 
                 /// send to left
                 left_payload = i;
-                left_ready.store(i, std::memory_order_release);
+                left_ready.store(i, store_model);
 
                 /// recv from right
-                while (i != right_ready.load(std::memory_order_acquire));
+                while (i != right_ready.load(load_model));
                 //std::cout << i << ": left received " << right_payload << std::endl;
                 junk += right_payload;
 
             } else {
 
                 /// recv from left
-                while (i != left_ready.load(std::memory_order_acquire));
+                while (i != left_ready.load(load_model));
                 //std::cout << i << ": right received " << left_payload << std::endl;
                 junk += left_payload;
 
                 ///send to right
                 right_payload = i;
-                right_ready.store(i, std::memory_order_release);
+                right_ready.store(i, store_model);
 
             }
 

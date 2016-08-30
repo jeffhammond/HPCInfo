@@ -12,23 +12,35 @@
 # error No OpenMP support!
 #endif
 
+#ifdef SEQUENTIAL_CONSISTENCY
+int load_model  = memory_order_seq_cst;
+int store_model = memory_order_seq_cst;
+#else
+int load_model  = memory_order_acquire;
+int store_model = memory_order_release;
+#endif
+
 int main(int argc, char * argv[])
 {
-    /// ensure we use an even number of threads
-    {
-        int nt = omp_get_max_threads();
-        if (nt == 1) {
-            printf("You must use more than %d threads\n", nt);
-            abort();
-        }
-        if (nt % 2 != 0) omp_set_num_threads(nt-1);
+    int nt = omp_get_max_threads();
 #if 1
-        /// temporary limitation
-        if (nt != 2) omp_set_num_threads(2);
+    if (nt != 2) omp_set_num_threads(2);
+#else
+    if (nt < 2)      omp_set_num_threads(2);
+    if (nt % 2 != 0) omp_set_num_threads(nt-1);
 #endif
-    }
 
     int iterations = (argc>1) ? atoi(argv[1]) : 100;
+
+    printf("thread ping-pong benchmark\n");
+    printf("num threads  = %d\n", nt);
+    printf("iterations   = %d\n", iterations);
+#ifdef SEQUENTIAL_CONSISTENCY
+    printf("memory model = %s\n", "seq_cst");
+#else
+    printf("memory model = %s\n", "acq-rel");
+#endif
+    fflush(stdout);
 
     _Atomic int left_ready  = -1;
     _Atomic int right_ready = -1;
@@ -54,23 +66,23 @@ int main(int argc, char * argv[])
 
                 /// send to left
                 left_payload = i;
-                atomic_store_explicit( &left_ready, i, memory_order_release);
+                atomic_store_explicit( &left_ready, i, store_model);
 
                 /// recv from right
-                while (i != atomic_load_explicit( &right_ready, memory_order_acquire));
+                while (i != atomic_load_explicit( &right_ready, load_model));
                 //printf("%d: left received %d\n", i, right_payload);
                 junk += right_payload;
 
             } else {
 
                 /// recv from left
-                while (i != atomic_load_explicit( &left_ready, memory_order_acquire));
+                while (i != atomic_load_explicit( &left_ready, load_model));
                 //printf("%d: right received %d\n", i, left_payload);
                 junk += left_payload;
 
                 ///send to right
                 right_payload = i;
-                atomic_store_explicit( &right_ready, i, memory_order_release);
+                atomic_store_explicit( &right_ready, i, store_model);
 
             }
 
