@@ -1,5 +1,7 @@
 OFLAGS   := -O3 -fopenmp -Wall
 
+#OFLAGS   += -DSEQUENTIAL_CONSISTENCY
+
 #CC       := gcc-6
 #CXX      := g++-6
 
@@ -21,8 +23,7 @@ LDFLAGS  = $(OFLAGS)
 TESTS = \
 	c11-ping-pong   \
 	cxx11-ping-pong \
-	omp3-ping-pong  \
-	omp4-ping-pong
+	c99-omp-ping-pong
 
 all: $(TESTS)
 

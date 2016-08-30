@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
     int iterations = (argc>1) ? atoi(argv[1]) : 100;
 
     std::cout << "thread ping-pong benchmark\n";
-    std::cout << "num threads  = " << nt << "\n";
+    std::cout << "num threads  = " << omp_get_max_threads() << "\n";
     std::cout << "iterations   = " << iterations << "\n";
 #ifdef SEQUENTIAL_CONSISTENCY
     std::cout << "memory model = " << "seq_cst" << "\n";

@@ -1,10 +1,6 @@
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) && !defined(__STDC_NO_ATOMICS__)
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-#include <stdatomic.h>
 
 #ifdef _OPENMP
 # include <omp.h>
@@ -13,11 +9,11 @@
 #endif
 
 #ifdef SEQUENTIAL_CONSISTENCY
-int load_model  = memory_order_seq_cst;
-int store_model = memory_order_seq_cst;
+#define OMP_ATOMIC_LOAD  _Pragma("omp atomic seq_cst")
+#define OMP_ATOMIC_STORE _Pragma("omp atomic seq_cst")
 #else
-int load_model  = memory_order_acquire;
-int store_model = memory_order_release;
+#define OMP_ATOMIC_LOAD  _Pragma("omp atomic read")
+#define OMP_ATOMIC_STORE _Pragma("omp atomic write")
 #endif
 
 int main(int argc, char * argv[])
@@ -42,8 +38,8 @@ int main(int argc, char * argv[])
 #endif
     fflush(stdout);
 
-    _Atomic int left_ready  = -1;
-    _Atomic int right_ready = -1;
+    int left_ready  = -1;
+    int right_ready = -1;
 
     int left_payload  = 0;
     int right_payload = 0;
@@ -66,23 +62,35 @@ int main(int argc, char * argv[])
 
                 /// send to left
                 left_payload = i;
-                atomic_store_explicit( &left_ready, i, store_model);
+                OMP_ATOMIC_STORE
+                left_ready = i;
 
                 /// recv from right
-                while (i != atomic_load_explicit( &right_ready, load_model));
+                while (1) {
+                    int temp;
+                    OMP_ATOMIC_LOAD
+                    temp = i;
+                    if (temp == right_ready) break;
+                }
                 //printf("%d: left received %d\n", i, right_payload);
                 junk += right_payload;
 
             } else {
 
                 /// recv from left
-                while (i != atomic_load_explicit( &left_ready, load_model));
+                while (1) {
+                    int temp;
+                    OMP_ATOMIC_LOAD
+                    temp = i;
+                    if (temp == left_ready) break;
+                }
                 //printf("%d: right received %d\n", i, left_payload);
                 junk += left_payload;
 
                 ///send to right
                 right_payload = i;
-                atomic_store_explicit( &right_ready, i, store_model);
+                OMP_ATOMIC_STORE
+                right_ready = i;
 
             }
 
@@ -104,7 +112,3 @@ int main(int argc, char * argv[])
 
     return 0;
 }
-
-#else  // C11
-#error You need C11 atomics for this test!
-#endif // C11
