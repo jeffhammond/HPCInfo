@@ -1,12 +1,19 @@
 OFLAGS   := -O3 -fopenmp -Wall
 
-CC       := gcc-6
-CXX      := g++-6
+#CC       := gcc-6
+#CXX      := g++-6
 
-CFLAGS   := $(OFLAGS) -std=gnu11
-CXXFLAGS := $(OFLAGS) -std=gnu++14
+CC        :=clang-3.8
+CXX       :=clang++-3.8
+# Mac clang-3.x only
+OMPFLAGS = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
+OMPLIBS  = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5 -L.
 
-LIBS     = #-lpthread
+
+CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
+CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++14
+
+LIBS     = $(OMPLIBS)
 
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
