@@ -84,8 +84,8 @@ int main(int argc, char * argv[])
         double dt = t1-t0;
         #pragma omp critical
         {
-            printf("total time elapsed = %lf\n", dt);
-            printf("time per iteration = %lf\n", dt/iterations);
+            printf("total time elapsed = %e\n", dt);
+            printf("time per iteration = %e\n", dt/iterations);
             printf("%d\n", junk);
         }
     }

@@ -85,8 +85,8 @@ int main(int argc, char * argv[])
         std::chrono::duration<double> dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1-t0);
         #pragma omp critical
         {
-            std::cout << "total time elapsed = " << dt.count()  << std::endl;
-            std::cout << "time per iteration = " << dt.count()/iterations  << std::endl;
+            std::cout << "total time elapsed = " << dt.count()  << "\n";
+            std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
             std::cout << junk << std::endl;
         }
     }
