@@ -15,6 +15,7 @@
 #define OMP_ATOMIC_LOAD  _Pragma("omp atomic read")
 #define OMP_ATOMIC_STORE _Pragma("omp atomic write")
 #endif
+#define OMP_FLUSH _Pragma("omp flush")
 
 int main(int argc, char * argv[])
 {
@@ -67,6 +68,7 @@ int main(int argc, char * argv[])
 
                 /// recv from right
                 while (1) {
+                    OMP_FLUSH
                     int temp;
                     OMP_ATOMIC_LOAD
                     temp = i;
@@ -79,6 +81,7 @@ int main(int argc, char * argv[])
 
                 /// recv from left
                 while (1) {
+                    OMP_FLUSH
                     int temp;
                     OMP_ATOMIC_LOAD
                     temp = i;
