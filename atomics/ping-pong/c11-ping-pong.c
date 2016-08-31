@@ -30,7 +30,7 @@ int main(int argc, char * argv[])
     if (nt % 2 != 0) omp_set_num_threads(nt-1);
 #endif
 
-    int iterations = (argc>1) ? atoi(argv[1]) : 100;
+    int iterations = (argc>1) ? atoi(argv[1]) : 1000000;
 
     printf("thread ping-pong benchmark\n");
     printf("num threads  = %d\n", omp_get_max_threads());
@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
         double dt = t1-t0;
         #pragma omp critical
         {
-            printf("total time elapsed = %e\n", dt);
+            printf("total time elapsed = %lf\n", dt);
             printf("time per iteration = %e\n", dt/iterations);
             printf("%d\n", junk);
         }
