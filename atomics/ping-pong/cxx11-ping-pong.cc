@@ -31,15 +31,15 @@ int main(int argc, char * argv[])
     if (nt % 2 != 0) omp_set_num_threads(nt-1);
 #endif
 
-    int iterations = (argc>1) ? atoi(argv[1]) : 100;
+    int iterations = (argc>1) ? atoi(argv[1]) : 1000000;
 
     std::cout << "thread ping-pong benchmark\n";
     std::cout << "num threads  = " << omp_get_max_threads() << "\n";
     std::cout << "iterations   = " << iterations << "\n";
 #ifdef SEQUENTIAL_CONSISTENCY
-    std::cout << "memory model = " << "seq_cst" << "\n";
+    std::cout << "memory model = " << "seq_cst";
 #else
-    std::cout << "memory model = " << "acq-rel" << "\n";
+    std::cout << "memory model = " << "acq-rel";
 #endif
     std::cout << std::endl;
 
@@ -97,7 +97,7 @@ int main(int argc, char * argv[])
         std::chrono::duration<double> dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1-t0);
         #pragma omp critical
         {
-            std::cout << "total time elapsed = " << dt.count()  << "\n";
+            std::cout << "total time elapsed = " << dt.count() << "\n";
             std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
             std::cout << junk << std::endl;
         }
