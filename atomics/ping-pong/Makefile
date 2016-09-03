@@ -38,12 +38,11 @@ LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
 TESTS = cxx11-ping-pong.$(COMPILER) \
-	c99-omp-ping-pong.$(COMPILER)
+	c99-omp-ping-pong.$(COMPILER) \
+	c11-ping-pong.$(COMPILER)
 
 ifeq ($(COMPILER),gcc)
 TESTS += gcc-ping-pong.$(COMPILER)
-else
-TESTS += c11-ping-pong.$(COMPILER)
 endif
 
 all: $(TESTS)

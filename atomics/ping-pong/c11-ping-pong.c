@@ -1,3 +1,7 @@
+#if defined(__GNUC__) && (__GNUC__ <= 6)
+#error GCC will not compile this code because of "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65467"
+#else
+
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) && !defined(__STDC_NO_ATOMICS__)
 
 #include <stdio.h>
@@ -108,3 +112,5 @@ int main(int argc, char * argv[])
 #else  // C11
 #error You need C11 atomics for this test!
 #endif // C11
+
+#endif // GCC <= 6
