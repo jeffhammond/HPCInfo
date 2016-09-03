@@ -1,4 +1,4 @@
-#if defined(__GNUC__) && (__GNUC__ > 5) /* Guessing GCC 5+ is required here*/
+#if defined(__GNUC__) && (__GNUC__ >= 5) /* Guessing GCC 5+ is required here*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -103,6 +103,6 @@ int main(int argc, char * argv[])
     return 0;
 }
 
-#else  // C11
-#error You need C11 atomics for this test!
-#endif // C11
+#else  // GCC 5+
+#error You need GCC 5+
+#endif // GCC 5+
