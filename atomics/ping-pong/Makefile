@@ -1,4 +1,7 @@
-OFLAGS   := -O3 -fopenmp -Wall -g3 -Wl,-pie
+OFLAGS   := -O3 -fopenmp -Wall -fPIC
+
+# Apple debug 
+# OFLAGS += -g3 -Wl,-pie
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
