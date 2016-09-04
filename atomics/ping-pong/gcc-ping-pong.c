@@ -1,4 +1,7 @@
-#if defined(__GNUC__) && (__GNUC__ >= 5) /* Guessing GCC 5+ is required here*/
+/* Guessing what compilers are sufficient here... */
+#if (defined(__GNUC__) && (__GNUC__ >= 5)) || \
+    (defined(__clang__) && defined(__clang_major__) && (__clang_major__ >= 3)) || \
+    (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 1400))
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,5 +107,5 @@ int main(int argc, char * argv[])
 }
 
 #else  // GCC 5+
-#error You need GCC 5+
+#error Your compiler probably does not support __atomic functions.
 #endif // GCC 5+
