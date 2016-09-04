@@ -1,4 +1,5 @@
-#if defined(__GNUC__) && (__GNUC__ <= 6)
+#if !defined(__llvm__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && \
+     defined(__GNUC__) && (__GNUC__ <= 6)
 #error GCC will not compile this code because of "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65467"
 #else
 
