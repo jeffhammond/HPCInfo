@@ -3,7 +3,10 @@
 #error GCC will not compile this code because of "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65467"
 #else
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) && !defined(__STDC_NO_ATOMICS__)
+/* Intel compiler does not support _Atomic hence defines __STDC_NO_ATOMICS__,
+ * but it supports the atomic_<integer> API. */
+#if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)) && \
+    (!defined(__STDC_NO_ATOMICS__) || (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 1600)))
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,8 +50,8 @@ int main(int argc, char * argv[])
 #endif
     fflush(stdout);
 
-    _Atomic int left_ready  = -1;
-    _Atomic int right_ready = -1;
+    atomic_int left_ready  = ATOMIC_VAR_INIT(-1);
+    atomic_int right_ready = ATOMIC_VAR_INIT(-1);
 
     int left_payload  = 0;
     int right_payload = 0;
