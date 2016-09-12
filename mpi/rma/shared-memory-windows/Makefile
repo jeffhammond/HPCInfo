@@ -1,5 +1,5 @@
-CC      = mpicc
-CFLAGS  = -g -O2 -std=c99 -Wall -Werror
+CC      := mpicc
+CFLAGS  := -g -O2 -std=c99 -Wall -Werror
 
 LD      = $(CC)
 LDFLAGS = $(CFLAGS)

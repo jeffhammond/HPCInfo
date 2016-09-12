@@ -1,7 +1,7 @@
 OFLAGS   := -O3 -fopenmp -Wall -fPIC
 
 # Apple debug 
-# OFLAGS += -g3 -Wl,-pie
+ OFLAGS += -g3 -Wl,-pie
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
@@ -42,7 +42,14 @@ TESTS = cxx11-ping-pong.$(COMPILER) \
 	c11-ping-pong.$(COMPILER) \
 	gcc-ping-pong.$(COMPILER)
 
+ASM =   cxx11-ping-pong.$(COMPILER).s \
+	c99-omp-ping-pong.$(COMPILER).s \
+	c11-ping-pong.$(COMPILER).s \
+	gcc-ping-pong.$(COMPILER).s
+
 all: $(TESTS)
+
+asm: $(ASM)
 
 # binaries
 
@@ -62,11 +69,13 @@ all: $(TESTS)
 
 clean:
 	-rm -f *.o
+	-rm -f *.s
 	-rm -rf *.dSYM
 	-rm -f *.dwarf
 	-rm -f *.optrpt
 
 realclean: clean
+	-rm -f a.out
 	-rm -f *.gcc
 	-rm -f *.clang
 	-rm -f *.icc
