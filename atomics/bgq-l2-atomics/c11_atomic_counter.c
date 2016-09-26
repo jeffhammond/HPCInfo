@@ -42,7 +42,7 @@ static pthread_barrier_t barrier;
 #endif
 
 #if 0
-static _Atomic uint_fast64_t counter;
+static atomic_uint_fast64_t counter;
 #else
 static uint64_t counter;
 #endif
