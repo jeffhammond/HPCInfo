@@ -67,11 +67,10 @@ void * slowfight(void * input)
 
     int count = 1000000;
 
-    uint64_t rval;
-
     uint64_t t0 = GetTimeBase();
-    for (int i=0; i<count; i++)
-        rval = Fetch_and_Add(&(slowcounter.atom), 1);
+    for (int i=0; i<count; i++) {
+        volatile uint64_t rval = Fetch_and_Add(&(slowcounter.atom), 1);
+    }
     uint64_t t1 = GetTimeBase();
 
     if (debug) 
@@ -106,11 +105,10 @@ void * fight(void * input)
 
     int count = 1000000;
 
-    uint64_t rval;
-
     uint64_t t0 = GetTimeBase();
-    for (int i=0; i<count; i++)
-        rval = L2_AtomicLoadIncrement(&(counter.atom));
+    for (int i=0; i<count; i++) {
+        volatile uint64_t rval = L2_AtomicLoadIncrement(&(counter.atom));
+    }
     uint64_t t1 = GetTimeBase();
 
     if (debug) 
@@ -139,7 +137,8 @@ int main(int argc, char * argv[])
     //printf("sizeof(BGQ_Atomic64_t) = %zu \n", sizeof(BGQ_Atomic64_t) );
 
     /* this "activates" the L2 atomic data structures */
-    Kernel_L2AtomicsAllocate(&counter, sizeof(BGQ_Atomic64_t) );
+    uint64_t rc64 = Kernel_L2AtomicsAllocate(&counter, sizeof(BGQ_Atomic64_t) );
+    assert(rc64==0);
 
     L2_AtomicStore(&(counter.atom), 0);
     out64_sync(&(counter.atom), 0);
@@ -180,7 +179,7 @@ int main(int argc, char * argv[])
         fflush(stdout);
     }
 
-    uint64_t rval = L2_AtomicLoad(&(counter.atom));
+    volatile uint64_t rval = L2_AtomicLoad(&(counter.atom));
     printf("final value of counter is %llu \n", rval);
 
     /**************************************************/

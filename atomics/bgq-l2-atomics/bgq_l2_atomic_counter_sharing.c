@@ -37,13 +37,14 @@ int main(int argc, char * argv[])
     uint64_t * l2_counters = NULL;
     int rc = posix_memalign((void**)&l2_counters, 2*1024*1024, n * sizeof(uint64_t) ); 
     assert(rc==0 && l2_counters != NULL);
-    Kernel_L2AtomicsAllocate(l2_counters, n * sizeof(uint64_t) );
+    uint64_t rc64 = Kernel_L2AtomicsAllocate(l2_counters, n * sizeof(uint64_t) );
+    assert(rc64==0);
 
     for (int i=0; i<n; i++) {
         L2_AtomicStore(&(l2_counters[i]), 0);
     }
 
-    #pragma omp parallel
+    #pragma omp parallel shared(l2_counters)
     {
         int me = omp_get_thread_num();
         int jmax = n/omp_get_num_threads();
@@ -63,7 +64,7 @@ int main(int argc, char * argv[])
 
     for (int i=0; i<n; i++) {
         uint64_t rval = L2_AtomicLoad(&(l2_counters[i]));
-        printf("final value of counter is %llu \n", rval);
+        printf("l2_counter[%d]=%llu\n", i, rval);
     }
 
     return 0;   
