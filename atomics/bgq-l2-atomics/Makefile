@@ -1,5 +1,5 @@
 ifeq ($(TARGET),bgq)
-OFLAGS   = -O3 -qsmp=omp
+OFLAGS   = -g3 -O3 -qsmp=omp
 CC       = mpixlc_r 
 CXX      = mpixlcxx_r
 CFLAGS   = $(OFLAGS) -qlanglvl=extc99
