@@ -45,19 +45,20 @@ int main(int argc, char * argv[])
 
     #pragma omp parallel
     {
-        {
+        int me = omp_get_thread_num();
+        int jmax = n/omp_get_num_threads();
+        for (int j=0; j<jmax; j++) {
+            #pragma omp barrier
             uint64_t t0 = GetTimeBase();
             for (int i=0; i<count; i++) {
-                uint64_t rval = L2_AtomicLoadIncrement(&(l2_counters[i]));
+                uint64_t rval = L2_AtomicLoadIncrement(&(l2_counters[j*me]));
             }
+            #pragma omp barrier
             uint64_t t1 = GetTimeBase();
+            printf("threads = %d, stride = %d, ticks = %llu \n",
+                   omp_get_num_threads(), j, t1-t0);
+            fflush(stdout);
         }
-        /*{
-            uint64_t t0 = GetTimeBase();
-            for (int i=0; i<count; i++)
-                rval = Fetch_and_Add(&(slowcounter.atom), 1);
-            uint64_t t1 = GetTimeBase();
-        }*/
     }
 
     for (int i=0; i<n; i++) {
