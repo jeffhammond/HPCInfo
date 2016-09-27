@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
             #pragma omp barrier
             uint64_t t0 = GetTimeBase();
             for (int i=0; i<count; i++) {
-                uint64_t rval = L2_AtomicLoadIncrement(&(l2_counters[j*me]));
+                L2_AtomicLoadIncrement(&(l2_counters[j*me]));
             }
             #pragma omp barrier
             uint64_t t1 = GetTimeBase();
