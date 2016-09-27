@@ -17,7 +17,7 @@ LIBS     = #-lpthread
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = omp_atomic_counter # c11_atomic_counter
+TESTS = omp_atomic_counter bgq_l2_atomic_counter_sharing # c11_atomic_counter
 
 all: $(TESTS)
 
