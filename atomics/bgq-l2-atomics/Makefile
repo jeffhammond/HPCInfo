@@ -1,10 +1,16 @@
+ifeq ($(TARGET),bgq)
+OFLAGS   = -O3 -qsmp=omp
+CC       = mpixlc_r 
+CXX      = mpixlcxx_r
+CFLAGS   = $(OFLAGS) -qlanglvl=extc99
+CXXFLAGS = $(OFLAGS) -qlanglvl=extended0x
+else
 OFLAGS   := -O3 -Wall -fopenmp
-
 CC       := gcc-5
 CXX      := g++-5
-
 CFLAGS   := $(OFLAGS) -std=gnu11
 CXXFLAGS := $(OFLAGS) -std=gnu++11
+endif
 
 LIBS     = #-lpthread
 
