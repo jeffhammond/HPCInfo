@@ -32,8 +32,8 @@ CC       := false
 CXX      := false
 endif
 
-CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
-CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
+CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=c11
+CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=c++11
 
 LIBS     = $(OMPLIBS)
 
