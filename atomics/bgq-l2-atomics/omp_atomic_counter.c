@@ -10,6 +10,13 @@
 # error No OpenMP support!
 #endif
 
+#if defined(__bgq__)
+#include <hwi/include/common/bgq_alignment.h>
+#include <hwi/include/bqc/A2_inlines.h>
+#include <spi/include/kernel/memory.h>
+#include <spi/include/l2/barrier.h>
+#include <spi/include/l2/atomic.h>
+#else
 /* if this does not work, use Kaz's getticks() */
 static inline uint64_t GetTimeBase(void)
 {
@@ -21,51 +28,37 @@ static inline uint64_t GetTimeBase(void)
 #error GetTimeBase not available for your architecture.
 #endif
 }
-
-static uint64_t counter;
-
-static const int debug = 1;
-
-static void * fight(void * input)
-{
-    int tid = omp_get_thread_num();
-
-    #pragma omp barrier
-
-    const int count = 1000000;
-
-    uint64_t rval;
-
-    uint64_t t0 = GetTimeBase();
-    for (int i=0; i<count; i++) {
-#if 0
-        #pragma omp atomic capture
-        rval = counter++;
-#else
-        rval = __sync_fetch_and_add(&counter,1);
 #endif
-    }
-    uint64_t t1 = GetTimeBase();
-
-    #pragma omp barrier
-
-    int64_t dt = t1-t0;
-    printf("%2d: %d calls to %s took %" PRIu64 " cycles per call (rval=%" PRIu64 ")\n",
-           tid, count,
-           "OpenMP atomic capture fetch-and-inc",
-           dt/count, rval);
-    fflush(stdout);
-
-    return NULL;
-}
 
 int main(int argc, char * argv[])
 {
+
+    int count = (argc>1) ? atoi(argv[1]) : 1000000;
+
     printf("OpenMP counter test using %d threads \n", omp_get_max_threads() );
+
+    uint64_t counter;
 
     #pragma omp parallel
     {
-        fight(NULL);
+        int tid = omp_get_thread_num();
+
+        uint64_t rval;
+
+        #pragma omp barrier
+        uint64_t t0 = GetTimeBase();
+        for (int i=0; i<count; i++) {
+            rval = __sync_fetch_and_add(&counter,1);
+        }
+        #pragma omp barrier
+        uint64_t t1 = GetTimeBase();
+
+        int64_t dt = t1-t0;
+        printf("%2d: %d calls to %s took %" PRIu64 " cycles per call (rval=%" PRIu64 ")\n",
+               tid, count,
+               "__sync_fetch_and_add",
+               dt/count, rval);
+        fflush(stdout);
     }
     uint64_t rval = counter;
 
