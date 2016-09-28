@@ -1,5 +1,10 @@
 OFLAGS   := -O3 -fopenmp -Wall -fPIC
 
+# 2MB and 1GB mmap flags require Linux 3.8 or later.
+#OFLAGS += -DLINUX_MAJOR=3 -DLINUX_MINOR=8
+#UNAME := $(shell uname -r)
+#OFLAGS += -DLINUX_MAJOR=${LINUX_MAJOR} -DLINUX_MINOR=${LINUX_MINOR}
+
 # Apple debug 
 # OFLAGS += -g3 -Wl,-pie
 
@@ -35,17 +40,15 @@ LIBS     = $(OMPLIBS)
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS =
+TESTS = huge-alloc.o
 
 all: $(TESTS)
 
-# binaries
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 %.x: %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
-
-%.x: %.cc
-	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
