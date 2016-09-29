@@ -7,6 +7,7 @@ OFLAGS   := -O3 -fopenmp -Wall -fPIC
 
 # Apple debug 
 # OFLAGS += -g3 -Wl,-pie
+OFLAGS += -g3
 
 ifndef COMPILER
     COMPILER=gcc
@@ -40,7 +41,7 @@ LIBS     = $(OMPLIBS)
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = huge-alloc.o
+TESTS = test-huge-alloc.x
 
 all: $(TESTS)
 
@@ -49,6 +50,9 @@ all: $(TESTS)
 
 %.x: %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
+
+test-huge-alloc.x: test-huge-alloc.c huge-alloc.h huge-alloc.o
+	$(CC) $(CFLAGS) $< huge-alloc.o $(LIBS) -o $@
 
 clean:
 	-rm -f *.o

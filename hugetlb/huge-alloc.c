@@ -112,6 +112,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                            MAP_HUGE_1GB                /* 1G huge pages       */
 #endif
                            MAP_PRIVATE |               /* not shared memory   */
+                           MAP_NORESERVE |             /* do not reserve swap */
                            MAP_ANONYMOUS |             /* no file backing     */ 
                            MAP_POPULATE,               /* pre-fault pages     */
                            -1, 0);                     /* ignored (anonymous) */
@@ -129,6 +130,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                            MAP_HUGE_2MB                /* 2M huge pages       */
 #endif
                            MAP_PRIVATE |               /* not shared memory   */
+                           MAP_NORESERVE |             /* do not reserve swap */
                            MAP_ANONYMOUS |             /* no file backing     */ 
                            MAP_POPULATE,               /* pre-fault pages     */
                            -1, 0);                     /* ignored (anonymous) */
@@ -146,6 +148,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                            MAP_HUGE_2MB                /* 2M huge pages       */
 #endif
                            MAP_PRIVATE |               /* not shared memory   */
+                           MAP_NORESERVE |             /* do not reserve swap */
                            MAP_ANONYMOUS |             /* no file backing     */ 
                            MAP_POPULATE,               /* pre-fault pages     */
                            -1, 0);                     /* ignored (anonymous) */
@@ -163,6 +166,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                                PROT_READ | PROT_WRITE,     /* read-write memory   */
                                MAP_HUGETLB |
                                MAP_PRIVATE |               /* not shared memory   */
+                               MAP_NORESERVE |             /* do not reserve swap */
                                MAP_ANONYMOUS |             /* no file backing     */ 
                                MAP_POPULATE,               /* pre-fault pages     */
                                -1, 0);                     /* ignored (anonymous) */
@@ -170,6 +174,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                     ptr = mmap(NULL, bytes,
                                PROT_READ | PROT_WRITE,     /* read-write memory   */
                                MAP_PRIVATE |               /* not shared memory   */
+                               MAP_NORESERVE |             /* do not reserve swap */
                                MAP_ANONYMOUS |             /* no file backing     */ 
                                MAP_POPULATE,               /* pre-fault pages     */
                                -1, 0);                     /* ignored (anonymous) */
