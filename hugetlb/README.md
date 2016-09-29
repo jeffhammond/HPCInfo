@@ -2,6 +2,7 @@
 
 * https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt
 * https://wiki.debian.org/Hugepages
+* http://www.mcs.anl.gov/~kazutomo/hugepage/
 
 # Useful stuff
 
