@@ -12,9 +12,7 @@
 #include <assert.h>
 
 #include <sys/mman.h>
-#ifndef NDEBUG
 #include <errno.h>
-#endif
 
 void * huge_alloc(size_t bytes, size_t pagesize);
 void huge_free(void* ptr, size_t bytes);

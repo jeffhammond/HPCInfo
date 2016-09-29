@@ -41,7 +41,7 @@ LIBS     = $(OMPLIBS)
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = test-huge-alloc.x
+TESTS = test-mmap.x test-huge-alloc.x
 
 all: $(TESTS)
 
