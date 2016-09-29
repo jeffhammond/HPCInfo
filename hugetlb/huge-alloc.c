@@ -9,19 +9,8 @@
 #include <assert.h>
 
 #include <sys/mman.h>
-#ifndef NDEBUG
 #include <errno.h>
-#endif
 
-/* we solve this with a hack for now */
-#if 0
-#if defined(LINUX_MAJOR) && defined(LINUX_MINOR) && \
-    ((LINUX_MAJOR >= 4) || ((LINUX_MAJOR == 3) && (LINUX_MINOR >= 8)))
-#define HUGE_PAGE_SIZE_OPTIONS_AVAILABLE
-#endif
-#endif
-
-#ifndef NDEBUG
 static inline int parse_error(void * rc)
 {
     intptr_t irc = (intptr_t)rc;
@@ -95,7 +84,6 @@ static inline int parse_error(void * rc)
            break;
     }
 }
-#endif
 
 void * huge_alloc(size_t bytes, size_t pagesize)
 {
@@ -114,6 +102,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                            MAP_PRIVATE |               /* not shared memory   */
                            MAP_NORESERVE |             /* do not reserve swap */
                            MAP_ANONYMOUS |             /* no file backing     */ 
+                           MAP_LOCKED |                /* lock/pin pages      */
                            MAP_POPULATE,               /* pre-fault pages     */
                            -1, 0);                     /* ignored (anonymous) */
 #ifndef NDEBUG
@@ -132,6 +121,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                            MAP_PRIVATE |               /* not shared memory   */
                            MAP_NORESERVE |             /* do not reserve swap */
                            MAP_ANONYMOUS |             /* no file backing     */ 
+                           MAP_LOCKED |                /* lock/pin pages      */
                            MAP_POPULATE,               /* pre-fault pages     */
                            -1, 0);                     /* ignored (anonymous) */
 #ifndef NDEBUG
@@ -150,6 +140,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                            MAP_PRIVATE |               /* not shared memory   */
                            MAP_NORESERVE |             /* do not reserve swap */
                            MAP_ANONYMOUS |             /* no file backing     */ 
+                           MAP_LOCKED |                /* lock/pin pages      */
                            MAP_POPULATE,               /* pre-fault pages     */
                            -1, 0);                     /* ignored (anonymous) */
 #ifndef NDEBUG
@@ -161,13 +152,14 @@ void * huge_alloc(size_t bytes, size_t pagesize)
             {
                 fprintf(stderr, "huge_alloc: unsupported pagesize (%zu)\n", pagesize);
                 /* if more than 2 MB is requested, use huge pages. */
-                if (bytes >= (1UL<<21)) {
+                if (0) { //bytes >= (1UL<<21)) {
                     ptr = mmap(NULL, bytes,
                                PROT_READ | PROT_WRITE,     /* read-write memory   */
                                MAP_HUGETLB |
                                MAP_PRIVATE |               /* not shared memory   */
                                MAP_NORESERVE |             /* do not reserve swap */
                                MAP_ANONYMOUS |             /* no file backing     */ 
+                               MAP_LOCKED |                /* lock/pin pages      */
                                MAP_POPULATE,               /* pre-fault pages     */
                                -1, 0);                     /* ignored (anonymous) */
                 } else {
@@ -176,6 +168,7 @@ void * huge_alloc(size_t bytes, size_t pagesize)
                                MAP_PRIVATE |               /* not shared memory   */
                                MAP_NORESERVE |             /* do not reserve swap */
                                MAP_ANONYMOUS |             /* no file backing     */ 
+                               MAP_LOCKED |                /* lock/pin pages      */
                                MAP_POPULATE,               /* pre-fault pages     */
                                -1, 0);                     /* ignored (anonymous) */
                 }
