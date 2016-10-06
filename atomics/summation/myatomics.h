@@ -8,23 +8,21 @@
 template <class T>
 static inline T atomic_fetch_sum(std::atomic<T> * obj, T arg)
 {
-    T original, desired;
+    T expected, desired;
     do {
-      original = *obj;
-      desired  = original + arg;
-    } while (!std::atomic_compare_exchange_weak(obj, &original, desired));
-    return original;
+      desired = expected + arg;
+    } while (!std::atomic_compare_exchange_weak(obj, &expected, desired));
+    return expected;
 }
 
 template <class T>
 static inline T atomic_fetch_sum(volatile std::atomic<T> * obj, T arg)
 {
-    T original, desired;
+    T expected, desired;
     do {
-      original = *obj;
-      desired  = original + arg;
-    } while (!std::atomic_compare_exchange_weak(obj, &original, desired));
-    return original;
+      desired = expected + arg;
+    } while (!std::atomic_compare_exchange_weak(obj, &expected, desired));
+    return expected;
 }
 
 #else
