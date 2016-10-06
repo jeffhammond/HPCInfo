@@ -1,7 +1,7 @@
 OFLAGS   := -O3 -fopenmp -Wall -fPIC
 
 # Apple debug 
- OFLAGS += -g3 -Wl,-pie
+# OFLAGS += -g3 -Wl,-pie
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
@@ -10,12 +10,12 @@ ifndef COMPILER
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       := gcc-6
-CXX      := g++-6
+CC       := gcc
+CXX      := g++
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
-CC       := clang-3.8
-CXX      := clang++-3.8
+CC       := clang
+CXX      := clang++
 OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
 OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
 ASMFLAGS  = -S -fverbose-asm
@@ -67,8 +67,6 @@ clean:
 	-rm -rf *.dSYM
 	-rm -f *.dwarf
 	-rm -f *.optrpt
-
-realclean: clean
 	-rm -f a.out
 	-rm -f *.gcc
 	-rm -f *.clang
