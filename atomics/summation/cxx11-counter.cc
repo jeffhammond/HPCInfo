@@ -235,7 +235,7 @@ int main(int argc, char * argv[])
         {
             std::cout << "total time elapsed = " << dt.count() << "\n";
             std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
-            std::cout << counter << std::endl;
+            std::cout << omp_counter << std::endl;
         }
     }
 
@@ -266,7 +266,7 @@ int main(int argc, char * argv[])
         {
             std::cout << "total time elapsed = " << dt.count() << "\n";
             std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
-            std::cout << counter << std::endl;
+            std::cout << omp_counter << std::endl;
             std::cout << output << std::endl;
         }
     }
