@@ -3,9 +3,9 @@
 #include <iostream>
 #include <iomanip>
 
-#include <atomic>
-
 #include <chrono>
+
+#include <atomic>
 
 #ifdef SEQUENTIAL_CONSISTENCY
 auto update_model = std::memory_order_seq_cst;
@@ -15,16 +15,16 @@ auto update_model = std::memory_order_relaxed;
 
 #ifdef _OPENMP
 # include <omp.h>
-#define OMP_PARALLEL            _Pragma("omp parallel")
-#define OMP_BARRIER             _Pragma("omp barrier")
-#define OMP_CRITICAL            _Pragma("omp critical")
-#ifdef SEQUENTIAL_CONSISTENCY
-#define OMP_ATOMIC              _Pragma("omp atomic seq_cst")
-#define OMP_ATOMIC_CAPTURE      _Pragma("omp atomic capture seq_cst")
-#else
-#define OMP_ATOMIC              _Pragma("omp atomic")
-#define OMP_ATOMIC_CAPTURE      _Pragma("omp atomic capture")
-#endif
+# define OMP_PARALLEL            _Pragma("omp parallel")
+# define OMP_BARRIER             _Pragma("omp barrier")
+# define OMP_CRITICAL            _Pragma("omp critical")
+# ifdef SEQUENTIAL_CONSISTENCY
+#  define OMP_ATOMIC              _Pragma("omp atomic seq_cst")
+#  define OMP_ATOMIC_CAPTURE      _Pragma("omp atomic capture seq_cst")
+# else
+#  define OMP_ATOMIC              _Pragma("omp atomic")
+#  define OMP_ATOMIC_CAPTURE      _Pragma("omp atomic capture")
+# endif
 #else
 # error No OpenMP support!
 #endif
