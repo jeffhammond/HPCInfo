@@ -10,14 +10,14 @@ ifndef COMPILER
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       := gcc
-CXX      := g++
+CC       ?= gcc
+CXX      ?= g++
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
-CC       := clang
-CXX      := clang++
-OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
-OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
+CC       ?= clang
+CXX      ?= clang++
+OMPFLAGS  = #-I/usr/local/Cellar/libiomp/20150701/include/libiomp
+OMPLIBS   = #-L/usr/local/Cellar/libiomp/20150701/lib -liomp5
 ASMFLAGS  = -S -fverbose-asm
 # Clang tries to link libomp, so we symlink this to libiomp5
 else ifeq ($(COMPILER),intel)
