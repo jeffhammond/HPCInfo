@@ -38,10 +38,12 @@ LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
 TESTS = cxx11-counter.$(COMPILER) \
-	cxx11-summation.$(COMPILER)
+	cxx11-summation.$(COMPILER) \
+	cxx11-nxtval.$(COMPILER)
 
 ASM =   cxx11-counter.$(COMPILER).s \
-	cxx11-summation.$(COMPILER).s
+	cxx11-summation.$(COMPILER).s \
+	cxx11-nxtval.$(COMPILER).s
 
 all: $(TESTS)
 
