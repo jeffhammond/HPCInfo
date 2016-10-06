@@ -37,9 +37,11 @@ LIBS     = $(OMPLIBS)
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = cxx11-counter.$(COMPILER)
+TESTS = cxx11-counter.$(COMPILER) \
+	cxx11-summation.$(COMPILER)
 
-ASM =   cxx11-counter.$(COMPILER).s
+ASM =   cxx11-counter.$(COMPILER).s \
+	cxx11-summation.$(COMPILER).s
 
 all: $(TESTS)
 
