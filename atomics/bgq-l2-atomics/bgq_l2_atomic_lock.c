@@ -66,8 +66,13 @@ int main(int argc, char * argv[])
     printf("L2 lock test using %d threads \n", num_threads );
 
     /* this "activates" the L2 atomic data structures */
-    Kernel_L2AtomicsAllocate(&barrier, sizeof(L2_Barrier_t) );
-    Kernel_L2AtomicsAllocate(&lock, sizeof(L2_Lock_t));
+    {
+        uint64_t rc64 = -1;
+        rc64 = Kernel_L2AtomicsAllocate(&barrier, sizeof(L2_Barrier_t) );
+        assert(rc64==0);
+        rc64 = Kernel_L2AtomicsAllocate(&lock, sizeof(L2_Lock_t));
+        assert(rc64==0);
+    }
 
     L2_LockInit(&lock);
 

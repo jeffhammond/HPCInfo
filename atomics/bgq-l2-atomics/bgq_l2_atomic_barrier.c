@@ -59,7 +59,8 @@ int main(int argc, char * argv[])
     printf("L2 barrier test using %d threads \n", num_threads );
 
     /* this "activates" the L2 atomic data structure */
-    Kernel_L2AtomicsAllocate(&barrier, sizeof(L2_Barrier_t) );
+    uint64_t rc64 = Kernel_L2AtomicsAllocate(&barrier, sizeof(L2_Barrier_t) );
+    assert(rc64==0);
 
     pool = (pthread_t *) malloc( num_threads * sizeof(pthread_t) );
     assert(pool!=NULL);
