@@ -4,6 +4,7 @@
 #include <iomanip>
 
 #include <atomic>
+#include "myatomics.h" // for floating-point types
 
 #include <chrono>
 
@@ -18,28 +19,6 @@ auto update_model = std::memory_order_seq_cst;
 #else
 auto update_model = std::memory_order_relaxed;
 #endif
-
-template <class T>
-static inline T atomic_fetch_sum(std::atomic<T> * obj, T arg)
-{
-    T original, desired;
-    do {
-      original = *obj;
-      desired  = original + arg;
-    } while (!std::atomic_compare_exchange_weak(obj, &original, desired));
-    return original;
-}
-
-template <class T>
-static inline T atomic_fetch_sum(volatile std::atomic<T> * obj, T arg)
-{
-    T original, desired;
-    do {
-      original = *obj;
-      desired  = original + arg;
-    } while (!std::atomic_compare_exchange_weak(obj, &original, desired));
-    return original;
-}
 
 int main(int argc, char * argv[])
 {

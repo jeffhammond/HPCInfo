@@ -52,7 +52,7 @@ asm: $(ASM)
 %.$(COMPILER): %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
-%.$(COMPILER): %.cc
+%.$(COMPILER): %.cc myatomics.h
 	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
 
 # assembly
@@ -60,7 +60,7 @@ asm: $(ASM)
 %.$(COMPILER).s: %.c
 	$(CC) $(CFLAGS) $(ASMFLAGS) $< -o $@
 
-%.$(COMPILER).s: %.cc
+%.$(COMPILER).s: %.cc myatomics.h
 	$(CXX) $(CXXFLAGS) $(ASMFLAGS) $< -o $@
 
 clean:
