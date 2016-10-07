@@ -26,6 +26,8 @@
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
+const auto range = 1024*1024*128;
+
 int main(int argc, char* argv[])
 {
     try {
@@ -43,13 +45,13 @@ int main(int argc, char* argv[])
         // bind device buffer to first argument in kernel invocation
         kernel.setArg(0,bufferSum);
         // run the kernel
-        queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1024*1024*128), cl::NullRange);
+        queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(range), cl::NullRange);
         queue.finish();
 
         // copy device-to-host
         queue.enqueueReadBuffer(bufferSum,CL_TRUE,0,1 * sizeof(int),&sum);
 
-        std::cout << "Sum: " << sum << std::endl;
+        std::cout << "Sum: " << sum << " (should be " << range << ")" << std::endl;
     }
     catch (cl::Error err) {
         std::cout << "Exception\n";
