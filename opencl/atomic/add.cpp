@@ -31,16 +31,6 @@
 
 int main(int argc, char* argv[])
 {
-    const int count = (argc>1) ? atoi(argv[1]) : 1024;
-
-    std::vector<int> h_a(count);
-
-    cl::Buffer d_a;
-
-    for(int i = 0; i < count; ++i) {
-        h_a[i] = i;
-    }
-
     try {
     	// Create a context
         cl::Context context(DEVICE);
@@ -51,20 +41,6 @@ int main(int argc, char* argv[])
         // Get the command queue
         cl::CommandQueue queue(context);
 
-#if 0
-        // Create the kernel functor
-        auto add = cl::make_kernel<cl::Buffer>(program, "add");
-
-        d_a  = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(int));
-
-        util::Timer timer;
-        add(cl::EnqueueArgs( queue, cl::NDRange(count)), d_a );
-        queue.finish();
-        double rtime = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
-        std::cout << "The kernels ran in " << rtime << " seconds\n";
-
-        cl::copy(queue, d_c, begin(h_c), end(h_c));
-#else
         int sum=0;
         cl::Buffer bufferSum = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(int));
         queue.enqueueWriteBuffer(bufferSum, CL_TRUE, 0, 1 * sizeof(int), &sum);
@@ -74,7 +50,6 @@ int main(int argc, char* argv[])
         queue.finish();
         queue.enqueueReadBuffer(bufferSum,CL_TRUE,0,1 * sizeof(int),&sum);
         std::cout << "Sum: " << sum << "\n";
-#endif
     }
     catch (cl::Error err) {
         std::cout << "Exception\n";
