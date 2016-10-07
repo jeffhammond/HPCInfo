@@ -15,14 +15,11 @@
 
 #define __CL_ENABLE_EXCEPTIONS
 
-#include "cl.hpp"
-
-#include "util.hpp"
-
-#include <vector>
-
 #include <iostream>
 #include <fstream>
+
+#include "cl.hpp"
+#include "util.hpp"
 
 // pick up device type from compiler command line or from the default type
 #ifndef DEVICE
@@ -32,24 +29,27 @@
 int main(int argc, char* argv[])
 {
     try {
-    	// Create a context
         cl::Context context(DEVICE);
-
-        // Load in kernel source, creating a program object for the context
-        cl::Program program(context, util::loadProgram("add.cl"), true);
-
-        // Get the command queue
+        cl::Program program(context, util::loadProgram("add.cl"), /* build= */ true);
         cl::CommandQueue queue(context);
 
+        // create host and device data
         int sum=0;
-        cl::Buffer bufferSum = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(int));
+        auto bufferSum = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(int));
+        // copy host-to-device
         queue.enqueueWriteBuffer(bufferSum, CL_TRUE, 0, 1 * sizeof(int), &sum);
-        cl::Kernel kernel=cl::Kernel(program, "AtomicSum");
+
+        auto kernel=cl::Kernel(program, "AtomicSum");
+        // bind device buffer to first argument in kernel invocation
         kernel.setArg(0,bufferSum);
+        // run the kernel
         queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1024*1024*128), cl::NullRange);
         queue.finish();
+
+        // copy device-to-host
         queue.enqueueReadBuffer(bufferSum,CL_TRUE,0,1 * sizeof(int),&sum);
-        std::cout << "Sum: " << sum << "\n";
+
+        std::cout << "Sum: " << sum << std::endl;
     }
     catch (cl::Error err) {
         std::cout << "Exception\n";
