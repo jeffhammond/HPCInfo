@@ -39,7 +39,11 @@ int main(int argc, char* argv[])
         int sum=0;
         auto bufferSum = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(int));
         // copy host-to-device
-        queue.enqueueWriteBuffer(bufferSum, CL_TRUE, 0, 1 * sizeof(int), &sum);
+        queue.enqueueWriteBuffer(bufferSum,
+                                 /* blocking= */ CL_TRUE,
+                                 /* offset= */ 0,
+                                 /* size= */ 1 * sizeof(int),
+                                 &sum);
 
         auto kernel=cl::Kernel(program, "AtomicSum");
         // bind device buffer to first argument in kernel invocation
@@ -50,7 +54,11 @@ int main(int argc, char* argv[])
         queue.finish();
 
         // copy device-to-host
-        queue.enqueueReadBuffer(bufferSum,CL_TRUE,0,1 * sizeof(int),&sum);
+        queue.enqueueReadBuffer(bufferSum,
+                                /* blocking= */ CL_TRUE,
+                                /* offset= */ 0,
+                                /* size= */ 1 * sizeof(int),
+                                &sum);
 
         std::cout << "Sum: " << sum << " (should be " << range << ")" << std::endl;
     }
