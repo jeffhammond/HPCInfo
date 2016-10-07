@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
         // bind device buffer to first argument in kernel invocation
         kernel.setArg(0,bufferSum);
         // run the kernel
-        queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(range), cl::NullRange);
+        //queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(range), cl::NullRange);
+        queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(range));
         queue.finish();
 
         // copy device-to-host
