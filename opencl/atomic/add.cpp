@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
         cl::copy(queue, d_c, begin(h_c), end(h_c));
 #else
         int sum=0;
-        cl::Buffer bufferSum = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(float));
+        cl::Buffer bufferSum = cl::Buffer(context, CL_MEM_READ_WRITE, 1 * sizeof(int));
         queue.enqueueWriteBuffer(bufferSum, CL_TRUE, 0, 1 * sizeof(int), &sum);
         cl::Kernel kernel=cl::Kernel(program, "AtomicSum");
         kernel.setArg(0,bufferSum);
