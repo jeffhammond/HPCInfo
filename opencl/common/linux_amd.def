@@ -1,0 +1,20 @@
+#
+# Make.def file for AMD's OpenCL SDK running on Unix
+CC      = gcc
+CPPC	= g++
+DEVICE  = -DDEVICE=CL_DEVICE_TYPE_GPU
+
+ifdef AMDAPPSDKROOT
+	OPENCLINC = -I $(AMDAPPSDKROOT)/include -L $(AMDAPPSDKROOT)/lib/x86_64
+else
+	OPENCLINC = -I /opt/AMDAPP/include -L /opt/AMDAPP/lib/x86_64/
+endif
+
+OPENCLFLAGS = -lOpenCL
+CFLAGS  = -m64 -O3 $(DEVICE)
+CPPFLAGS = $(CFLAGS)
+LIBS = -lrt -lm
+OBJ=o
+EXE=
+RM=rm -f
+PRE=./

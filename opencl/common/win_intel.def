@@ -1,0 +1,16 @@
+#
+# For the Intel OpenCL SDK running with the Intel compiler under windows 7
+OBJ=obj
+EXE=.exe
+RM=del
+PRE=
+
+DEVICE   = /DDEVICE=CL_DEVICE_TYPE_CPU
+OCLHOME  ="C:\Program Files (x86)\Intel\OpenCL SDK\3.0"
+CC       = icl
+CPPC	 = icl
+CLINKER  = $(CC)
+OPTFLAGS = /Qopenmp /Qstd=c++11 /EHsc
+INC      =/I$(COMMON) /I$(OCLHOME)\include\CL /I$(OCLHOME)\include 
+CFLAGS   = $(OPTFLAGS) $(INC) $(DEVICE)
+LIBS     =$(OCLHOME)\lib\x64\OpenCL.lib
