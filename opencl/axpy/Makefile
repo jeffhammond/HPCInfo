@@ -10,20 +10,19 @@ include ../common/make.def
 
 COMMON      = ../common
 
-EXES     = vadd$(EXE) 
+EXES     = vadd$(EXE)
 
 
 all: $(EXES)
 
 vadd$(EXE): vadd.$(OBJ)  vadd.cl
-	$(CLINKER) $(CFLAGS) $(OPENCLFLAGS) -o vadd$(EXE) vadd.$(OBJ) \
-                         $(LIBS)
+	$(CLINKER) $(CFLAGS) $(OPENCLFLAGS) -o vadd$(EXE) vadd.$(OBJ) $(LIBS)
 
 test: $(EXES)
 	$(PRE)vadd$(EXE);
 
 clean:
-	$(RM) $(EXES) *.$(OBJ) 
+	$(RM) $(EXES) *.$(OBJ)
 
 veryclean:
 	$(RM) $(EXES)  *.$(OBJ)
