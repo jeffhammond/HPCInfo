@@ -1,5 +1,5 @@
 #
-# Make.def file for AMD's OpenCL SDK running on Unix
+# Make.def file for AMD OpenCL SDK running on Unix
 CC      = gcc
 CPPC	= g++
 DEVICE  = -DDEVICE=CL_DEVICE_TYPE_GPU

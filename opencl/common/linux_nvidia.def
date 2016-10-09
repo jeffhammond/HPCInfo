@@ -1,5 +1,5 @@
 #
-# Make.def file for Nvidia's OpenCL SDK running on Unix
+# Make.def file for Nvidia OpenCL SDK running on Unix
 CC      = g++
 CLINKER = $(CC)
 DEVICE  = -DDEVICE=CL_DEVICE_TYPE_GPU
