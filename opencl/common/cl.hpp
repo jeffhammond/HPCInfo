@@ -4290,6 +4290,7 @@ public:
      *
      *  Wraps clCreateSampler().
      */
+#if !defined(CL_VERSION_2_0)
     Sampler(
         const Context& context,
         cl_bool normalized_coords,
@@ -4310,6 +4311,7 @@ public:
             *err = error;
         }
     }
+#endif
 
     /*! \brief Copy constructor - performs shallow copy.
      * 
@@ -5108,8 +5110,13 @@ public:
         else {
             Device device = context.getInfo<CL_CONTEXT_DEVICES>()[0];
 
+#if !defined(CL_VERSION_2_0)
             object_ = ::clCreateCommandQueue(
                 context(), device(), properties, &error);
+#else
+            object_ = ::clCreateCommandQueueWithProperties(
+                context(), device(), &properties, &error);
+#endif
 
             detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
             if (err != NULL) {
@@ -5139,7 +5146,11 @@ public:
             return;
         }
 
+#if !defined(CL_VERSION_2_0)
         object_ = ::clCreateCommandQueue(context(), devices[0](), properties, &error);
+#else
+        object_ = ::clCreateCommandQueueWithProperties(context(), devices[0](), &properties, &error);
+#endif
 
         detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
 
@@ -5156,8 +5167,13 @@ public:
         cl_int* err = NULL)
     {
         cl_int error;
+#if !defined(CL_VERSION_2_0)
         object_ = ::clCreateCommandQueue(
             context(), device(), properties, &error);
+#else
+        object_ = ::clCreateCommandQueueWithProperties(
+            context(), device(), &properties, &error);
+#endif
 
         detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
         if (err != NULL) {
@@ -5926,6 +5942,7 @@ public:
         return err;
     }
 
+#if !defined(CL_VERSION_2_0)
     cl_int enqueueTask(
         const Kernel& kernel,
         const VECTOR_CLASS<Event>* events = NULL,
@@ -5945,6 +5962,7 @@ public:
 
         return err;
     }
+#endif
 
     cl_int enqueueNativeKernel(
         void (CL_CALLBACK *userFptr)(void *),
