@@ -15,7 +15,7 @@ EXES     = vadd$(EXE)
 
 all: $(EXES)
 
-vadd$(EXE): vadd.$(OBJ)  vadd.cl
+vadd$(EXE): vadd.cpp.$(OBJ) vadd.cl
 	$(CLINKER) $(CFLAGS) $(OPENCLFLAGS) -o vadd$(EXE) vadd.$(OBJ) $(LIBS)
 
 test: $(EXES)
@@ -30,9 +30,9 @@ veryclean:
 .SUFFIXES:
 .SUFFIXES: .c .cpp .$(OBJ)
 
-.c.$(OBJ):
+%.c.$(OBJ): %.c ../common/cl.hpp
 	$(CC) $(CFLAGS) -c $<
 
-.cpp.$(OBJ):
+%.cpp.$(OBJ): %.cpp ../common/cl.hpp
 	$(CC) $(CFLAGS) -c $<
 
