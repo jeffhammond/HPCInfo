@@ -6,7 +6,7 @@ CFLAGS += -g3 -Wall
 LD	= $(CC)
 LDFLAGS = $(CFLAGS)
 
-LIBS	= -static-intel
+LIBS	= #-static-intel
 
 all: test_vadd.x
 
