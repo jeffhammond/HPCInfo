@@ -50,7 +50,7 @@ void vadd4(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
         c[i] = a[i] + b[i];
 }
 
-#if 0
+#if USE_GFX
 
 #include <gfx/gfx_rt.h>
 
@@ -92,7 +92,7 @@ int main(int argc, char * argv[])
     float * z2 = calloc(n,sizeof(float)); assert(z2!=NULL);
     float * z3 = calloc(n,sizeof(float)); assert(z3!=NULL);
     float * z4 = calloc(n,sizeof(float)); assert(z4!=NULL);
-#if 0
+#if USE_GFX
     float * z5 = calloc(n,sizeof(float)); assert(z5!=NULL);
 #endif
 
@@ -115,7 +115,7 @@ int main(int argc, char * argv[])
     double t4 = omp_get_wtime();
     vadd4(n,x,y,z4);
     double t5 = omp_get_wtime();
-#if 0
+#if USE_GFX
     vadd5(n,x,y,z5);
     double t6 = omp_get_wtime();
 #endif
@@ -124,11 +124,11 @@ int main(int argc, char * argv[])
     printf("%20s time = %lf (error=%lf) \n", "_Cilk_for",                t3-t2, vdiff(n,z0,z2));
     printf("%20s time = %lf (error=%lf) \n", "offload _Cilk_for",        t4-t3, vdiff(n,z0,z3));
     printf("%20s time = %lf (error=%lf) \n", "OpenMP offload for",       t5-t4, vdiff(n,z0,z4));
-#if 0
-    printf("%s time = %lf (error=%lf) \n", "GFX RT offload _Cilk_for", t6-t5, vdiff(n,z0,z5));
+#if USE_GFX
+    printf("%20s time = %lf (error=%lf) \n", "GFX RT offload _Cilk_for", t6-t5, vdiff(n,z0,z5));
 #endif
 
-#if 0
+#if USE_GFX
     for (int i=0; i<n; i++) {
         printf("%d z0=%f z5=%f\n", i, z0[i], z5[i]);
     }
@@ -141,7 +141,7 @@ int main(int argc, char * argv[])
     }
     printf("junk=%lf\n", junk);
 
-#if 0
+#if USE_GFX
     free(z5);
 #endif
     free(z4);
