@@ -29,7 +29,7 @@ auto update_model = std::memory_order_relaxed;
 # error No OpenMP support!
 #endif
 
-typedef int integer;
+typedef long long integer;
 
 int main(int argc, char * argv[])
 {
@@ -45,10 +45,11 @@ int main(int argc, char * argv[])
 #endif
     std::cout << std::endl;
 
-    std::cout << "1) std::atomic_fetch_add(&counter, 1)\n";
+    std::cout << "1) std::atomic_fetch_add(&counter, one)\n";
 
     std::atomic<integer> counter = {0};
     integer omp_counter = 0;
+    const integer one = 1;
 
     OMP_PARALLEL
     {
@@ -59,7 +60,7 @@ int main(int argc, char * argv[])
         std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
         for (int i=0; i<iterations; ++i) {
-            std::atomic_fetch_add(&counter, 1);
+            std::atomic_fetch_add(&counter, one);
         }
 
         /// STOP TIME
@@ -177,7 +178,7 @@ int main(int argc, char * argv[])
         }
     }
 
-    std::cout << "5) output = std::atomic_fetch_add(&counter, 1)\n";
+    std::cout << "5) output = std::atomic_fetch_add(&counter, one)\n";
 
     counter = 0;
 
@@ -192,7 +193,7 @@ int main(int argc, char * argv[])
         std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
         for (int i=0; i<iterations; ++i) {
-            output = std::atomic_fetch_add(&counter, 1);
+            output = std::atomic_fetch_add(&counter, one);
         }
 
         /// STOP TIME
