@@ -24,28 +24,54 @@ void vadd0(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 
 void vadd1(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
+#if defined(_OPENMP) && (_OPENMP >= 201307)
     #pragma omp parallel for simd
+#elif defined(_OPENMP)
+    #warning No OpenMP simd support!
+    #pragma omp parallel for
+#else
+    #warning No OpenMP support!
+#endif
     for(int i = 0; i < n; i++)
         c[i] = a[i] + b[i];
 }
 
 void vadd2(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
+#ifdef __cilk
     _Cilk_for(int i = 0; i < n; i++)
+#else
+    #warning No Cilk support.  Using sequential for loop.
+    for(int i = 0; i < n; i++)
+#endif
         c[i] = a[i] + b[i];
 }
 
 void vadd3(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
+#ifdef __cilk
+    #if defined(__INTEL_COMPILER) && defined(__INTEL_OFFLOAD)
     #pragma offload target(gfx) in(a,b : length(n)) out(c : length(n)) //pin(a, b, c : length(n))
+    #else
+    #warning No Cilk offload support!
+    #endif
     _Cilk_for(int i = 0; i < n; i++)
+#else
+    #warning No Cilk support.  Using sequential for loop.
+    for(int i = 0; i < n; i++)
+#endif
         c[i] = a[i] + b[i];
 }
 
 void vadd4(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
+#if defined(_OPENMP) && (_OPENMP >= 201307)
     #pragma omp target map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
     #pragma omp parallel for simd
+#else
+    #warning No OpenMP target/simd support!
+    #pragma omp parallel for
+#endif
     for(int i = 0; i < n; i++)
         c[i] = a[i] + b[i];
 }
@@ -81,7 +107,8 @@ void vadd5(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
     if (rc) printf("_GFX_unshare returned %#06x\n", -_GFX_get_last_error());
 }
 
-#endif
+#endif /* USE_GFX */
+
 int main(int argc, char * argv[])
 {
     int n = (argc > 1 ) ? atoi(argv[1]) : 1000;
