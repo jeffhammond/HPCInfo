@@ -29,7 +29,7 @@ auto update_model = std::memory_order_relaxed;
 # error No OpenMP support!
 #endif
 
-typedef long long integer;
+typedef int64_t integer;
 
 int main(int argc, char * argv[])
 {
