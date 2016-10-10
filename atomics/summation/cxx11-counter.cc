@@ -29,6 +29,8 @@ auto update_model = std::memory_order_relaxed;
 # error No OpenMP support!
 #endif
 
+typedef int integer;
+
 int main(int argc, char * argv[])
 {
     int iterations = (argc>1) ? atoi(argv[1]) : 10000000;
@@ -45,8 +47,8 @@ int main(int argc, char * argv[])
 
     std::cout << "1) std::atomic_fetch_add(&counter, 1)\n";
 
-    std::atomic<int> counter = {0};
-    int omp_counter = 0;
+    std::atomic<integer> counter = {0};
+    integer omp_counter = 0;
 
     OMP_PARALLEL
     {
@@ -146,7 +148,7 @@ int main(int argc, char * argv[])
 
     OMP_PARALLEL
     {
-        int output = -1;
+        integer output = -1;
 
         std::atomic_thread_fence(std::memory_order_seq_cst);
 
@@ -181,7 +183,7 @@ int main(int argc, char * argv[])
 
     OMP_PARALLEL
     {
-        int output = -1;
+        integer output = -1;
 
         std::atomic_thread_fence(std::memory_order_seq_cst);
 
@@ -245,7 +247,7 @@ int main(int argc, char * argv[])
 
     OMP_PARALLEL
     {
-        int output = -1;
+        integer output = -1;
 
         /// START TIME
         OMP_BARRIER
