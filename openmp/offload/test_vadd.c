@@ -131,42 +131,44 @@ int main(int argc, char * argv[])
         y[i] = (float)i;
     }
 
-    double t0 = omp_get_wtime();
-    vadd0(n,x,y,z0);
-    double t1 = omp_get_wtime();
-    vadd1(n,x,y,z1);
-    double t2 = omp_get_wtime();
-    vadd2(n,x,y,z2);
-    double t3 = omp_get_wtime();
-    vadd3(n,x,y,z3);
-    double t4 = omp_get_wtime();
-    vadd4(n,x,y,z4);
-    double t5 = omp_get_wtime();
+    for (int iter=0; iter<10; iter++) {
+        double t0 = omp_get_wtime();
+        vadd0(n,x,y,z0);
+        double t1 = omp_get_wtime();
+        vadd1(n,x,y,z1);
+        double t2 = omp_get_wtime();
+        vadd2(n,x,y,z2);
+        double t3 = omp_get_wtime();
+        vadd3(n,x,y,z3);
+        double t4 = omp_get_wtime();
+        vadd4(n,x,y,z4);
+        double t5 = omp_get_wtime();
 #if USE_GFX
-    vadd5(n,x,y,z5);
-    double t6 = omp_get_wtime();
+        vadd5(n,x,y,z5);
+        double t6 = omp_get_wtime();
 #endif
-    printf("%20s time = %lf             \n", "for",                      t1-t0);
-    printf("%20s time = %lf (error=%lf) \n", "OpenMP for",               t2-t1, vdiff(n,z0,z1));
-    printf("%20s time = %lf (error=%lf) \n", "_Cilk_for",                t3-t2, vdiff(n,z0,z2));
-    printf("%20s time = %lf (error=%lf) \n", "offload _Cilk_for",        t4-t3, vdiff(n,z0,z3));
-    printf("%20s time = %lf (error=%lf) \n", "OpenMP offload for",       t5-t4, vdiff(n,z0,z4));
+        printf("%20s time = %lf             \n", "for",                      t1-t0);
+        printf("%20s time = %lf (error=%lf) \n", "OpenMP for",               t2-t1, vdiff(n,z0,z1));
+        printf("%20s time = %lf (error=%lf) \n", "_Cilk_for",                t3-t2, vdiff(n,z0,z2));
+        printf("%20s time = %lf (error=%lf) \n", "offload _Cilk_for",        t4-t3, vdiff(n,z0,z3));
+        printf("%20s time = %lf (error=%lf) \n", "OpenMP offload for",       t5-t4, vdiff(n,z0,z4));
 #if USE_GFX
-    printf("%20s time = %lf (error=%lf) \n", "GFX RT offload _Cilk_for", t6-t5, vdiff(n,z0,z5));
-#endif
-
-#if USE_GFX
-    for (int i=0; i<n; i++) {
-        printf("%d z0=%f z5=%f\n", i, z0[i], z5[i]);
-    }
+        printf("%20s time = %lf (error=%lf) \n", "GFX RT offload _Cilk_for", t6-t5, vdiff(n,z0,z5));
 #endif
 
-    /* prevent compiler from optimizing away anything */
-    double junk = 0.0;
-    for (int i=0; i<n; i++) {
-        junk += z0[i] + z1[i] + z2[i] + z3[i] + z4[i]; // + z5[i];
+#if USE_GFX
+        for (int i=0; i<n; i++) {
+            printf("%d z0=%f z5=%f\n", i, z0[i], z5[i]);
+        }
+#endif
+
+        /* prevent compiler from optimizing away anything */
+        double junk = 0.0;
+        for (int i=0; i<n; i++) {
+            junk += z0[i] + z1[i] + z2[i] + z3[i] + z4[i]; // + z5[i];
+        }
+        printf("junk=%lf\n", junk);
     }
-    printf("junk=%lf\n", junk);
 
 #if USE_GFX
     free(z5);
