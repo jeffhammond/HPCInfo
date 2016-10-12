@@ -2,6 +2,7 @@ CC	= icc
 CFLAGS	= -O3 -std=gnu99 -qopenmp
 CFLAGS += -qopenmp-offload=gfx
 CFLAGS += -g3 -Wall
+#CFLAGS += -DUSE_GFX # not working
 LIBS	= #-static-intel
 
 #CC	= gcc-7

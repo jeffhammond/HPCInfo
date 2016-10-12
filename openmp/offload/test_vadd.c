@@ -2,8 +2,17 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//#include <cilk/cilk.h>
+#ifdef __cilk
+#include <cilk/cilk.h>
+#endif
+
+#ifdef _OPENMP
 #include <omp.h>
+#endif
+
+#if USE_GFX
+#include <gfx/gfx_rt.h>
+#endif
 
 #define RESTRICT
 
@@ -78,8 +87,7 @@ void vadd4(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 
 #if USE_GFX
 
-#include <gfx/gfx_rt.h>
-
+/* The following works for Linux but not Windows. */
 __attribute__((target(gfx_kernel)))
 void gfx_vadd5(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
