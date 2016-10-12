@@ -75,6 +75,7 @@ void vadd3(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 void vadd4(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
 #if defined(_OPENMP) && (_OPENMP >= 201307)
+    //#pragma omp target teams distribute map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
     #pragma omp target map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
     #pragma omp parallel for simd
 #else
