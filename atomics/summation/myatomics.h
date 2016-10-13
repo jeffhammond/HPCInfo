@@ -8,7 +8,7 @@
 template <class T>
 static inline void atomic_sum(std::atomic<T> * obj, T arg)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak(obj, &expected, desired));
@@ -17,7 +17,7 @@ static inline void atomic_sum(std::atomic<T> * obj, T arg)
 template <class T>
 static inline void atomic_sum(volatile std::atomic<T> * obj, T arg)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak(obj, &expected, desired));
@@ -26,7 +26,7 @@ static inline void atomic_sum(volatile std::atomic<T> * obj, T arg)
 template <class T>
 static inline T atomic_fetch_sum(std::atomic<T> * obj, T arg)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak(obj, &expected, desired));
@@ -36,7 +36,7 @@ static inline T atomic_fetch_sum(std::atomic<T> * obj, T arg)
 template <class T>
 static inline T atomic_fetch_sum(volatile std::atomic<T> * obj, T arg)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak(obj, &expected, desired));
@@ -54,7 +54,7 @@ static inline T atomic_fetch_sum(volatile std::atomic<T> * obj, T arg)
 template <class T>
 static inline void atomic_sum_explicit(std::atomic<T> * obj, T arg, std::memory_order order)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak_explicit(obj, &expected, desired, order, order));
@@ -63,7 +63,7 @@ static inline void atomic_sum_explicit(std::atomic<T> * obj, T arg, std::memory_
 template <class T>
 static inline void atomic_sum_explicit(volatile std::atomic<T> * obj, T arg, std::memory_order order)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak_explicit(obj, &expected, desired, order, order));
@@ -72,7 +72,7 @@ static inline void atomic_sum_explicit(volatile std::atomic<T> * obj, T arg, std
 template <class T>
 static inline T atomic_fetch_sum_explicit(std::atomic<T> * obj, T arg, std::memory_order order)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak_explicit(obj, &expected, desired, order, order));
@@ -82,7 +82,7 @@ static inline T atomic_fetch_sum_explicit(std::atomic<T> * obj, T arg, std::memo
 template <class T>
 static inline T atomic_fetch_sum_explicit(volatile std::atomic<T> * obj, T arg, std::memory_order order)
 {
-    T expected, desired;
+    T expected = *obj, desired;
     do {
       desired = expected + arg;
     } while (!std::atomic_compare_exchange_weak_explicit(obj, &expected, desired, order, order));
