@@ -16,8 +16,10 @@ ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
 CC       ?= clang
 CXX      ?= clang++
-OMPFLAGS  = #-I/usr/local/Cellar/libiomp/20150701/include/libiomp
-OMPLIBS   = #-L/usr/local/Cellar/libiomp/20150701/lib -liomp5
+ifeq ($(CXX),clang++-3.8)
+OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
+OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
+endif
 ASMFLAGS  = -S -fverbose-asm
 # Clang tries to link libomp, so we symlink this to libiomp5
 else ifeq ($(COMPILER),intel)
