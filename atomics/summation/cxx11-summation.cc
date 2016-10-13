@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
 #endif
     std::cout << std::endl;
 
-    std::cout << "1) atomic_fetch_sum(&counter, one)\n";
+    std::cout << "1) atomic_sum(&counter, one)\n";
 
     std::atomic<double> counter = {0.0};
     const double one = 1.0;
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<iterations; ++i) {
             //counter += one;
-            atomic_fetch_sum_explicit(&counter, one, update_model);
+            atomic_sum_explicit(&counter, one, update_model);
         }
 
         /// STOP TIME
