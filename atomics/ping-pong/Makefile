@@ -42,6 +42,7 @@ TESTS = cxx11-ping-pong.$(COMPILER) \
 	c11-ping-pong.$(COMPILER) \
 	gcc-ping-pong.$(COMPILER) \
 	cxx11-dekker.$(COMPILER) \
+	cxx11-dekker2.$(COMPILER) \
 	c99-omp-dekker.$(COMPILER)
 
 ASM =   cxx11-ping-pong.$(COMPILER).s \
@@ -49,6 +50,7 @@ ASM =   cxx11-ping-pong.$(COMPILER).s \
 	c11-ping-pong.$(COMPILER).s \
 	gcc-ping-pong.$(COMPILER).s \
 	cxx11-dekker.$(COMPILER).s \
+	cxx11-dekker2.$(COMPILER).s \
 	c99-omp-dekker.$(COMPILER).s
 
 all: $(TESTS)
