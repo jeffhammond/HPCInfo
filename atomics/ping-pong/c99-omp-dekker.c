@@ -50,6 +50,7 @@ int main(int argc, char * argv[])
                 temp=y;
                 if (temp==0) {
                     lcount++;
+                } else {
                     temp=0;
                 }
             } else {
@@ -59,6 +60,7 @@ int main(int argc, char * argv[])
                 temp=x;
                 if (temp==0) {
                     rcount++;
+                } else {
                     temp=0;
                 }
             }
