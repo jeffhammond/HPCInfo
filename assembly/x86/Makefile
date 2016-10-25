@@ -3,9 +3,9 @@ CFLAGS	= -g -Wall -O2
 
 .PHONY: all clean
 
-all: asmtest.x
+all: mov.x
 
-asmtest.x: asmtest.c
+%.x: %.c
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
