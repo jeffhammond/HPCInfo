@@ -14,7 +14,7 @@ ifeq ($(COMPILER),gcc)
     CXX = g++
     # GCC on Mac is ancient and does not support OpenMP
     # This macro is from the NWChem build system
-    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22|awk ' /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
+    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22 | awk ' /6/  {print "N";exit}; /5/  {print "N";exit}; /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
     ifeq ($(IS_GCC4),Y)
         # Homebrew on Mac
         CC  = gcc-6
@@ -26,8 +26,9 @@ else ifeq ($(COMPILER),clang)
     CC  = clang
     CXX = clang++
     # Default Clang on Mac does not support OpenMP
+    # This macro does not work as desired on Linux
     # This macro is from the NWChem build system
-    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22|awk ' /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
+    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22 | awk ' /6/  {print "N";exit}; /5/  {print "N";exit}; /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
     ifeq ($(IS_GCC4),Y)
         # Homebrew on Mac
         CC  = clang-3.8
