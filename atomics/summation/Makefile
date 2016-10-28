@@ -1,34 +1,51 @@
 OFLAGS   := -O3 -fopenmp -Wall -fPIC
 
-# Apple debug 
+# Apple debug
 # OFLAGS += -g3 -Wl,-pie
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
 ifndef COMPILER
-    COMPILER=gcc
+    COMPILER=intel
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       ?= gcc
-CXX      ?= g++
-ASMFLAGS  = -S -fverbose-asm
+    CC  = gcc
+    CXX = g++
+    # GCC on Mac is ancient and does not support OpenMP
+    # This macro is from the NWChem build system
+    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22|awk ' /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
+    ifeq ($(IS_GCC4),Y)
+        # Homebrew on Mac
+        CC  = gcc-6
+        CXX = g++-6
+    endif
+    ASMFLAGS = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
-CC       ?= clang
-CXX      ?= clang++
-ifeq ($(CXX),clang++-3.8)
-OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
-OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
-endif
-ASMFLAGS  = -S -fverbose-asm
-# Clang tries to link libomp, so we symlink this to libiomp5
+    # Linux
+    CC  = clang
+    CXX = clang++
+    # Default Clang on Mac does not support OpenMP
+    # This macro is from the NWChem build system
+    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22|awk ' /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
+    ifeq ($(IS_GCC4),Y)
+        # Homebrew on Mac
+        CC  = clang-3.8
+        CXX = clang++-3.8
+        ifeq ($(CXX),clang++-3.8)
+            OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
+            # Clang may try to link libomp, so we symlink this to libiomp5
+            OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
+        endif
+    endif
+    ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),intel)
-CC       := icc
-CXX      := icpc
-ASMFLAGS  = -S -fverbose-asm -fcode-asm -fasm-blocks
+    CC       = icc
+    CXX      = icpc
+    ASMFLAGS = -S -fverbose-asm -fcode-asm -fasm-blocks
 else
-CC       := false
-CXX      := false
+    CC       = false
+    CXX      = false
 endif
 
 CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
@@ -41,11 +58,13 @@ LDFLAGS  = $(OFLAGS)
 
 TESTS = cxx11-counter.$(COMPILER) \
 	cxx11-summation.$(COMPILER) \
-	cxx11-nxtval.$(COMPILER)
+	cxx11-nxtval.$(COMPILER) \
+	cxx11-nxtval-vs-dynamic.$(COMPILER)
 
 ASM =   cxx11-counter.$(COMPILER).s \
 	cxx11-summation.$(COMPILER).s \
-	cxx11-nxtval.$(COMPILER).s
+	cxx11-nxtval.$(COMPILER).s \
+	cxx11-nxtval-vs-dynamic.$(COMPILER).s
 
 all: $(TESTS)
 
