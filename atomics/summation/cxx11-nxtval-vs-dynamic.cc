@@ -28,7 +28,7 @@ double foo(int i)
     const unsigned k = (i+33)%1000;
     const unsigned n = (k*k)%100000;
     double junk = 0.0;
-    for (int j=1; j<n; ++j) {
+    for (unsigned j=1; j<n; ++j) {
         junk += std::log(static_cast<double>(j));
     }
     return junk;
