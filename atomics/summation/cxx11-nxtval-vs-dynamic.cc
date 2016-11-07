@@ -25,13 +25,15 @@
 
 double foo(int i)
 {
-    const unsigned k = (i+33)%1000;
-    const unsigned n = (k*k)%100000;
-    double junk = 0.0;
-    for (int j=1; j<n; ++j) {
-        junk += std::log(static_cast<double>(j));
+    const int n = 1<<(i%12);
+    const double limit = n * 1.e-6;
+    const double t0 = omp_get_wtime();
+    while (1) {
+        const double t1 = omp_get_wtime();
+        const double dt = t1-t0;
+        if (dt>limit) break;
     }
-    return junk;
+    return limit;
 }
 
 int main(int argc, char * argv[])
