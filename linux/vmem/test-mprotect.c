@@ -12,7 +12,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 
-static void handler(int sig, siginfo_t * info, void * state)
+static void handler(int sig, siginfo_t * info, void * state /* never use this */)
 {
     size_t pagesize = sysconf(_SC_PAGESIZE);
     /* Using printf in a signal handler is evil but not
