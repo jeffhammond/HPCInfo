@@ -23,9 +23,9 @@ static void handler(int sig, siginfo_t * info, void * state /* never use this */
     void * l = info->si_lower;
     void * u = info->si_upper;
     void * n = (void*)(((intptr_t)a/(intptr_t)pagesize)*(intptr_t)pagesize);
-    int rc = mprotect(n,pagesize,PROT_WRITE);
+    int rc = mprotect(n,pagesize,PROT_READ | PROT_WRITE);
     if (rc) printf("handler: mprotect failed - errno = %d\n", errno);
-    printf("handler: mprotect %p:%p PROT_WRITE\n",n,n+pagesize);
+    printf("handler: mprotect %p:%p PROT_READ | PROT_WRITE\n",n,n+pagesize);
     printf("handler: info addr=%p newaddr=%p lower=%p, upper=%p\n",a,n,l,u);
     fflush(NULL);
 }
