@@ -12,6 +12,8 @@
 #include <sys/mman.h>
 #include <errno.h>
 
+#include <xmmintrin.h>
+
 #define DEBUG 1
 
 static void handler(int sig, siginfo_t * info, void * state /* never use this */)
@@ -19,9 +21,15 @@ static void handler(int sig, siginfo_t * info, void * state /* never use this */
     /* sysconf probably should not be used in a signal handler.
      * the pagesize information should be encoded by the build system,
      * or we can be conservative and assume 4KiB. */
-    size_t pagesize = sysconf(_SC_PAGESIZE);
+    size_t pagesize = 4096;
+#ifdef DEBUG
+    size_t real_pagesize = sysconf(_SC_PAGESIZE);
+    if (pagesize != real_pagesize) {
+        printf("real pagesize is %zu, not %zu\n", real_pagesize, pagesize);
+    }
+#endif
 
-#if DEBUG
+#ifdef DEBUG
     /* Using printf in a signal handler is evil but not
      * using it is a pain.  And printf works, so we will
      * use it because this is not production code anyways. */
@@ -31,19 +39,45 @@ static void handler(int sig, siginfo_t * info, void * state /* never use this */
     /* this is the address the generated the fault */
     void * a = info->si_addr;
 
+#ifdef DEBUG
     /* these are at best unrelable in practice */
     void * l = info->si_lower;
     void * u = info->si_upper;
+#endif
     
     /* b is the base address of the page that contains a. */
-    /* there is surely a way to do this with bitwise logical ops instead... */
-    void * b = (void*)(((intptr_t)a/(intptr_t)pagesize)*(intptr_t)pagesize);
+#ifdef DEBUG
+    /* all three methods of masking away the page-offset bits are equivalent,
+     * at least for 4K pages. */
+    void * b1 = (void*)(((intptr_t)a/pagesize)*pagesize);
+    void * b2 = (void*)((intptr_t)a & ~0x7FF);  /* 0x7FF is for 4K pages only */
+    void * b3 = (void*)(((intptr_t)a>>11)<<11); /* 11 is for 4K pages only */
+    printf("b1=%p, b2=%p, b3=%p\n", b1, b2, b3);
+    void * b = b1;
+#else
+    /* use the most general method.  if we want to optimize using bitmasking,
+     * then we have to add the branches for each page size. */
+    void * b = (void*)(((intptr_t)a/pagesize)*pagesize);
+#endif
 
     /* unprotect memory so the code that generated the fault can use it.
      * if nothing changes, fault will repeat forever. */
     int rc = mprotect(b, pagesize, PROT_READ | PROT_WRITE);
 
-#if DEBUG
+    const int linesize = 64; /* x86 */
+    //unsigned char q = 0;
+    unsigned char * p = (unsigned char*)b;
+    do {
+#if 0 //def DEBUG
+        printf("touching address %p\n", p);
+#endif
+        _mm_prefetch(p,_MM_HINT_T2);
+        //q += *p;
+        p += linesize;
+        //__asm__ volatile("" : "+r" (q) : : "memory");
+    } while ((intptr_t)p<(intptr_t)(b+pagesize));
+
+#ifdef DEBUG
     if (rc) {
         printf("handler: mprotect failed - errno = %d\n", errno);
     }
