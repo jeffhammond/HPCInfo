@@ -12,10 +12,9 @@
 #include <sys/mman.h>
 #include <errno.h>
 
-size_t pagesize;
-
 static void handler(int sig, siginfo_t * info, void * state)
 {
+    size_t pagesize = sysconf(_SC_PAGESIZE);
     /* Using printf in a signal handler is evil but not
      * using it is a pain.  And printf works, so we will
      * use it because this is not production code anyways. */
@@ -24,8 +23,8 @@ static void handler(int sig, siginfo_t * info, void * state)
     void * l = info->si_lower;
     void * u = info->si_upper;
     void * n = (void*)(((intptr_t)a/(intptr_t)pagesize)*(intptr_t)pagesize);
-    int junk = mprotect(n,pagesize,PROT_WRITE);
-    if (junk) printf("handler: mprotect failed - errno = %d\n", errno);
+    int rc = mprotect(n,pagesize,PROT_WRITE);
+    if (rc) printf("handler: mprotect failed - errno = %d\n", errno);
     printf("handler: mprotect %p:%p PROT_WRITE\n",n,n+pagesize);
     printf("handler: info addr=%p newaddr=%p lower=%p, upper=%p\n",a,n,l,u);
     fflush(NULL);
@@ -35,7 +34,7 @@ int main(int argc, char* argv[])
 {
     int rc = 0;
 
-    pagesize = sysconf(_SC_PAGESIZE);
+    size_t pagesize = sysconf(_SC_PAGESIZE);
     printf("pagesize = %zu\n", pagesize);
 
     struct sigaction sa;
