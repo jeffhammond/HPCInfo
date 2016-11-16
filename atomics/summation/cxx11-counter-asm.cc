@@ -3,20 +3,24 @@
 #include <iostream>
 #include <iomanip>
 
+#include <chrono>
 #include <atomic>
 
-#include <chrono>
 
 #ifdef _OPENMP
 # include <omp.h>
+# define OMP_PARALLEL            _Pragma("omp parallel")
+# define OMP_BARRIER             _Pragma("omp barrier")
+# define OMP_CRITICAL            _Pragma("omp critical")
+# ifdef SEQUENTIAL_CONSISTENCY
+#  define OMP_ATOMIC              _Pragma("omp atomic seq_cst")
+#  define OMP_ATOMIC_CAPTURE      _Pragma("omp atomic capture seq_cst")
+# else
+#  define OMP_ATOMIC              _Pragma("omp atomic")
+#  define OMP_ATOMIC_CAPTURE      _Pragma("omp atomic capture")
+# endif
 #else
 # error No OpenMP support!
-#endif
-
-#ifdef SEQUENTIAL_CONSISTENCY
-auto update_model = std::memory_order_seq_cst;
-#else
-auto update_model = std::memory_order_relaxed;
 #endif
 
 /// from https://en.wikipedia.org/wiki/Fetch-and-add#x86_implementation
@@ -47,37 +51,32 @@ int main(int argc, char * argv[])
     std::cout << "thread counter benchmark\n";
     std::cout << "num threads  = " << omp_get_max_threads() << "\n";
     std::cout << "iterations   = " << iterations << "\n";
-#ifdef SEQUENTIAL_CONSISTENCY
-    std::cout << "memory model = " << "seq_cst";
-#else
-    std::cout << "memory model = " << "relaxed";
-#endif
+    std::cout << "memory model = " << "x86 (seq_cst)";
     std::cout << std::endl;
 
-    std::atomic<int> counter = {0};
+    int counter = {0};
 
-    #pragma omp parallel
+    OMP_PARALLEL
     {
         std::atomic_thread_fence(std::memory_order_seq_cst);
 
         /// START TIME
-        #pragma omp barrier
+        OMP_BARRIER
         std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
         for (int i=0; i<iterations; ++i) {
-            //std::atomic_fetch_add(&counter, 1);
-            add((int*)(&counter), 1);
+            add(&counter, 1);
         }
 
         /// STOP TIME
-        #pragma omp barrier
+        OMP_BARRIER
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
         std::atomic_thread_fence(std::memory_order_seq_cst);
 
         /// PRINT TIME
         std::chrono::duration<double> dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1-t0);
-        #pragma omp critical
+        OMP_CRITICAL
         {
             std::cout << "total time elapsed = " << dt.count() << "\n";
             std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
@@ -87,30 +86,29 @@ int main(int argc, char * argv[])
 
     counter = 0;
 
-    #pragma omp parallel
+    OMP_PARALLEL
     {
         int output = -1;
 
         std::atomic_thread_fence(std::memory_order_seq_cst);
 
         /// START TIME
-        #pragma omp barrier
+        OMP_BARRIER
         std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 
         for (int i=0; i<iterations; ++i) {
-            //output = std::atomic_fetch_add(&counter, 1);
-            output = fetch_and_add((int*)(&counter), 1);
+            output = fetch_and_add(&counter, 1);
         }
 
         /// STOP TIME
-        #pragma omp barrier
+        OMP_BARRIER
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
         std::atomic_thread_fence(std::memory_order_seq_cst);
 
         /// PRINT TIME
         std::chrono::duration<double> dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1-t0);
-        #pragma omp critical
+        OMP_CRITICAL
         {
             std::cout << "total time elapsed = " << dt.count() << "\n";
             std::cout << "time per iteration = " << dt.count()/iterations  << "\n";

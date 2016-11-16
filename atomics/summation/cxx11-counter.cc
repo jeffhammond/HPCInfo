@@ -4,7 +4,6 @@
 #include <iomanip>
 
 #include <chrono>
-
 #include <atomic>
 
 #ifdef SEQUENTIAL_CONSISTENCY
