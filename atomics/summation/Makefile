@@ -64,6 +64,7 @@ TESTS = cxx11-counter.$(COMPILER) \
 	cxx11-counter-asm.$(COMPILER) \
 	cxx11-counter-pedantic.$(COMPILER) \
 	cxx11-summation.$(COMPILER) \
+	cxx11-reduction.$(COMPILER) \
 	cxx11-nxtval.$(COMPILER) \
 	cxx11-nxtval-vs-dynamic.$(COMPILER)
 
@@ -71,6 +72,7 @@ ASM =   cxx11-counter.$(COMPILER).s \
 	cxx11-counter-asm.$(COMPILER).s \
 	cxx11-counter-pedantic.$(COMPILER).s \
 	cxx11-summation.$(COMPILER).s \
+	cxx11-reduction.$(COMPILER).s \
 	cxx11-nxtval.$(COMPILER).s \
 	cxx11-nxtval-vs-dynamic.$(COMPILER).s
 
