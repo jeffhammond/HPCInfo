@@ -2,6 +2,8 @@ OFLAGS   := -O3 -fopenmp -Wall -fPIC
 
 # Apple debug
 # OFLAGS += -g3 -Wl,-pie
+# Intel debug
+# OFLAGS += -g3 -static-intel
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
@@ -44,6 +46,7 @@ else ifeq ($(COMPILER),intel)
     CC       = icc
     CXX      = icpc
     ASMFLAGS = -S -fverbose-asm -fcode-asm -fasm-blocks
+    OFLAGS  += -no-intel-extensions
 else
     CC       = false
     CXX      = false
@@ -61,6 +64,7 @@ TESTS = cxx11-counter.$(COMPILER) \
 	cxx11-counter-asm.$(COMPILER) \
 	cxx11-counter-pedantic.$(COMPILER) \
 	cxx11-summation.$(COMPILER) \
+	cxx11-reduction.$(COMPILER) \
 	cxx11-nxtval.$(COMPILER) \
 	cxx11-nxtval-vs-dynamic.$(COMPILER)
 
@@ -68,6 +72,7 @@ ASM =   cxx11-counter.$(COMPILER).s \
 	cxx11-counter-asm.$(COMPILER).s \
 	cxx11-counter-pedantic.$(COMPILER).s \
 	cxx11-summation.$(COMPILER).s \
+	cxx11-reduction.$(COMPILER).s \
 	cxx11-nxtval.$(COMPILER).s \
 	cxx11-nxtval-vs-dynamic.$(COMPILER).s
 

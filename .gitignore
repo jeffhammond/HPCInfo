@@ -1,0 +1,16 @@
+# objects
+*.o
+*.a
+
+# binaries
+*.x
+a.out
+
+# debugging garbage
+core
+*.dSYM
+*.dwarf
+
+# compiler garbage
+*.optrpt
+*.s
