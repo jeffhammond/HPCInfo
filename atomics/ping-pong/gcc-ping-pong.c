@@ -3,7 +3,7 @@
 #if (defined(__GNUC__) && (__GNUC__ >= 5)) || \
     (defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)) || \
     (defined(__clang__) && defined(__clang_major__) && (__clang_major__ >= 3)) || \
-    (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 1400)) || 1
+    (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 1400))
 
 #include <stdio.h>
 #include <stdlib.h>
