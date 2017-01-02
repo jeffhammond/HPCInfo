@@ -13,7 +13,8 @@ endif
 STDS = -std=c++11
 
 OPENCLFLAGS = -lOpenCL
-CFLAGS  = -m64 -O3 $(DEVICE) -I$(COMMON) $(STDS)
+OFLAGS  = -O0 -g3 -Wall
+CFLAGS  = -m64 $(OFLAGS) $(DEVICE) -I$(COMMON) $(STDS)
 LIBS = -lrt -lm
 OBJ=o
 EXE=
