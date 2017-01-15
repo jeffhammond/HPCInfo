@@ -1,16 +1,12 @@
-= Overview =
+# Atomic Support in Other Programming Models
 
-''These are Jeff's notes for the OpenACC telecon on 4/23/2013 regarding atomics.''
-
-= Atomic Support in Other Programming Models =
-
-== MPI-3 ==
+## MPI-3
 
 The one-sided remote memory access (RMA) functions in MPI-3 are:
 * MPI_FETCH_AND_OP, which upports "any of the predefined operations for MPI_REDUCE, as well as MPI_NO_OP or MPI_REPLACE".  "The datatype argument must be a predefined datatype."
 * MPI_COMPARE_AND_SWAP, which supports "C integer, Fortran integer, Logical, Multi-language types, or Byte as specified in (MPI-3) Section 5.9.2."
 
-== UPC ==
+## UPC
 
 See https://code.google.com/p/upc-specification/issues/detail?id=7 for details, specifically, [https://upc-specification.googlecode.com/issues/attachment?aid=70150000&name=upc-lib-atomic-ops-draft2.4.pdf&token=nBYlM92UbhBf7iEKALfFE-kLJ3M%3A1366732269476 upc-lib-atomic-ops-draft2.4.pdf]
 
@@ -28,7 +24,7 @@ The following table presents the required support for operations and operand ￼
 * Supported bit-wise operations are UPC_AND, UPC_OR, and UPC_XOR.
 * Supported numeric operations are UPC_ADD, UPC_SUB, UPC_MULT, UPC_INC, UPC_DEC, UPC_MAX, and UPC_MIN.
 
-== OpenSHMEM ==
+## OpenSHMEM
 
 See http://openshmem.org/.
 
@@ -44,7 +40,7 @@ Types:
 * C int,long, and long long
 * C float and double for swap only
 
-== OpenMP == 
+## OpenMP
 
 From http://publib.boulder.ibm.com/infocenter/lnxpcomp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8l.doc%2Fcompiler%2Fref%2Fruprpdir.htm, the operations supported are:
 <pre>
@@ -57,7 +53,7 @@ x--
 
 It would be good to have an authoritative answer for what is part of OpenMP 3.1+...
 
-== Intel TBB ==
+## Intel TBB
 
 See http://threadingbuildingblocks.org/docs/help/reference/synchronization/atomic_cls.htm.
 
@@ -68,21 +64,17 @@ TBB's atomic<T> supports the following operations, where T may be an integral ty
 * compare_and_swap
 * fetch_and_store (aka swap)
 
-== CUDA ==
+## CUDA
 
 See http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#atomic-functions
 
-== OpenCL ==
+## OpenCL
 
 See http://www.khronos.org/registry/cl/sdk/1.2/docs/man/xhtml/atomicFunctions.html and http://www.khronos.org/registry/cl/specs/opencl-1.2.pdf#page=279.
 
-== GCC ==
+## GCC
 
 See 
 * http://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Atomic-Builtins.html
 * http://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/_005f_005fatomic-Builtins.html#g_t_005f_005fatomic-Builtins
 * http://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
-
-= Telecon Notes =
-
-No one disputes that atomics are a good thing.  The question is how to do them on hardware other than NVIDIA Kepler, for example.
