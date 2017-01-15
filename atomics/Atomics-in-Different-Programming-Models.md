@@ -3,20 +3,20 @@
 ## MPI-3
 
 The one-sided remote memory access (RMA) functions in MPI-3 are:
-* MPI_FETCH_AND_OP, which upports "any of the predefined operations for MPI_REDUCE, as well as MPI_NO_OP or MPI_REPLACE".  "The datatype argument must be a predefined datatype."
-* MPI_COMPARE_AND_SWAP, which supports "C integer, Fortran integer, Logical, Multi-language types, or Byte as specified in (MPI-3) Section 5.9.2."
+* `MPI_Fetch_and_op`, which supports "any of the predefined operations for `MPI_Reduce`, as well as `MPI_NO_OP` or `MPI_REPLACE`.  "The datatype argument must be a predefined datatype."
+* `MPI_Compare_and_swap`, which supports "C integer, Fortran integer, Logical, Multi-language types, or Byte as specified in (MPI-3) Section 5.9.2."
 
 ## UPC
 
-See https://code.google.com/p/upc-specification/issues/detail?id=7 for details, specifically, [https://upc-specification.googlecode.com/issues/attachment?aid=70150000&name=upc-lib-atomic-ops-draft2.4.pdf&token=nBYlM92UbhBf7iEKALfFE-kLJ3M%3A1366732269476 upc-lib-atomic-ops-draft2.4.pdf]
+See [UPC 1.3](https://upc-lang.org/assets/Uploads/spec/upc-lang-spec-1.3.pdf).
 
 The following table presents the required support for operations and operand ￼types:
-<table border="1" cellpadding="4" cellspacing="0">
-<tr><th>Operand Type</th><th>Accessors</th><th>Bit-wise Ops</th><th>Numeric Ops</th></tr>
-<tr><td>Integer</td><td>X</td><td>X</td><td>X</td></tr>
-<tr><td>Floating Point</td><td>X</td><td></td><td>X</td></tr>
-<tr><td><tt>UPC_PTS</tt></td><td>X</td><td></td><td></td></tr>
-</table>
+Operand Type|Accessors|Bit-wise Ops|Numeric Ops
+---|---|---|---
+Integer|X|X|X
+Floating Point|X||X
+`UPC_PTS`|X||
+
 ￼￼￼￼where
 * Supported integer types are UPC_INT, UPC_UINT, UPC_LONG, UPC_ULONG, UPC_INT32, UPC_UINT32, UPC_INT64, and UPC_UINT64.
 * Supported floating-point types are UPC_FLOAT and UPC_DOUBLE.
@@ -43,13 +43,13 @@ Types:
 ## OpenMP
 
 From http://publib.boulder.ibm.com/infocenter/lnxpcomp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8l.doc%2Fcompiler%2Fref%2Fruprpdir.htm, the operations supported are:
-<pre>
+```
 +  *  -  /  &  ^  |  <<  >>
 x++	 
 ++x	 
 x--	 
 --x
-</pre>
+```
 
 It would be good to have an authoritative answer for what is part of OpenMP 3.1+...
 
@@ -57,12 +57,12 @@ It would be good to have an authoritative answer for what is part of OpenMP 3.1+
 
 See http://threadingbuildingblocks.org/docs/help/reference/synchronization/atomic_cls.htm.
 
-TBB's atomic<T> supports the following operations, where T may be an integral type, enumeration type, or a pointer type. 
-* fetch_and_add
-* fetch_and_increment
-* fetch_and_decrement
-* compare_and_swap
-* fetch_and_store (aka swap)
+TBB's `atomic<T>` supports the following operations, where T may be an integral type, enumeration type, or a pointer type. 
+* `fetch_and_add`
+* `fetch_and_increment`
+* `fetch_and_decrement`
+* `compare_and_swap`
+* `fetch_and_store` (aka swap)
 
 ## CUDA
 
