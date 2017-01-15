@@ -1,4 +1,6 @@
-# Atomic Support in Other Programming Models
+# Atomic Support in Various Programming Models
+
+This is stale.  The content here is from April 2013.  I will try to update it at some point.
 
 ## MPI-3
 
