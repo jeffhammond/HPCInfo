@@ -28,12 +28,12 @@ int main(int argc, char* argv[]) {
   int n = (argc>1) ? atoi(argv[1]) : 1<<20;
   int np = omp_get_max_threads();
   if (np<2) exit(1);
-  int ** A = ompx_calloc(n*sizeof(int));
+  int ** A = (int**)ompx_calloc(n*sizeof(int));
   #pragma omp parallel shared(A)
   {
      /* threaded computation */
   }
-  ompx_free(A);
+  ompx_free((void**)A);
   return 0;
 }
 
