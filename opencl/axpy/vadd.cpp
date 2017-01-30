@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
         for(int i = 0; i < count; ++i) {
             float tmp = (h_a[i] + h_b[i]) - h_c[i];
             if(tmp*tmp < threshold*threshold) {
-                correct++;
+                ++correct;
             } else {
                 std::cerr << " tmp=" << tmp << " h_a=" << h_a[i] << " h_b=" << h_b[i] << " h_c=" << h_c[i] << " \n";
             }
