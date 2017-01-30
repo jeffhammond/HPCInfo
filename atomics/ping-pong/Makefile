@@ -1,10 +1,3 @@
-OFLAGS   := -O3 -fopenmp -Wall -fPIC
-
-# Apple debug 
- OFLAGS += -g3 -Wl,-pie
-
-#OFLAGS   += -DSEQUENTIAL_CONSISTENCY
-
 ifndef COMPILER
     COMPILER=gcc
 endif
@@ -24,13 +17,29 @@ else ifeq ($(COMPILER),intel)
 CC       := icc
 CXX      := icpc
 ASMFLAGS  = -S -fverbose-asm -fcode-asm -fasm-blocks
+else ifeq ($(COMPILER),pgi)
+CC       := pgcc
+CXX      := pgc++
+ASMFLAGS  =
 else
 CC       := false
 CXX      := false
 endif
 
+ifeq ($(COMPILER),pgi)
+OFLAGS   := -O3 -mp
+CFLAGS   := $(OFLAGS) -c11
+CXXFLAGS := $(OFLAGS) --c++11
+else
+OFLAGS   := -O3 -fopenmp -Wall -fPIC
 CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
 CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
+endif
+
+# Apple debug 
+OFLAGS += -g3 -Wl,-pie
+
+#OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
 LIBS     = $(OMPLIBS)
 
