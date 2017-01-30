@@ -16,7 +16,7 @@ EXES     = vadd$(EXE)
 all: $(EXES)
 
 vadd$(EXE): vadd.cpp.$(OBJ) vadd.cl
-	$(CLINKER) $(CFLAGS) $(OPENCLFLAGS) -o vadd$(EXE) vadd.$(OBJ) $(LIBS)
+	$(CLINKER) $(CFLAGS) vadd.$(OBJ) $(LIBS) $(OPENCLFLAGS) -o vadd$(EXE)
 
 test: $(EXES)
 	$(PRE)vadd$(EXE);
