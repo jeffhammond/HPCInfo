@@ -12,7 +12,7 @@ LIBS	= #-static-intel
 LD	= $(CC)
 LDFLAGS = $(CFLAGS)
 
-all: test_vadd.x
+all: test_vadd.x test_syscall.x
 
 %.x: %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
