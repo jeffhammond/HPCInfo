@@ -47,6 +47,20 @@ void vadd1(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 
 void vadd2(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
+#if defined(_OPENMP) && (_OPENMP >= 201307)
+    //#pragma omp target teams distribute map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
+    #pragma omp target map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
+    #pragma omp parallel for simd
+#else
+    #warning No OpenMP target/simd support!
+    #pragma omp parallel for
+#endif
+    for(int i = 0; i < n; i++)
+        c[i] = a[i] + b[i];
+}
+
+void vadd3(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
+{
 #ifdef __cilk
     _Cilk_for(int i = 0; i < n; i++)
 #else
@@ -56,7 +70,7 @@ void vadd2(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
         c[i] = a[i] + b[i];
 }
 
-void vadd3(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
+void vadd4(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
 #ifdef __cilk
     #if defined(__INTEL_COMPILER) && defined(__INTEL_OFFLOAD)
@@ -69,20 +83,6 @@ void vadd3(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
     #warning No Cilk support.  Using sequential for loop.
     for(int i = 0; i < n; i++)
 #endif
-        c[i] = a[i] + b[i];
-}
-
-void vadd4(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
-{
-#if defined(_OPENMP) && (_OPENMP >= 201307)
-    //#pragma omp target teams distribute map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
-    #pragma omp target map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
-    #pragma omp parallel for simd
-#else
-    #warning No OpenMP target/simd support!
-    #pragma omp parallel for
-#endif
-    for(int i = 0; i < n; i++)
         c[i] = a[i] + b[i];
 }
 
@@ -132,6 +132,12 @@ int main(int argc, char * argv[])
     float * z5 = calloc(n,sizeof(float)); assert(z5!=NULL);
 #endif
 
+#if 0 && defined(_OPENMP) && (_OPENMP >= 201307)
+    int nthrd = omp_get_max_threads();
+    int ndevs = omp_get_num_devices();
+    printf("OpenMP threads = %d devices = %d\n", nthrd, ndevs);
+#endif
+
     for (int i=0; i<n; i++) {
         x[i] = (float)i;
     }
@@ -158,21 +164,22 @@ int main(int argc, char * argv[])
 #endif
         printf("%20s time = %lf             \n", "for",                      t1-t0);
         printf("%20s time = %lf (error=%lf) \n", "OpenMP for",               t2-t1, vdiff(n,z0,z1));
-        printf("%20s time = %lf (error=%lf) \n", "_Cilk_for",                t3-t2, vdiff(n,z0,z2));
-        printf("%20s time = %lf (error=%lf) \n", "offload _Cilk_for",        t4-t3, vdiff(n,z0,z3));
-        printf("%20s time = %lf (error=%lf) \n", "OpenMP offload for",       t5-t4, vdiff(n,z0,z4));
+        printf("%20s time = %lf (error=%lf) \n", "OpenMP offload for",       t3-t2, vdiff(n,z0,z2));
+#ifdef __cilk
+        printf("%20s time = %lf (error=%lf) \n", "_Cilk_for",                t4-t3, vdiff(n,z0,z3));
+        printf("%20s time = %lf (error=%lf) \n", "offload _Cilk_for",        t5-t4, vdiff(n,z0,z4));
+#endif
 #if USE_GFX
         printf("%20s time = %lf (error=%lf) \n", "GFX RT offload _Cilk_for", t6-t5, vdiff(n,z0,z5));
-#endif
-
-#if USE_GFX
+#if 0
         for (int i=0; i<n; i++) {
             printf("%d z0=%f z5=%f\n", i, z0[i], z5[i]);
         }
 #endif
+#endif
 
         /* prevent compiler from optimizing away anything */
-        double junk = 0.0;
+        double junk = t0+t1+t2+t3+t4+t5;
         for (int i=0; i<n; i++) {
             junk += z0[i] + z1[i] + z2[i] + z3[i] + z4[i]; // + z5[i];
         }
