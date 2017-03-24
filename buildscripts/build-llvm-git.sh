@@ -84,6 +84,10 @@ cmake $LLVM_TOP/git  -G "Unix Makefiles" \
     -DCMAKE_CXX_COMPILER=g++$GCC_VERSION \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_TARGETS_TO_BUILD=X86 \
+    -DLLVM_ENABLE_CXX1Y=YES \
+    -DLLVM_ENABLE_LIBCXX=YES \
     -DPYTHON_EXECUTABLE=`which python`
+    #-DLLVM_ENABLE_LLD=YES \
+    #-DLLVM_ENABLE_LTO=Full \
 make -j 32
 make -j 32 install
