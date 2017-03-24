@@ -1,6 +1,6 @@
 OFLAGS ?= -Os -Wall -fPIC -std=gnu99
 
-# Apple debug 
+# Apple debug
 # OFLAGS += -g3 -Wl,-pie
 OFLAGS += -g3
 
@@ -29,7 +29,7 @@ LIBS     := $(OMPLIBS)
 LD       := $(CC)
 LDFLAGS  := $(OFLAGS)
 
-TESTS = test-mprotect.x
+TESTS = test-mprotect.x test-canonical-addressing.x
 
 all: $(TESTS)
 
