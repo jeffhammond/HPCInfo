@@ -40,11 +40,16 @@ static void handler(int sig, siginfo_t * info, void * state /* never use this */
     void * a = info->si_addr;
 
 #ifdef DEBUG
+#ifdef __linux__
     /* these are at best unrelable in practice */
     void * l = info->si_lower;
     void * u = info->si_upper;
+#else
+    void * l = NULL;
+    void * u = NULL;
 #endif
-    
+#endif
+
     /* b is the base address of the page that contains a. */
 #ifdef DEBUG
     /* all three methods of masking away the page-offset bits are equivalent,
