@@ -85,5 +85,5 @@ cmake $LLVM_TOP/git  -G "Unix Makefiles" \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_TARGETS_TO_BUILD=X86 \
     -DPYTHON_EXECUTABLE=`which python`
-make -j
-make -j install
+make -j 32
+make -j 32 install
