@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 # Persistent location for source and binaries
-GCC_HOME=$HOME/GCC
+GCC_HOME=/opt/gcc/
 mkdir -p $GCC_HOME
 
 # Download/update the source
@@ -35,5 +35,5 @@ $GCC_HOME/git/configure \
 --enable-gold=yes \
 --enable-ld=yes \
 --prefix=$GCC_HOME/HEAD
-make -j15
-make install || sudo make install
+make -j32
+make -j32 install || sudo make -j32 install
