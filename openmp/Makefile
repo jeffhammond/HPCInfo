@@ -1,5 +1,5 @@
 OPT	 := -O3 -fopenmp
-CC       := clang-omp
+CC       := clang
 CFLAGS   := $(OPT) -std=c11
 FC	 := ifort
 FFLAGS   := $(OPT)
