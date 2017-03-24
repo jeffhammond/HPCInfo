@@ -28,8 +28,8 @@ ifeq ($(COMPILER),gcc)
     ASMFLAGS = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
     # Linux
-    CC  = clang
-    CXX = clang++
+    CC  = clang --gcc-toolchain=/opt/gcc/latest
+    CXX = clang++ --gcc-toolchain=/opt/gcc/latest
     # Default Clang on Mac does not support OpenMP
     # This macro does not work as desired on Linux
     # This macro is from the NWChem build system
@@ -43,6 +43,8 @@ else ifeq ($(COMPILER),clang)
             # Clang may try to link libomp, so we symlink this to libiomp5
             OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
         endif
+    else
+	OMPFLAGS = -fopenmp
     endif
     ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),intel)
