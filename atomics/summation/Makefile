@@ -1,4 +1,6 @@
-OFLAGS   := -O3 -fopenmp -Wall -fPIC
+GCC_VERSION = -7
+
+OFLAGS = -O3
 
 # Apple debug
 # OFLAGS += -g3 -Wl,-pie
@@ -19,9 +21,10 @@ ifeq ($(COMPILER),gcc)
     IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22 | awk ' /6/  {print "N";exit}; /5/  {print "N";exit}; /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
     ifeq ($(IS_GCC4),Y)
         # Homebrew on Mac
-        CC  = gcc-6
-        CXX = g++-6
+        CC  = gcc$(GCC_VERSION)
+        CXX = g++$(GCC_VERSION)
     endif
+    OMPFLAGS = -fopenmp
     ASMFLAGS = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
     # Linux
@@ -30,7 +33,7 @@ else ifeq ($(COMPILER),clang)
     # Default Clang on Mac does not support OpenMP
     # This macro does not work as desired on Linux
     # This macro is from the NWChem build system
-    IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22 | awk ' /6/  {print "N";exit}; /5/  {print "N";exit}; /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
+    #IS_GCC4= $(shell $(CC) -dM -E - < /dev/null | egrep __VERS | cut -c22 | awk ' /6/  {print "N";exit}; /5/  {print "N";exit}; /3/  {print "N";exit}; /2/ {print "N";exit};{print "Y"}')
     ifeq ($(IS_GCC4),Y)
         # Homebrew on Mac
         CC  = clang-3.8
@@ -43,17 +46,18 @@ else ifeq ($(COMPILER),clang)
     endif
     ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),intel)
-    CC       = icc
-    CXX      = icpc
+    CC       = icc -gcc-name=gcc$(GCC_VERSION)
+    CXX      = icpc -gxx-name=g++$(GCC_VERSION)
     ASMFLAGS = -S -fverbose-asm -fcode-asm -fasm-blocks
     OFLAGS  += -no-intel-extensions
+    OMPFLAGS = -qopenmp
 else
     CC       = false
     CXX      = false
 endif
 
-CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
-CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
+CFLAGS   = $(OFLAGS) $(OMPFLAGS) -std=c11
+CXXFLAGS = $(OFLAGS) $(OMPFLAGS) -std=c++11
 
 LIBS     = $(OMPLIBS)
 
