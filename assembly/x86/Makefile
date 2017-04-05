@@ -3,7 +3,7 @@ CFLAGS	= -g -Wall -O2 -std=gnu99 -fopenmp
 
 .PHONY: all clean
 
-all: mov.x pause.x
+all: mov.x pause.x cpuid.x
 
 %.x: %.c
 	$(CC) $(CFLAGS) $< -o $@
