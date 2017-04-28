@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void * calloc (size_t x, size_t y)
+void * mycalloc(size_t x, size_t y)
 {
     size_t sz;
     if (__builtin_mul_overflow (x, y, &sz)) return NULL;
@@ -14,3 +14,7 @@ void * calloc (size_t x, size_t y)
     return ret;
 }
 
+int main(void)
+{
+    return (mycalloc(1,1)!=NULL);
+} 
