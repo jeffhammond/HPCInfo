@@ -6,15 +6,21 @@
 
 int main (void)
 {
-    int32_t a, b, c, d;
-    __cpuid (0 /* vendor string */, a, b, c, d);
-    printf("EAX: %x\nEBX: %x\nECX: %x\nEDX: %x\n", a, b, c, d);
-    a = 1024;
-    for (uint32_t i=1; i<=32; i++) {
-        printf("%d", (a >> i) & 0x00000001 );
-        if ((i%4)==0) printf("|");
+    int32_t e[4];
+    char n[4] = {'A','B','C','D'};
+    __cpuid (0 /* vendor string */, e[0], e[1], e[2], e[3]);
+    printf("------------------------------------------------------\n");
+    printf("(hi-to-lo)   |1098|7654|3210|9876|5432|1098|7654|3210|\n");
+    printf("------------------------------------------------------\n");
+    for (int j=0; j<4; j++) {
+        printf("E%cX=%8x=|",n[j],e[j]);
+        for (int32_t i=31; i>=0; i--) {
+            printf("%d", e[j] & (1<<i) ? 1 : 0);
+            if ((i%4)==0) printf("|");
+        }
+        printf("\n");
     }
-    printf("\n");
+    printf("------------------------------------------------------\n");
     return 0;
 }
 

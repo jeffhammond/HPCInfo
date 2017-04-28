@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-JNUM=8
+JNUM=1
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
