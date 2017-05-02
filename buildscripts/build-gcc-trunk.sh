@@ -24,7 +24,7 @@ cd $GCC_HOME/git
 mkdir -p /tmp/gcc-build
 cd /tmp/gcc-build
 $GCC_HOME/git/configure \
---program-suffix=-7 \
+--program-suffix=-8 \
 --disable-multilib \
 --enable-threads=posix \
 --enable-checking=release \

@@ -90,6 +90,7 @@ process_lib() {
 
 process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
   --enable-shared --enable-static \
+  --program-suffix=-7 \
   --enable-threads=posix \
   --enable-checking=release \
   --with-system-zlib \
