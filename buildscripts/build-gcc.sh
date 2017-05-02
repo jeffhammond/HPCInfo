@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-JNUM=1
+MAKE_JNUM=1
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
@@ -53,7 +53,7 @@ process_lib() {
             ./contrib/download_prerequisites
         fi
         mkdir build ; cd build
-        ../configure --prefix=${GCC_DIR} $6 && make -j ${MAKE_JNUM} && make install
+        ../configure --prefix=${GCC_DIR} $6 && make -j${MAKE_JNUM} && make install
         if [ "x$?" != "x0" ] ; then
             echo FAILURE 1
             exit
