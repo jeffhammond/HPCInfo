@@ -37,5 +37,5 @@ $GCC_HOME/git/configure \
 --enable-gold=yes \
 --enable-ld=yes \
 --prefix=$GCC_HOME/HEAD
-make -j$MAKE_JNUM
-make -j$MAKE_JNUM install || sudo make -j$MAKE_JNUM install
+make -j${MAKE_JNUM}
+make -j${MAKE_JNUM} install || sudo make -j${MAKE_JNUM} install
