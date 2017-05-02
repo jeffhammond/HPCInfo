@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-MAKE_JNUM=1
+MAKE_JNUM="-j8"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
@@ -11,7 +11,8 @@ MPC_VERSION=0.8.1
 ISL_VERSION=0.15
 CLOOG_VERSION=0.18.0
 #GCC_VERSION=5.4.0
-GCC_VERSION=6.3.0
+#GCC_VERSION=6.3.0
+GCC_VERSION=7.1.0
 
 CPU=native
 
@@ -53,7 +54,7 @@ process_lib() {
             ./contrib/download_prerequisites
         fi
         mkdir build ; cd build
-        ../configure --prefix=${GCC_DIR} $6 && make -j${MAKE_JNUM} && make install
+        ../configure --prefix=${GCC_DIR} $6 && make ${MAKE_JNUM} && make install
         if [ "x$?" != "x0" ] ; then
             echo FAILURE 1
             exit
