@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-MAKE_JNUM="-j8"
+MAKE_JNUM="-j4"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
@@ -22,12 +22,9 @@ GCC_BUILD=/tmp/gcc-$GCC_VERSION
 
 mkdir -p ${GCC_BUILD}
 
-
 # process_lib: download, configure, build, install one of the gcc prerequisite
 # libraries
 # usage: process_lib <library> <version> <suffix> <path> <doodad> <configure_args>
-#
-
 process_lib() {
     cd ${GCC_BUILD}
     TOOL=$1
@@ -62,33 +59,8 @@ process_lib() {
     fi
 }
 
-#process_lib gmp $GMP_VERSION bz2 infrastructure lib/libgmp.a
-#process_lib mpfr $MPFR_VERSION bz2 infrastructure lib/libmpfr.a "--with-gmp=$GCC_DIR --enable-shared --enable-static"
-#process_lib mpc $MPC_VERSION gz infrastructure lib/libmpc.a "--with-gmp=$GCC_DIR --enable-shared --enable-static"
-#process_lib isl $ISL_VERSION bz2 infrastructure lib/libisl.a "--with-gmp-prefix=$GCC_DIR \
-#--with-gcc-arch=$CPU --enable-shared --enable-static"
-#process_lib cloog $CLOOG_VERSION gz infrastructure lib/libcloog-isl.a "--with-gmp-prefix=$GCC_DIR \
-#--with-isl-prefix=$GCC_DIR --with-gcc-arch=$CPU --enable-shared --enable-static"
-
-#process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
-#  --enable-shared --enable-static \
-#  --enable-threads=posix \
-#  --enable-checking=release \
-#  --with-system-zlib \
-#  --enable-__cxa_atexit \
-#  --enable-languages=c,c++,fortran \
-#  --with-tune=$CPU \
-#  --enable-bootstrap \
-#  --enable-lto \
-#  --with-gmp=$GCC_DIR \
-#  --with-mpfr=$GCC_DIR \
-#  --with-mpc=$GCC_DIR \
-#  --with-cloog=$GCC_DIR \
-#  --with-isl=$GCC_DIR --disable-isl-version-check \
-#  --disable-multilib
-#"
-
 process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
+  --program-suffix=-$GCC_VERSION \
   --enable-shared --enable-static \
   --enable-threads=posix \
   --enable-checking=release \
