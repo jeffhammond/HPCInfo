@@ -5,8 +5,8 @@ MAKE_JNUM="-j4"
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
 #GCC_VERSION=5.4.0
-GCC_VERSION=6.3.0
-#GCC_VERSION=7.1.0
+#GCC_VERSION=6.3.0
+GCC_VERSION=7.1.0
 
 CPU=native
 
@@ -64,6 +64,8 @@ process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
   --with-tune=$CPU \
   --enable-bootstrap \
   --enable-lto \
+  --enable-gold=yes \
+  --enable-ld=yes \
   --disable-multilib
 "
 
