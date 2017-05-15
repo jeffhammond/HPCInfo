@@ -1,6 +1,9 @@
 #!/bin/bash -ex
 
-export GCC_VERSION=-7
+export MAKE_JNUM="make -j4"
+
+export GCC_VERSION=
+export GCC_PREFIX=/opt/gcc/latest
 
 # where LLVM source and install will live
 export LLVM_TOP=/opt/llvm
@@ -86,8 +89,9 @@ cmake $LLVM_TOP/git  -G "Unix Makefiles" \
     -DLLVM_TARGETS_TO_BUILD=X86 \
     -DLLVM_ENABLE_CXX1Y=YES \
     -DLLVM_ENABLE_LIBCXX=YES \
-    -DPYTHON_EXECUTABLE=`which python`
+    -DGCC_INSTALL_PREFIX=$GCC_PREFIX \
+    -DPYTHON_EXECUTABLE=`which python` \
     #-DLLVM_ENABLE_LLD=YES \
-    #-DLLVM_ENABLE_LTO=Full \
-make -j 32
-make -j 32 install
+    #-DLLVM_ENABLE_LTO=Full
+
+${MAKE_JNUM} && make install
