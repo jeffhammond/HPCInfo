@@ -55,24 +55,23 @@ program test
     endif
 
     ! initialize A
+    call random_number(a)
     do j=1,n
-        call random_number(x)
-        x = x-0.5
-        a(j,j) = x
         do i=1,j-1
-            call random_number(x)
-            x = x-0.5
-            a(i,j) = x
-            a(j,i) = x
+            a(j,i) = a(i,j)
         enddo
     enddo
 
-    print*,'A=',a
+    if (n.lt.100) then
+        print*,'A=',a
+    endif
 
     ! UPLO should not matter
     call dsyev('V','U',n,a,n,e,w,3*n,info)
 
-    print*,'A=',a
-    print*,'lambda=',e
+    if (n.lt.100) then
+        print*,'A=',a
+        print*,'lambda=',e
+    endif
 
 end program test

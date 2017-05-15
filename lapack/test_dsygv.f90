@@ -61,38 +61,33 @@ program test
     endif
 
     ! initialize A
+    call random_number(a)
     do j=1,n
-        call random_number(x)
-        x = x-0.5
-        a(j,j) = x
         do i=1,j-1
-            call random_number(x)
-            x = x-0.5
-            a(i,j) = x
-            a(j,i) = x
+            a(j,i) = a(i,j)
         enddo
     enddo
 
     ! initialize B
+    call random_number(b)
     do j=1,n
-        call random_number(x)
-        b(j,j) = 1+x
         do i=1,j-1
-            call random_number(x)
-            x = x/(i+j)
-            b(i,j) = x
-            b(j,i) = x
+            b(j,i) = b(i,j)
         enddo
     enddo
 
-    print*,'A=',a
-    print*,'B=',b
+    if (n.lt.100) then
+        print*,'A=',a
+        print*,'B=',b
+    endif
 
     ! UPLO should not matter
     call dsygv(1,'V','U',n,a,n,b,n,e,w,3*n,info)
 
-    print*,'A=',a
-    print*,'B=',b
-    print*,'lambda=',e
+    if (n.lt.100) then
+        print*,'A=',a
+        print*,'B=',b
+        print*,'lambda=',e
+    endif
 
 end program test
