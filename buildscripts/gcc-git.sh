@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-MAKE_JNUM=1
+MAKE_JNUM="-j8"
 
 # Persistent location for source and binaries
 GCC_HOME=/opt/gcc/
@@ -24,7 +24,7 @@ cd $GCC_HOME/git
 mkdir -p /tmp/gcc-build
 cd /tmp/gcc-build
 $GCC_HOME/git/configure \
---program-suffix=-7 \
+--program-suffix=-8 \
 --disable-multilib \
 --enable-threads=posix \
 --enable-checking=release \
@@ -37,5 +37,5 @@ $GCC_HOME/git/configure \
 --enable-gold=yes \
 --enable-ld=yes \
 --prefix=$GCC_HOME/HEAD
-make -j${MAKE_JNUM}
-make -j${MAKE_JNUM} install || sudo make -j${MAKE_JNUM} install
+make ${MAKE_JNUM}
+make ${MAKE_JNUM} install || sudo make ${MAKE_JNUM} install
