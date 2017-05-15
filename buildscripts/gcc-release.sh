@@ -1,26 +1,27 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 
-MAKE_JNUM="-j32"
+GCC_BASE=/opt/gcc
+#GCC_BASE=$HOME/Work/GCC/
+
+MAKE_JNUM="-j8"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
+CPU=native
+
+# See below.  All of these versions are installed.
 #GCC_VERSION=4.9.4
 #GCC_VERSION=5.4.0
 #GCC_VERSION=6.3.0
-GCC_VERSION=7.1.0
-
-CPU=native
-
-#GCC_DIR=$HOME/Work/GCC/gcc-$GCC_VERSION
-GCC_DIR=/opt/gcc/$GCC_VERSION
-GCC_BUILD=/tmp/gcc-$GCC_VERSION
-
-mkdir -p ${GCC_BUILD}
+#GCC_VERSION=7.1.0
 
 # process_lib: download, configure, build, install one of the gcc prerequisite
 # libraries
 # usage: process_lib <library> <version> <suffix> <path> <doodad> <configure_args>
 process_lib() {
+    GCC_DIR=$GCC_BASE/$GCC_VERSION
+    GCC_BUILD=/tmp/gcc-$GCC_VERSION
+    mkdir -p ${GCC_BUILD}
     cd ${GCC_BUILD}
     TOOL=$1
     TDIR=${TOOL}-${2}
@@ -54,20 +55,21 @@ process_lib() {
     fi
 }
 
-process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
-  --program-suffix=-${GCC_VERSION:0:1} \
-  --enable-shared --enable-static \
-  --program-suffix=-7 \
-  --enable-threads=posix \
-  --enable-checking=release \
-  --with-system-zlib \
-  --enable-__cxa_atexit \
-  --enable-languages=c,c++,fortran \
-  --with-tune=$CPU \
-  --enable-bootstrap \
-  --enable-lto \
-  --enable-gold=yes \
-  --enable-ld=yes \
-  --disable-multilib
-"
-
+for v in 7.1.0 6.3.0 5.4.0 4.9.4 ; do
+    GCC_VERSION=$v
+    process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
+      --program-suffix=-${GCC_VERSION:0:1} \
+      --enable-shared --enable-static \
+      --enable-threads=posix \
+      --enable-checking=release \
+      --with-system-zlib \
+      --enable-__cxa_atexit \
+      --enable-languages=c,c++,fortran \
+      --with-tune=$CPU \
+      --enable-bootstrap \
+      --enable-lto \
+      --enable-gold=yes \
+      --enable-ld=yes \
+      --disable-multilib
+    "
+done
