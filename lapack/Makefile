@@ -9,7 +9,7 @@ LIBS     = -mkl
 LD       = $(FC)
 LDFLAGS  = $(FFLAGS)
 
-TESTS = test_dsygv #test_dsyev
+TESTS = test_dsygv test_dsyev
 
 all: $(TESTS)
 
