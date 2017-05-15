@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-MAKE_JNUM="-j32"
+MAKE_JNUM="-j8"
 
 # Persistent location for source and binaries
 GCC_HOME=/opt/gcc/
