@@ -1,15 +1,19 @@
-FC      := gfortran
-FFLAGS   = -g -O2 
+FC       = gfortran
+FFLAGS   = -O2 -ffast-math
 LIBS     = -framework Accelerate
+
+FC       = ifort
+FFLAGS   = -Ofast
+LIBS     = -mkl
 
 LD       = $(FC)
 LDFLAGS  = $(FFLAGS)
 
-TESTS = test_eigen
+TESTS = test_dsygv #test_dsyev
 
 all: $(TESTS)
 
-%: %.f
+%: %.f90
 	$(FC) $(FFLAGS) $< $(LIBS) -o $@
 
 clean:
