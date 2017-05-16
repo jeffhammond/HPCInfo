@@ -1,7 +1,7 @@
 program test
 
-    use ISO_FORTRAN_ENV
-    use OMP_LIB
+    use iso_fortran_env
+    use omp_lib
 
     implicit none
 
@@ -10,22 +10,24 @@ program test
     integer :: arglen
     character(len=32) :: argtmp
 
+    ! timing repetitions
+    integer :: reps = 20
+
     ! matrix dimension
     integer :: n
     ! matrix input, output and work arrays
-    double precision, allocatable ::  a(:,:) ! n,n
-    double precision, allocatable ::  b(:,:) ! n,n
+    double precision, allocatable ::  a0(:,:), a(:,:) ! n,n
+    double precision, allocatable ::  b0(:,:), b(:,:) ! n,n
     double precision, allocatable ::  e(:) ! n
     double precision, allocatable ::  w(:) ! 3*n
+
+    double precision :: t0, t1, dt, esum
 
     ! LAPACK error code
     integer :: info
 
     ! loop indices
     integer :: i,j,k
-
-    ! temporary - to be removed
-    double precision :: x
 
     call random_seed()
 
@@ -39,9 +41,19 @@ program test
     endif
 
     ! allocate arrays
+    allocate( a0(n,n), stat=err)
+    if (err .ne. 0) then
+        write(*,'(a,i3)') 'allocation of A0 returned ',err
+        stop
+    endif
     allocate( a(n,n), stat=err)
     if (err .ne. 0) then
         write(*,'(a,i3)') 'allocation of A returned ',err
+        stop
+    endif
+    allocate( b0(n,n), stat=err)
+    if (err .ne. 0) then
+        write(*,'(a,i3)') 'allocation of B0 returned ',err
         stop
     endif
     allocate( b(n,n), stat=err)
@@ -61,33 +73,60 @@ program test
     endif
 
     ! initialize A
-    call random_number(a)
+    call random_number(a0)
     do j=1,n
         do i=1,j-1
-            a(j,i) = a(i,j)
+            a0(j,i) = a0(i,j)
         enddo
     enddo
 
     ! initialize B
-    call random_number(b)
+    call random_number(b0)
     do j=1,n
         do i=1,j-1
-            b(j,i) = b(i,j)
+            b0(j,i) = b0(i,j)
         enddo
     enddo
 
     if (n.lt.100) then
-        print*,'A=',a
-        print*,'B=',b
+        print*,'A=',a0
+        print*,'B=',b0
     endif
 
     ! UPLO should not matter
-    call dsygv(1,'V','U',n,a,n,b,n,e,w,3*n,info)
+    do k=0,reps
+        a = a0
+        b = b0
+        t0 = omp_get_wtime()
+        call dsygv(1,'V','U',n,a,n,b,n,e,w,3*n,info)
+        if (info.ne.0) then
+            if (info.lt.0) then
+                print*,'argument ',-info,' is wrong'
+            else if (info.gt.0) then
+                print*,'DPOTRF or DSYEV returned an error code'
+                if (info.le.n) then
+                    print*,'DSYEV failed to converge'
+                else
+                    print*,'minor of B is not positive definite.'
+                endif
+            endif
+            stop
+        endif
+        t1 = omp_get_wtime()
+        if (k.ge.1) dt = dt + (t1-t0)
+    enddo
 
     if (n.lt.100) then
         print*,'A=',a
         print*,'B=',b
         print*,'lambda=',e
     endif
+    print*,'dt=',dt/reps
+
+    esum = 0.0d0
+    do i=1,n
+        esum = esum + e(i)
+    enddo
+    print*,'esum=',esum
 
 end program test
