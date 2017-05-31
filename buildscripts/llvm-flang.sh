@@ -1,97 +1,66 @@
 #!/bin/bash -ex
 
-export MAKE_JNUM="make -j4"
-
-export GCC_VERSION=
-export GCC_PREFIX=/opt/gcc/latest
+export MAKE_JNUM="make -j8"
 
 # where LLVM source and install will live
-export LLVM_TOP=/opt/llvm
+export LLVM_TOP=/opt/llvm/pgi-flang
 
 # where LLVM is compiled
 export LLVM_TMP=/tmp/$USER-llvm-build
 
 mkdir -p $LLVM_TOP
 
-WHAT=$LLVM_TOP/git
+WHAT=$LLVM_TOP/llvm-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
     cd $LLVM_TOP
-    git clone http://llvm.org/git/llvm.git git
-    cd git
-    git config branch.master.rebase true
+    git clone -b release_39 https://github.com/llvm-mirror/llvm.git llvm-git
 fi
+cd $WHAT
+mkdir -p build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP && $MAKE_JNUM install
 
-WHAT=$LLVM_TOP/git/tools/clang
+WHAT=$LLVM_TOP/clang-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/clang.git
+    cd $LLVM_TOP
+    git clone -b flang_release_39 https://github.com/flang-compiler/clang.git clang-git
 fi
+cd $WHAT
+mkdir -p build && cd build
+cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_INSTALL_PREFIX=$LLVM_TOP && $MAKE_JNUM install
 
-WHAT=$LLVM_TOP/git/projects/compiler-rt
+WHAT=$LLVM_TOP/openmp-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/compiler-rt.git
+    cd $LLVM_TOP
+    git clone -b release_39 https://github.com/llvm-mirror/openmp.git openmp-git
 fi
+cd $WHAT
+mkdir -p build && cd build
+cmake ..  \
+         -DCMAKE_INSTALL_PREFIX=$LLVM_TOP && $MAKE_JNUM install
 
-WHAT=$LLVM_TOP/git/projects/openmp
+WHAT=$LLVM_TOP/flang-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/openmp.git
+    cd $LLVM_TOP
+    git clone https://github.com/flang-compiler/flang.git flang-git
 fi
+cd $WHAT
+mkdir -p build && cd build
+cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
+         -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
+         -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang && $MAKE_JNUM install
 
-WHAT=$LLVM_TOP/git/projects/libcxx
-if [ -d $WHAT ] ; then
-    cd $WHAT
-    git pull
-else
-    cd $WHAT/..
-    git clone http://llvm.org/git/libcxx.git
-fi
-
-WHAT=$LLVM_TOP/git/projects/libcxxabi
-if [ -d $WHAT ] ; then
-    cd $WHAT
-    git pull
-else
-    cd $WHAT/..
-    git clone http://llvm.org/git/libcxxabi.git
-fi
-
-WHAT=$LLVM_TOP/git/projects/test-suite
-if [ -d $WHAT ] ; then
-    cd $WHAT
-    git pull
-else
-    cd $WHAT/..
-    git clone http://llvm.org/git/test-suite.git
-fi
-
-rm -rf $LLVM_TMP
-mkdir -p $LLVM_TMP
-cd $LLVM_TMP
-cmake $LLVM_TOP/git  -G "Unix Makefiles" \
-    -DCMAKE_INSTALL_PREFIX=$LLVM_TOP/HEAD \
-    -DCMAKE_C_COMPILER=gcc$GCC_VERSION \
-    -DCMAKE_CXX_COMPILER=g++$GCC_VERSION \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_TARGETS_TO_BUILD=X86 \
-    -DLLVM_ENABLE_CXX1Y=YES \
-    -DLLVM_ENABLE_LIBCXX=YES \
-    -DGCC_INSTALL_PREFIX=$GCC_PREFIX \
-    -DPYTHON_EXECUTABLE=`which python` \
-    #-DLLVM_ENABLE_LLD=YES \
-    #-DLLVM_ENABLE_LTO=Full
-
-${MAKE_JNUM} && make install
