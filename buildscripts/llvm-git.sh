@@ -5,6 +5,8 @@ export MAKE_JNUM="make -j4"
 export GCC_VERSION=
 export GCC_PREFIX=/opt/gcc/latest
 
+export GIT_HOST=https://github.com/llvm-mirror
+
 # where LLVM source and install will live
 export LLVM_TOP=/opt/llvm
 
@@ -19,7 +21,7 @@ if [ -d $WHAT ] ; then
     git pull
 else
     cd $LLVM_TOP
-    git clone http://llvm.org/git/llvm.git git
+    git clone $GIT_HOST/llvm.git git
     cd git
     git config branch.master.rebase true
 fi
@@ -29,8 +31,8 @@ if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/clang.git
+    cd $LLVM_TOP/git/tools
+    git clone $GIT_HOST/clang.git
 fi
 
 WHAT=$LLVM_TOP/git/projects/compiler-rt
@@ -38,8 +40,8 @@ if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/compiler-rt.git
+    cd $LLVM_TOP/git/projects
+    git clone $GIT_HOST/compiler-rt.git
 fi
 
 WHAT=$LLVM_TOP/git/projects/openmp
@@ -47,8 +49,8 @@ if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/openmp.git
+    cd $LLVM_TOP/git/projects
+    git clone $GIT_HOST/openmp.git
 fi
 
 WHAT=$LLVM_TOP/git/projects/libcxx
@@ -56,8 +58,8 @@ if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/libcxx.git
+    cd $LLVM_TOP/git/projects
+    git clone $GIT_HOST/libcxx.git
 fi
 
 WHAT=$LLVM_TOP/git/projects/libcxxabi
@@ -65,8 +67,8 @@ if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/libcxxabi.git
+    cd $LLVM_TOP/git/projects
+    git clone $GIT_HOST/libcxxabi.git
 fi
 
 WHAT=$LLVM_TOP/git/projects/test-suite
@@ -74,8 +76,8 @@ if [ -d $WHAT ] ; then
     cd $WHAT
     git pull
 else
-    cd $WHAT/..
-    git clone http://llvm.org/git/test-suite.git
+    cd $LLVM_TOP/git/projects
+    git clone $GIT_HOST/test-suite.git
 fi
 
 rm -rf $LLVM_TMP
