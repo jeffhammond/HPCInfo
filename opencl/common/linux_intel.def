@@ -1,12 +1,14 @@
-#
-# Make.def file for Apple OpenCL SDK running on Lion
 CC          = icpc
-OPENCLDIR   = /etc/alternatives/opencl-intel-tools
+
+#OPENCLDIR   = /etc/alternatives/opencl-intel-tools
+OPENCLDIR   = /opt/intel/opencl-1.2-6.4.0.25
+
 OPENCLFLAGS = -L$(OPENCLDIR)/lib64 -lOpenCL
 CLINKER = $(CC) $(OPENCLFLAGS)
 
+DEVICE  = -DDEVICE=CL_DEVICE_TYPE_DEFAULT
 #DEVICE  = -DDEVICE=CL_DEVICE_TYPE_GPU
-DEVICE  = -DDEVICE=CL_DEVICE_TYPE_CPU
+#DEVICE  = -DDEVICE=CL_DEVICE_TYPE_CPU
 
 CFLAGS   = -O3 -I$(COMMON) $(DEVICE) 
 CFLAGS  +=-I$(OPENCLDIR)/include
@@ -15,7 +17,7 @@ CPPFLATS = $(CFLAGS)
 STDS = -std=c++11
 
 OPENCLFLAGS = -lOpenCL
-OFLAGS  = -O0 -g3 -Wall
+OFLAGS  = -O3 -g3 -Wall
 CFLAGS  = -m64 $(OFLAGS) $(DEVICE) -I$(COMMON) $(STDS)
 LIBS = #-lm
 OBJ=o
