@@ -13,6 +13,7 @@ The one-sided remote memory access (RMA) functions in MPI-3 are:
 See [UPC 1.3](https://upc-lang.org/assets/Uploads/spec/upc-lang-spec-1.3.pdf).
 
 The following table presents the required support for operations and operand ￼types:
+
 Operand Type|Accessors|Bit-wise Ops|Numeric Ops
 ---|---|---|---
 Integer|X|X|X
