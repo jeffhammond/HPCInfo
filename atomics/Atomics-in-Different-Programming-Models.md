@@ -13,6 +13,7 @@ The one-sided remote memory access (RMA) functions in MPI-3 are:
 See [UPC 1.3](https://upc-lang.org/assets/Uploads/spec/upc-lang-spec-1.3.pdf).
 
 The following table presents the required support for operations and operand ￼types:
+
 Operand Type|Accessors|Bit-wise Ops|Numeric Ops
 ---|---|---|---
 Integer|X|X|X
@@ -77,6 +78,5 @@ See http://www.khronos.org/registry/cl/sdk/1.2/docs/man/xhtml/atomicFunctions.ht
 ## GCC
 
 See 
-* http://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Atomic-Builtins.html
-* http://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/_005f_005fatomic-Builtins.html#g_t_005f_005fatomic-Builtins
-* http://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
+* [C++11-like atomic built-ins](https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html)
+* [Itanium-era atomic built-ins](https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html)

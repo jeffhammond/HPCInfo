@@ -3,7 +3,7 @@
 MAKE_JNUM="-j8"
 
 # Persistent location for source and binaries
-GCC_HOME=/opt/gcc/
+GCC_HOME=/opt/gcc
 mkdir -p $GCC_HOME
 
 # Download/update the source
