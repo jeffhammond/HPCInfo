@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <complex.h>
-#include <stdatomic.h>
-
+//#include <stdatomic.h>
 
 int main(void)
 {
