@@ -48,9 +48,12 @@ void vadd1(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 void vadd2(int n, float * RESTRICT a, float * RESTRICT b, float * RESTRICT c)
 {
 #if defined(_OPENMP) && (_OPENMP >= 201307)
-    //#pragma omp target teams distribute map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
     #pragma omp target map(to:n,a[0:n],b[0:n]) map(from:c[0:n])
+# if defined(__INTEL_COMPILER) && defined(__INTEL_OFFLOAD)
     #pragma omp parallel for simd
+# else
+    #pragma omp teams distribute parallel for simd
+# endif
 #else
     #warning No OpenMP target/simd support!
     #pragma omp parallel for
