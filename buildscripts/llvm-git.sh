@@ -2,8 +2,8 @@
 
 export MAKE_JNUM="make -j4"
 
-export GCC_VERSION=
-export GCC_PREFIX=/opt/gcc/latest
+#export GCC_VERSION=-7
+#export GCC_PREFIX=/opt/gcc/latest
 
 export GIT_HOST=https://github.com/llvm-mirror
 
@@ -33,6 +33,15 @@ if [ -d $WHAT ] ; then
 else
     cd $LLVM_TOP/git/tools
     git clone $GIT_HOST/clang.git
+fi
+
+WHAT=$LLVM_TOP/git/tools/polly
+if [ -d $WHAT ] ; then
+    cd $WHAT
+    git pull
+else
+    cd $LLVM_TOP/git/tools
+    git clone $GIT_HOST/polly.git
 fi
 
 WHAT=$LLVM_TOP/git/projects/compiler-rt
@@ -71,6 +80,16 @@ else
     git clone $GIT_HOST/libcxxabi.git
 fi
 
+WHAT=$LLVM_TOP/git/projects/lld
+if [ -d $WHAT ] ; then
+    cd $WHAT
+    git pull
+else
+    cd $LLVM_TOP/git/projects
+    git clone $GIT_HOST/lld.git
+fi
+
+
 WHAT=$LLVM_TOP/git/projects/test-suite
 if [ -d $WHAT ] ; then
     cd $WHAT
@@ -84,16 +103,22 @@ rm -rf $LLVM_TMP
 mkdir -p $LLVM_TMP
 cd $LLVM_TMP
 cmake $LLVM_TOP/git  -G "Unix Makefiles" \
-    -DCMAKE_INSTALL_PREFIX=$LLVM_TOP/HEAD \
-    -DCMAKE_C_COMPILER=gcc$GCC_VERSION \
-    -DCMAKE_CXX_COMPILER=g++$GCC_VERSION \
+    -DCMAKE_C_COMPILER=/opt/llvm/4.0.0/bin/clang \
+    -DCMAKE_CXX_COMPILER=/opt/llvm/4.0.0/bin/clang++ \
     -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_TARGETS_TO_BUILD=X86 \
+    -DLLVM_ENABLE_LLD=YES \
     -DLLVM_ENABLE_CXX1Y=YES \
     -DLLVM_ENABLE_LIBCXX=YES \
-    -DGCC_INSTALL_PREFIX=$GCC_PREFIX \
     -DPYTHON_EXECUTABLE=`which python` \
-    #-DLLVM_ENABLE_LLD=YES \
-    #-DLLVM_ENABLE_LTO=Full
+    -DCMAKE_INSTALL_PREFIX=$LLVM_TOP/HEAD
+    #-DLLVM_ENABLE_LTO=Full \
+    #-DLLVM_TARGETS_TO_BUILD=X86 \
+    #-DLLVM_EXTERNAL_PROJECTS=clang,lld,polly \
+    #-DLLVM_EXTERNAL_CLANG_SOURCE_DIR=$LLVM_TOP/git/tools/clang \
+    #-DLLVM_EXTERNAL_POLLY_SOURCE_DIR=$LLVM_TOP/git/polly/polly \
+    #-DLLVM_EXTERNAL_LLD_SOURCE_DIR=$LLVM_TOP/git/projects/lld \
+    #-DGCC_INSTALL_PREFIX=$GCC_PREFIX \
+    #-DCMAKE_C_COMPILER=gcc$GCC_VERSION \
+    #-DCMAKE_CXX_COMPILER=g++$GCC_VERSION \
 
-${MAKE_JNUM} && make install
+${MAKE_JNUM} && ${MAKE_JNUM} install ; ${MAKE_JNUM} check
