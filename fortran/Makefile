@@ -1,16 +1,24 @@
-OPT	 := -O3 -qopenmp
-FC	 := ifort -std08
-FFLAGS   := $(OPT)
-LD       := $(FC)
-LDFLAGS  := $(OPT)
-LIBS     :=
+OPT	 = -O3 -qopenmp
+FC	 = ifort -std15 -free
+CC	 = icc -std=c11
 
-TESTS = ieee
+#OPT	 = -O3 -fopenmp
+#FC	 = gfortran -std=f2015 -ffree-form
+#CC	 = gcc -std=c11
+
+CFLAGS   = $(OPT)
+FFLAGS   = $(OPT)
+
+LD       = $(FC)
+LDFLAGS  = $(OPT)
+LIBS     =
+
+TESTS = ieee interop_f
 
 all: $(TESTS)
 
-%: %.o
-	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+interop_f: interop_f.o interop_c.o
+	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@
@@ -18,7 +26,11 @@ all: $(TESTS)
 %: %.f90
 	$(FC) $(FFLAGS) $< -o $@
 
+%: %.o
+	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+
 clean:
 	-rm -f *.o
+	-rm -f *.mod
 	-rm -f $(TESTS)
 
