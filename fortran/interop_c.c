@@ -21,17 +21,17 @@ void foo(args a)
 
 }
 
-void bar(CFI_cdesc_t * a)
+void bar(CFI_cdesc_t * d)
 {
-    printf("CFI_cdesc_t.base_addr = %p\n",  a->base_addr);
-    printf("CFI_cdesc_t.elem_len  = %zu\n", a->elem_len);
-    printf("CFI_cdesc_t.version   = %d\n",  a->version);
-    printf("CFI_cdesc_t.attribute = %td\n", a->attribute);
-    printf("CFI_cdesc_t.rank      = %td\n", a->rank);
-    printf("CFI_cdesc_t.type      = %td\n", a->type);
-    printf("CFI_cdesc_t.dim[0].lb = %td\n", a->dim[0].lower_bound);
-    printf("CFI_cdesc_t.dim[0].sm = %td\n", a->dim[0].sm);
-    printf("CFI_cdesc_t.dim[0].xt = %td\n", a->dim[0].extent);
+    printf("CFI_cdesc_t.base_addr = %p\n",  d->base_addr);
+    printf("CFI_cdesc_t.elem_len  = %zu\n", d->elem_len);
+    printf("CFI_cdesc_t.version   = %d\n",  d->version);
+    printf("CFI_cdesc_t.attribute = %td\n", d->attribute);
+    printf("CFI_cdesc_t.rank      = %td\n", d->rank);
+    printf("CFI_cdesc_t.type      = %td\n", d->type);
+    printf("CFI_cdesc_t.dim[0].lb = %td\n", d->dim[0].lower_bound);
+    printf("CFI_cdesc_t.dim[0].sm = %td\n", d->dim[0].sm);
+    printf("CFI_cdesc_t.dim[0].xt = %td\n", d->dim[0].extent);
 
 
 }

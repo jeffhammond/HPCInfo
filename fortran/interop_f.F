@@ -20,9 +20,9 @@ module mycall
         end subroutine foo
     end interface
     interface
-        subroutine bar(a) bind(C, name="bar")
+        subroutine bar(b) bind(C, name="bar")
             use mytype
-            type(args_t) :: a
+            type(args_t) :: b
         end subroutine bar
     end interface
 end module mycall
@@ -33,6 +33,7 @@ program test
     use mycall
     implicit none
     type(args_t) :: a
+    type(args_t), allocatable :: b
     a%i = 1
     a%j = 2
     a%k = 3
@@ -40,7 +41,15 @@ program test
     a%y = 2.0
     a%z = 3.0
     call foo(a)
-    call bar(a)
+    allocate( b )
+    b%i = 1
+    b%j = 2
+    b%k = 3
+    b%x = 1.0
+    b%y = 2.0
+    b%z = 3.0
+    call bar(b)
+    deallocate( b )
 end program test
 
 
