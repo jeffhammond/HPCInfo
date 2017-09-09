@@ -25,6 +25,12 @@ module mycall
             type(args_t) :: b
         end subroutine bar
     end interface
+    interface
+        subroutine zap(x) bind(C, name="bar")
+            use iso_c_binding
+            integer(c_long), allocatable :: x(:)
+        end subroutine zap
+    end interface
 end module mycall
 
 program test
@@ -34,6 +40,8 @@ program test
     implicit none
     type(args_t) :: a
     type(args_t), allocatable :: b
+    integer(c_long) :: i
+    integer(c_long), allocatable :: x(:)
     a%i = 1
     a%j = 2
     a%k = 3
@@ -50,6 +58,9 @@ program test
     b%z = 3.0
     call bar(b)
     deallocate( b )
+    allocate( x(100), source=[(i,i=1,100)] )
+    call zap(x)
+    deallocate( x )
 end program test
 
 
