@@ -84,16 +84,12 @@ export MPIFC=$MPI_ROOT/bin/mpifort
 
 ## Casper
 
-If Git is installed, do this:
+Clone Git repo or download snapshot if not available.
 ```sh
 cd $NWCHEM_ROOT
-git clone http://git.mpich.org/soft/dev/casper.git
-```
-If Git is not installed, do this:
-```sh
-cd $NWCHEM_ROOT
-wget http://git.mpich.org/soft/dev/casper.git/snapshot/master.tar.gz
-tar -xzf master.tar.gz
+git clone https://github.com/pmodels/casper || \
+wget https://github.com/pmodels/casper/archive/master.zip && \
+unzip master.zip && \
 mv casper-master* casper
 ```
 
@@ -109,12 +105,14 @@ make -j8 install
 
 ## ARMCI-MPI
 
-If Git is installed, do this:
+Clone Git repo or download snapshot if not available.
 ```sh
 cd $NWCHEM_ROOT/
-git clone -b 'mpi3rma' --depth 10 http://git.mpich.org/armci-mpi.git
+git clone --depth 10 https://github.com/jeffhammond/armci-mpi.git || \
+wget https://github.com/jeffhammond/armci-mpi/archive/master.zip && \
+unzip master.zip && \
+mv armci-mpi-master* armci-mpi
 ```
-If Git is not installed, go to http://git.mpich.org/armci-mpi.git/ and download the latest snapshot (e.g. http://git.mpich.org/armci-mpi.git/snapshot/964033675c986639f7c6fe877809cf65fbfc9410.tar.gz) and unpack that into  ` $NWCHEM_ROOT/armci-mpi directory.`
 
 Now build ARMCI-MPI:
 ```sh
