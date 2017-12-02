@@ -55,13 +55,13 @@ http://apfel.mathematik.uni-ulm.de/~lehn/sghpc/gemm/index.html
 
 ### Compilers
 
-[[LLVM]]
+[LLVM](docs/LLVM.md)
 
-[[Preprocessor Macros]]
+[Preprocessor Macros](docs/Preprocessor-Macros.md)
 
 ### Build Systems
 
-[[Autotools]]
+[Autotools](buildscripts/Autotools.md)
 
 ### Performance Tools and Debuggers
 
