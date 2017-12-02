@@ -21,3 +21,9 @@ core
 # specific files
 ibm_c.c
 ibm_f.F
+atomics/ping-pong/c11-ping-pong.clang
+atomics/ping-pong/c99-omp-ping-pong.clang
+atomics/ping-pong/cxx11-dekker.clang
+atomics/ping-pong/cxx11-dekker2.clang
+atomics/ping-pong/cxx11-ping-pong.clang
+atomics/ping-pong/gcc-ping-pong.clang
