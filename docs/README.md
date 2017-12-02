@@ -99,7 +99,7 @@ Note that I conflate PGAS with one-sided despite understanding the difference be
 
 Intel Thread Building Blocks (TBB), provides dynamic and static parallelism for C++, along with a number of helpful utility features, such as multidimensional iterators.  TBB is available as OSS from Intel and it is quite portable and runs on a number of non-x86 platforms, including Blue Gene systems.
 
-OpenCL is an industry-standard interface for GPUs.  It's probably best described as a compiler target.
+[OpenCL](../opencl) is an industry-standard interface for GPUs.
 
 #### Language Extensions/Directives
 
@@ -113,7 +113,7 @@ OpenCL is an industry-standard interface for GPUs.  It's probably best described
 
 [PAMI](../pami) is for [Blue Gene/Q](https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q) and IBM PERCS.
 
-[DMAPP](../dmapp) is for [[Cray]] systems.
+[DMAPP](../dmapp) is for [Cray](Cray.md) systems.
 
 [CUDA](../cuda) is the best way to get performance out of an NVIDIA GPU.  Do not let anyone tell you otherwise.
 
