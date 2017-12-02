@@ -12,3 +12,4 @@ clean:
 	-rm -f  *.o
 	-rm -f  *.x
 	-rm -fr *.dSYM
+	-rm -f cpu_model
