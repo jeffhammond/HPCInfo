@@ -39,29 +39,29 @@ http://apfel.mathematik.uni-ulm.de/~lehn/sghpc/gemm/index.html
 
 ### Applications
 
-[[NWChem]] is a massively parallel quantum chemistry code that supports a wide variety of methods.
+[NWChem](NWChem.mediawiki) is a massively parallel quantum chemistry code that supports a wide variety of methods.
 
-[[MPQC]] is a massively parallel quantum chemistry code that uses portable software (MPI and Pthreads) and supports a limited range of methods (DFT and MP2).  MPQC also supports explicitly correlated ("R12") methods.
+[MPQC](MPQC.mediawiki) is a massively parallel quantum chemistry code that uses portable software (MPI and Pthreads) and supports a limited range of methods (DFT and MP2).  MPQC also supports explicitly correlated ("R12") methods.
 
-[[Dalton]] is a legacy quantum chemistry code that has rich functionality for molecular properties.
+[Dalton](Dalton-2.0.md) is a legacy quantum chemistry code that has rich functionality for molecular properties.
 
-[[LAMMPS]] is a widely-used, general purpose molecular dynamics code that runs on supercomputers.
+[LAMMPS](LAMMPS.mediawiki) is a widely-used, general purpose molecular dynamics code that runs on supercomputers.
 
-[[Coupled cluster]] methods are of great interest to me.  I started writing this page for someone who wanted to learn about them.
+[Coupled cluster](Coupled-cluster.md) methods are of great interest to me.  I started writing this page for someone who wanted to learn about them.
 
 ### Libraries
 
-[[Elemental]] is a modern, parallel, dense linear algebra library.
+[Elemental](Elemental.md) is a modern, parallel, dense linear algebra library.
 
 ### Compilers
 
-[LLVM](docs/LLVM.md)
+[LLVM](LLVM.md)
 
-[Preprocessor Macros](docs/Preprocessor-Macros.md)
+[Preprocessor Macros](Preprocessor-Macros.md)
 
 ### Build Systems
 
-[Autotools](buildscripts/Autotools.md)
+[Autotools](../buildscripts/Autotools.md)
 
 ### Performance Tools and Debuggers
 
@@ -121,10 +121,10 @@ OpenCL is an industry-standard interface for GPUs.  It's probably best described
 
 Blue Gene systems are developed by IBM.
 
-The [[K computer]] was developed by Fujitsu.
+The [K computer](K-computer.mediawiki) was developed by Fujitsu.
 
-Recent [[Cray]] supercomputers include the XT, XE, XK, and XC series.
+Recent [Cray](Cray.md) supercomputers include the XT, XE, XK, and XC series.
 
-[[Allocations]] is my page on how to get access to supercomputers (for free).
+[Allocations](Allocations.md) is my page on how to get access to supercomputers (for free).
 
-[[Mac]] is not a supercomputer by any means but a lot of people use it for development.
+[Mac](Mac.md) is not a supercomputer by any means but a lot of people use it for development.
