@@ -1,3 +1,6 @@
+# patches
+*.patch
+
 # objects
 *.o
 *.a
@@ -14,3 +17,7 @@ core
 # compiler garbage
 *.optrpt
 *.s
+
+# specific files
+ibm_c.c
+ibm_f.F
