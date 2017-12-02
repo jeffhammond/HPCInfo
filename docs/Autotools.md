@@ -1,0 +1,1 @@
+see https://github.com/jeffhammond/HPCInfo/blob/master/buildscripts/Autotools.md

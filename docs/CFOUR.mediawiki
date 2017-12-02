@@ -1,0 +1,23 @@
+= Mac =
+
+Macports was giving me hell so I switched to Homebrew.  The following build uses GCC 4.8.
+
+Configure:
+<pre>
+./configure --prefix=$HOME/software/cfour \
+./configure CC=gcc FC=gfortran \
+--with-blas="pthread -framework Accelerate" 
+</pre>
+
+<tt>pthread</tt> there since this option is pre-prepended with "-l"
+
+Or you can skip BLAS/LAPACK at configure time and change lines 83 and 84 of <tt>make.config</tt> to the following:
+<pre>
+BLAS_LIBS=-framework Accelerate
+LAPACK_LIBS=-framework Accelerate
+</pre>
+
+Compile it:
+<pre>
+make -j4
+</pre>

@@ -1,0 +1,2807 @@
+See https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q
+
+= Machine Access =
+
+Interested parties can apply for ALCF Blue Gene/Q access [https://www.alcf.anl.gov/getting-started/apply-for-dd here].
+
+= Source Code =
+
+Driver source and RPMs are available from the [https://repo.anl-external.org/repos/bgq-driver/ BGQ driver repo] ([https://repo.anl-external.org/viewvc/bgq-driver/ ViewVC]).
+
+''Please sign up for the email list that is exclusively focused on information about the Blue Gene/Q driver source at https://lists.bgconsortium.org/mailman/listinfo/bgq-driver-src.''
+
+[[BGQ Driver Source Internal Access]] describes how ALCF folks can update the driver source repo.
+
+= Documentation =
+
+The [https://wiki.alcf.anl.gov/bgq-earlyaccess/index.php/Main_Page Blue Gene/Q Early Access Wiki] is useful if you have an account on the ALCF T&D machines (the Wiki is private to such users).
+
+See [[Mira Documentation]] for the Wiki versions of what is or will soon become official ALCF documentation (it's now official so please click through).
+
+LLNL has a nice summary of the Blue Gene/Q architecture [https://computing.llnl.gov/tutorials/bgq/ here].
+
+https://bgq.anl-external.org/wiki/index.php/Main_Page is mostly a redirect page to sites like this.
+
+https://ccni.rpi.edu/wiki/index.php/Blue_Gene/Q is RPI's page.
+
+https://support.scinet.utoronto.ca/wiki/index.php/BGQ is UToronto's page.
+
+== IBM Redbooks ==
+
+* [http://www.redbooks.ibm.com/redpieces/abstracts/sg247948.html IBM System Blue Gene Solution: Blue Gene/Q Application Development Manual] - Application and library developers wants this one.  This documents options for MPI, OpenMP and other features of interest to end users.
+* [http://www.redbooks.ibm.com/abstracts/redp4659.html IBM System Blue Gene Solution: Blue Gene/Q Code Development and Tools Interface] - Low-level tools developers may find this useful.
+* [http://www.redbooks.ibm.com/abstracts/sg247869.html IBM System Blue Gene Solution: Blue Gene/Q System Administration] - This is obviously of primary interest to system administrators.
+* [http://www.redbooks.ibm.com/redpieces/abstracts/sg247872.html IBM System Blue Gene Solution: Blue Gene/Q Hardware Overview and Installation Planning] - Of interest to operators.
+* [http://www.redbooks.ibm.com/redpieces/abstracts/sg247974.html IBM System Blue Gene Solution: Blue Gene/Q Hardware Installation and Maintenance Guide] - Of interest to operators.
+
+== A2 Processor Manual ==
+
+'''Note:''' This document and the information it contains are provided on an as-is basis. There is no plan for providing for future updates and corrections to this document.
+
+Documentation: [[Media:A2.pdf | A2 Processor User’s Manual for Blue Gene/Q]]
+
+== XL Compiler Documentation ==
+
+http://pic.dhe.ibm.com/infocenter/compbg/v121v141/index.jsp is the web-based XL compiler documentation.
+
+You can find PDF versions of the compiler documentation on Blue Gene/Q systems:
+<pre>
+$ ls -l ${IBM_MAIN_DIR}/*/bg/*/doc/*/*
+/soft/compilers/ibmcmp-nov2012/vacpp/bg/12.1/doc/en_US/pdf:
+total 5.3M
+-r--r--r-- 1 root root 1.9M May  6  2012 compiler.pdf
+-r--r--r-- 1 root root 280K May  6  2012 getstart.pdf
+-r--r--r-- 1 root root 305K May  6  2012 install.pdf
+-r--r--r-- 1 root root 2.2M May  6  2012 langref.pdf
+-r--r--r-- 1 root root 587K May  6  2012 proguide.pdf
+
+/soft/compilers/ibmcmp-nov2012/xlf/bg/14.1/doc/en_US/pdf:
+total 7.6M
+-r--r--r-- 1 root root 1.4M May  6  2012 compiler.pdf
+-r--r--r-- 1 root root 263K May  6  2012 getstart.pdf
+-r--r--r-- 1 root root 305K May  6  2012 install.pdf
+-r--r--r-- 1 root root 4.3M May  6  2012 langref.pdf
+-r--r--r-- 1 root root 1.4M May  6  2012 proguide.pdf
+</pre>
+
+== MASS documentation ==
+
+MASS is an improved implementation of the C math library (libm) but goes a step further by providing vectorized and SIMD implementations of these math routines.  The compiler will auto-generate MASS code at high levels of optimization or you can use it explicitly.
+
+* [http://www-01.ibm.com/support/docview.wss?uid=swg27018496 MASS scalar library for Blue Gene -- Overview]
+* [http://www-01.ibm.com/support/docview.wss?uid=swg27027505 MASS SIMD library for Blue Gene/Q - Overview] (this redirects to the appropriate XL compiler documentation)
+* [http://www-01.ibm.com/support/docview.wss?uid=swg27006978 Accuracy information for the MASS libraries for Blue Gene]
+
+== Workshop Material ==
+
+* See the [http://www.bgconsortium.org/content/blue-geneq-summit-agenda-october-2012 Blue Gene/Q Summit Agenda] for helpful slides from Bob Walkup and Vitali Morozov containing numerous examples of performance tuning techniques.
+
+* http://www.alcf.anl.gov/sites/www.alcf.anl.gov/files/miracon_AppPerform_BobWalkup_0.pdf is one of the best compilations of performance information about Blue Gene/Q I can find.
+
+== Papers ==
+
+* [http://dx.doi.org/10.1109/MM.2011.108 The IBM Blue Gene/Q Compute Chip] (IEEE Micro)
+* [http://dx.doi.org/10.1109/MM.2011.96 The IBM Blue Gene/Q Interconnection Fabric] (IEEE Micro)
+* [http://dx.doi.org/10.1145/2063384.2063419 The IBM Blue Gene/Q interconnection network and message unit] (SC11)
+* [http://conferences.computer.org/sc/2012/papers/1000a078.pdf Looking Under the Hood of the IBM Blue Gene/Q Network] (SC12)
+* [http://dx.doi.org/10.1145/2370816.2370836 Evaluation of Blue Gene/Q hardware support for transactional memories]  (PACT12)
+
+= Application and Library Porting =
+
+== Compiling ==
+
+Below are the flags I use for the respective compilers.
+
+=== XL ===
+
+These compiler flags make lead to very long compile times for C++ applications that use OpenMP.  If you use C++ and OpenMP, you will want to modify your buildsystem such that OpenMP is only invoked when the C++ source actually contains OpenMP pragmas.  This is because OpenMP turns on additional IPA passes that lead to very long compile times with C++.
+
+<pre>
+-g -O3 -qarch=qp -qtune=qp -qsimd=auto -qhot=level=1 -qprefetch -qunroll=yes -qreport -qnoipa
+</pre>
+
+If you want to use OpenMP, add <tt>-qsmp=omp</tt>.  You can substitute <tt>-qhot=level=2</tt> if you think this will help.
+
+The following flags are relatively safe while generating code with modest optimization.
+<pre>
+-g -O3 -qstrict
+</pre>
+
+If you want to know what XL might be doing with your code, add these options:
+<pre>
+-qreport -qsource -qlistopt -qlist
+</pre>
+
+=== GCC ===
+
+These flags are for C++, obviously.
+<pre>
+-g -O3 -ffast-math -funroll-loops -ftree-vectorize -std=c++0x -mcpu=a2
+</pre>
+
+If you want to use OpenMP, add <tt>-fopenmp</tt>.
+
+The following flags are sufficient when high levels of optimization are not useful.
+<pre>
+-g -O2
+</pre>
+
+=== LLVM ===
+
+[[LLVM]] does not support Fortran or OpenMP, but is a superb compiler for serial C and C++.  Obviously, one can use these compilers where thread-level parallelism uses Pthreads or [[TBB|Intel TBB]]
+<pre>
+-g -O3
+</pre>
+
+See [[BGClang]] for instructions on how to install LLVM on Blue Gene/Q.
+
+=== XL compiler run-time warnings ===
+
+If you want to get human-readable warnings and errors from the XL compilers, you need to submit jobs including the following environment variables.
+
+<pre>
+qsub ... --env LANG=en_US:NLSPATH=${IBM_MAIN_DIR}/msg/bg/%L/%N ./xlf-warn.x
+</pre>
+
+The effect of this is:
+<pre>
+1587-124
+</pre>
+becomes this:
+<pre>
+1587-124 SMP runtime library warning. The number of OpenMP threads exceeds the thread limit 4. 
+The result of the program may be altered if the OMP_THREAD_LIMIT is not increased.
+</pre>
+
+== Applications ==
+
+Many applications have been ported to Blue Gene/Q; these are some of the ones of interest to me.  Please see specific application pages on this Wiki for information as it becomes available.
+
+The applications that I have ported include:
+* [[MADNESS]]
+* [[MPQC]] - Very little testing has been done so far.
+* [[NWChem]] - NWChem 6.3 is easily built with GA 5.2 and [[ARMCI-MPI]].  The previously noted problem with NANs in TCE has been localized and is being fixed (the workaround is to use <tt>2emet</tt> 1-4 but not 5-14).
+* [[Dalton]] - Alvaro has ported the 2011 (3.0) version.  I ported the 2.0 version to Blue Gene/P and suspect it will work fine on Blue Gene/Q by the same recipe.  Peter Taylor and coworkers in Australia may have done this already.
+* [[SIESTA]] - Trivially ported but not thoroughly tested.
+* [[Gromacs]] - CMake patches went into the Git master in June 2013.  Please make sure you have them.
+
+These applications are known to work already thanks to the work of others:
+* [[LAMMPS]] - IBM ported this code without much effort.  See the page on this Wiki for detailed information on building and scalability.
+* [https://www.alcf.anl.gov/resource-guides/gpaw GPAW] - The ALCF documentation pertains to Blue Gene/P for now.  Nick Romero is the lead on GPAW for Blue Gene.
+* [http://eslab.ucdavis.edu/software/qbox/QBox QBox] - Francois Gygi and collaborators are responsible for this port.
+* [[QMCPACK]] - Anouar Benali is the lead developer within ALCF.
+
+== Libraries ==
+
+* [[Elemental]] - This library was ported in early 2011.
+* [http://www.mcs.anl.gov/petsc/ PETSc] - Jed Brown is using this on Blue Gene/Q.
+* [[BlueTBB|Intel TBB]] - Raf and Jeff (mostly Raf) have been working on this for a long time but now it seems to be usable.
+* [http://hpc.mines.edu/bgq/fft/results.html P3DFFT] - This link has performance details.
+* [[BLIS]] beats ESSL at GEMM.
+
+=== Linking ESSL ===
+
+ESSL does not provide full LAPACK so you need to link Netlib in first (from the left) if you rely upon proper LAPACK behavior.  It is not just a missing-symbol issue but rather than one or more LAPACK symbols are implemented differently in ESSL in such a way as to break codes that assume Netlib LAPACK calling conventions.
+
+==== Single-threaded ====
+
+I avoid the use of <tt>-lxlomp_ser</tt> since I recall that it will break in some cases.
+
+<pre>
+export IBMCMP_ROOT=${IBM_MAIN_DIR}
+export BLAS_LIB=/soft/libraries/alcf/current/xl/BLAS/lib
+export LAPACK_LIB=/soft/libraries/alcf/current/xl/LAPACK/lib
+export ESSL_LIB=/soft/libraries/essl/current/essl/5.1/lib64
+export XLF_LIB=${IBMCMP_ROOT}/xlf/bg/14.1/bglib64
+export XLSMP_LIB=${IBMCMP_ROOT}/xlsmp/bg/3.1/bglib64
+export XLMASS_LIB=${IBMCMP_ROOT}/xlmass/bg/7.3/bglib64
+export MATH_LIBS="-L${XLMASS_LIB} -lmassv -lmass -L${LAPACK_LIB} -llapack \
+-L${ESSL_LIB} -lesslbg -L${XLF_LIB} -lxlf90_r \
+-L${XLSMP_LIB} -lxlsmp -lxlopt -lxlfmath -lxl \
+-Wl,--allow-multiple-definition"
+</pre>
+
+==== Multi-threaded ====
+
+The key difference is is <tt>-lesslsmpbg</tt>.
+
+<pre>
+export IBMCMP_ROOT=${IBM_MAIN_DIR}
+export BLAS_LIB=/soft/libraries/alcf/current/xl/BLAS/lib
+export LAPACK_LIB=/soft/libraries/alcf/current/xl/LAPACK/lib
+export ESSL_LIB=/soft/libraries/essl/current/essl/5.1/lib64
+export XLF_LIB=${IBMCMP_ROOT}/xlf/bg/14.1/bglib64
+export XLSMP_LIB=${IBMCMP_ROOT}/xlsmp/bg/3.1/bglib64
+export XLMASS_LIB=${IBMCMP_ROOT}/xlmass/bg/7.3/bglib64
+export MATH_LIBS="-L${XLMASS_LIB} -lmassv -lmass -L${LAPACK_LIB} -llapack \
+-L${ESSL_LIB} -lesslsmpbg -L${XLF_LIB} -lxlf90_r \
+-L${XLSMP_LIB} -lxlsmp -lxlopt -lxlfmath -lxl \
+-Wl,--allow-multiple-definition"
+</pre>
+
+=== GA/ARMCI ===
+
+[[GA/ARMCI]] - Global Arrays 5.0 has been running since November 2010 using [http://wiki.mpich.org/armci-mpi/index.php/Main_Page ARMCI-MPI] and 5.2 builds without any difficult.  An optimized ARMCI using PAMI was developed by IBM and will be available eventually.
+
+==== ALCF Installations ====
+
+Please use the ARMCI-MPI and GA 5.2 found in <tt>/soft/libraries/unsupported/armci-mpi/*</tt> and  <tt>/soft/libraries/unsupported/global-arrays/5.2/$TOOLCHAIN</tt>, respectively.
+
+* <tt>TOOLCHAIN=gcc</tt> corresponds to <tt>CC=cc</tt>, <tt>CXX=cxx</tt> and  <tt>F77=f77</tt>.
+* <tt>TOOLCHAIN=xl</tt> corresponds to <tt>CC=xlc_r</tt>, <tt>CXX=xlcxx_r</tt> and  <tt>F77=xlf77_r</tt>.
+
+==== Building ARMCI ====
+
+You should never need to do this on ALCF systems.  ALCF will provide an official build as noted above.
+
+<pre>
+../configure CC=/bgsys/drivers/ppcfloor/comm/$TOOLCHAIN/bin/mpi$CC \
+--enable-g --prefix=/soft/libraries/unsupported/armci-mpi/$TOOLCHAIN
+</pre>
+
+==== Building GA 5.2 ====
+
+You should never need to do this on ALCF systems.  ALCF will provide an official build as noted above.
+
+<pre>
+../configure \
+MPICC=/bgsys/drivers/ppcfloor/comm/$TOOLCHAIN/bin/mpi$CC \
+MPICXX=/bgsys/drivers/ppcfloor/comm/$TOOLCHAIN/bin/mpi$CXX \
+MPIF77=/bgsys/drivers/ppcfloor/comm/$TOOLCHAIN/bin/mpi$F77 \
+--prefix=/soft/libraries/unsupported/global-arrays/5.2/$TOOLCHAIN \
+--with-mpi \
+--with-armci=/soft/libraries/unsupported/armci-mpi/$TOOLCHAIN \
+--with-blas4="$MATH_LIBS" \
+--with-lapack="$MATH_LIBS"
+</pre>
+
+See the previous section for <tt>MATH_LIBS</tt>.
+
+= Job Submission =
+
+See http://www.alcf.anl.gov/user-guides/queueing-running-jobs for basics.
+
+== Scripting ==
+
+The following demonstration of Bash arithmetic may be useful.
+<pre>
+for i in 1 2 4 8 16 32 64 ; do j=$((64/$i)); echo $j; done
+</pre>
+
+Here is an example that makes the utility more obvious.
+<pre>
+for n in 1 2 4 8 16 32 64 128 ; do 
+  for c in 1 2 4 8 16 32 64 ; do 
+    qsub -t 60 -n $n --mode=c$c --env OMP_NUM_THREADS=$((64/$c)) ./binary
+  done
+done
+</pre>
+
+== Cobalt ==
+
+See http://trac.mcs.anl.gov/projects/cobalt/wiki/BGQUserComputeBlockControl
+
+== Interactive ==
+
+=== Proper ===
+
+See https://trac.mcs.anl.gov/projects/cobalt/wiki/BGQInteractiveJobs
+
+=== Improper ===
+
+This is a hack that was developed prior to the proper method noted above.
+
+This is <tt>~/reserve.sh</tt>:
+<pre>
+#!/bin/bash
+echo I am going to wait for an hour
+sleep 3600
+echo Good bye
+</pre>
+
+Submit this, e.g., as follows:
+<pre>
+qsub -n 32 -t 60 --mode script ~/reserve.sh
+</pre>
+
+Use <tt>qstat</tt> to determine what block you have reserved and your jobid so you can input them below.  The block is something like <tt>VST-22660-33771-32</tt> where VST, CET and MIR indicate the ALCF system you are using (Vesta, Cetus or Mira), the second and third strings are tuples of the lower and upper corners of the block, respectively, and the last string is the size of the block (almost always a power of two).
+
+Now you can run interactively like this:
+<pre>
+runjob --np 512 --ranks-per-node 16 --cwd $PWD --block $COBALT_BLOCKNAME --verbose 4 --envs COBALT_JOB=$JOBID : $PWD/test.x
+</pre>
+
+There are ways to automate this.  For now, just understand how <tt>runjob</tt> works inside of a script and use that knowledge combined with some environment variables.
+
+== Clusterbank ==
+
+https://wiki-internal.alcf.anl.gov/index.php/Clusterbank has all the information about the <tt>cbank</tt> that is useful to know.  Sadly, this is on the ALCF Internal wiki and thus not available to users.  Someone should really copy all of that info to https://www.alcf.anl.gov/user-guides/querying-allocations-using-cbank...
+
+= Performance Measurement =
+
+== High-Resolution Timers ==
+
+This is a lightweight wrapper to the cycle-accurate timer on BGQ.  You can use <tt>MPI_Wtick</tt> and <tt>MPI_Wtime</tt> as well; they are wrappers to the same call (or equivalent) but with more function-call overhead.
+
+<pre>
+#include "hwi/include/bqc/A2_inlines.h"
+
+int main(void)
+{
+  uint64_t t0 = GetTimeBase();
+  /* do something */
+  uint64_t t1 = GetTimeBase();
+  uint64_t dt = t1-t0;
+
+  return 0;
+}
+</pre>
+
+== Performance Tools ==
+
+Blue Gene/Q supports TAU, Rice HPCToolkit, OpenSpeedShop and possibly Scalasca.  I personally recommend TAU.  There should be documentation somewhere else on the Internet.  I recommend Google for finding it.
+
+=== HPM ===
+
+See https://wiki.alcf.anl.gov/bgq-earlyaccess/images/4/4a/Hpct-bgq.pdf for now.
+
+= Memory =
+
+== Allocating Memory ==
+
+It is highly desirable for performance on Blue Gene/Q to allocate aligned memory using <tt>posix_memalign</tt>.
+
+<pre>
+void * bgq_malloc(size_t n)
+{
+    void * ptr;
+    size_t alignment = 32; /* 128 might be better since that ensures every heap allocation 
+                            * starts on a cache-line boundary */
+    posix_memalign( &ptr , alignment , n );
+    return ptr;
+}
+</pre>
+
+The semantics of this function are essentially the same as <tt>malloc</tt> except that the memory will always be 32-byte aligned.
+
+=== Cache Line Size ===
+
+A user asked me about this so it's worth noting that an L1 cache line is 64B (see [http://www.bgconsortium.org/sites/bgconsortium.drupalgardens.com/files/BGQ-arch.pdf slide 12]) but L2 cache lines are 128B (see [ftp://public.dhe.ibm.com/common/ssi/ecm/en/dcw03006usen/DCW03006USEN.PDF slides 6 and 8]).
+
+== Shared and Persistent Memory ==
+
+You need to see <tt>BG_SHAREDMEMSIZE</tt> and <tt>BG_PERSISTMEMSIZE</tt>, respectively, to use shared memory and persistent shared memory on Blue Gene/Q.  The aforementioned environment variables have units of megabytes.
+
+Shared memory should be POSIX-compliant.  Persistent memory is an artifact of the single-process nature of CNK; it is the temporal equivalent of shared memory.
+
+=== Shared Memory ===
+
+See [[Shared memory]] for now.
+
+=== Persistent Memory ===
+
+Read the Application Developer RedBook for now.
+
+This is an incomplete, nonfunctional example code:
+
+<pre>
+#include <spi/include/kernel/memory.h>
+
+int main(int argc, char* argv[])
+{
+  persist_open();
+
+  return 0;
+}
+
+</pre>
+
+== Maximum Memory Available ==
+
+The 16 GB per node is divided among the MPI ranks (processes) as evenly as possible, which might not be that even in some cases due to how the TLB works.  
+
+Below are measured data (in MB, round down to the nearest whole number) for available memory ''before MPI is initialized'' when using the default of 32 MB of shared memory (which is required for MPI to work).  Because the memory required by MPI increases as a function of the partition size, it is not possible to provide one answer for this, but in the future, I will measure it for common partition sizes.
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Processes per node</th><th>BG_MAPCOMMONHEAP=0</th><th>BG_MAPCOMMONHEAP=1</th></tr>
+<tr>
+  <td>1</td>
+  <td>16287</td>
+  <td>16287</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>8127, 8174</td>
+  <td>8144 (2)</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>4031, 4078, 4094 (2)</td>
+  <td>4072 (4)</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>1983, 2030, 2046 (6)</td>
+  <td>2036 (8)</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td>959, 1006, 1022 (14)</td>
+  <td>1015 (16)</td>
+</tr>
+<tr>
+  <td>32</td>
+  <td>447, 494, 510 (30)</td>
+  <td>506 (32)</td>
+</tr>
+<tr>
+  <td>64</td>
+  <td>191, 238, 254 (62)</td>
+  <td>252 (64)</td>
+</tr>
+</table>
+
+This is with MPI initialized on 128 nodes.
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Processes per node</th><th>BG_MAPCOMMONHEAP=0</th><th>BG_MAPCOMMONHEAP=1</th></tr>
+<tr>
+  <td>1</td>
+  <td>16294</td>
+  <td>16280</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>8117, 8159</td>
+  <td>8134 (2)</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>4063, 4021, 4079, 4084</td>
+  <td>4062 (4)</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>2015, 2015, 1989, 2031 (5)</td>
+  <td>2025 (8)</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td>991, 991, 965, 1007 (14)</td>
+  <td>1005 (16)</td>
+</tr>
+<tr>
+  <td>32</td>
+  <td>479, 479, 453, 495 (29)</td>
+  <td>496 (32)</td>
+</tr>
+<tr>
+  <td>64</td>
+  <td>181, 224, 240 (29), 245 (33)</td>
+  <td>242 (64)</td>
+</tr>
+</table>
+
+=== Important Environment Variables ===
+
+This information is from Tom Gooding at IBM.
+
+<tt>BG_MAPCOMMONHEAP</tt>
+
+'''0''' The default option.
+
+'''1''' This option obtains a uniform heap allocation between the processes.  However, the tradeoff is that memory protection between processes is not as strigent.  In particular, when using the option, it is possible to write into another processes heap.  Normally this would result in a segmentation violation, but the protection mechanism is disabled in order to provide a balanced heap allocations.  The processes will still have independant heaps and system calls will return EFAULT if an address is passed in that is out-of-bounds.  
+
+<tt>BG_MAPNOALIASES</tt>
+
+'''0''' The default option.
+
+'''1''' This option disables long-running alias mode.  This feature is used for some TM or SE configurations.
+
+== Malloc Information and Tuning ==
+
+=== <tt>mallopt</tt> ===
+
+See http://man7.org/linux/man-pages/man3/mallopt.3.html for more information.
+
+This is from Nick Romero:
+
+''My understanding is that the arena (the pool of memory where small malloc are allocated) can never shrink. The arena can only be used for small mallocs, not large mallocs. The threshold for this is a variable is the glibc library (<tt>malloc.c</tt>) called <tt>M_MMAP_THRESHOLD</tt>.''
+
+''On BG/P, it was set to 1 MB, I think it is set to 4 or 8 MB on BG/P.  On a typically linux system, the value is 0.5 MB.''
+
+''We can override the default malloc behavior as follows. This bit of code sets it to the BG/P values of 1 MB.''
+<pre>
+mallopt( M_MMAP_THRESHOLD, 1024*1024 );
+mallopt( M_TRIM_THRESHOLD, 1024*1024 );
+</pre>
+
+=== <tt>mallinfo</tt> ===
+
+I think this is from Nick Romero.
+
+<pre>
+#include <stdio.h>
+#include <malloc.h>
+
+int main(void)
+{
+  struct mallinfo m;
+  m = mallinfo();
+
+  int arena = m.arena;          /* size to sbrk */
+  printf("arena = %d \n", arena);
+
+  int uordblks = m.uordblks;     /* chunks in use, in bytes */
+  printf("uordblks = %d \n", uordblks);
+
+  int hblkhd = m.hblkhd;         /* mmap memory in bytes */
+  printf("hblkhd = %d \n", hblkhd);
+
+  int total_heap = uordblks + hblkhd;
+  printf("total_heap = %d \n", total_heap);
+
+  fflush(stdout);
+
+  return 0;
+}
+</pre>
+
+=== Fixing the slow deallocation problem ===
+
+If you do very large allocations in C, C++ or Fortran (not FORTRAN, obviously), you may be affected by an issue in CNK that causes deallocation to take a very long time because the memory is zeroed (for reasons we understand but can be resolved better ways).  The way to resolve this is to use <tt>--env MALLOC_MMAP_MAX_=0</tt>.  Thanks to Steve Pieper for identifying this issue and Jed Brown for providing the aforementioned solution.
+
+If and when a future driver release provides the <tt>mmap</tt> option <tt>MAP_UNINITIALIZED</tt> in CNK, this issue can be fixed in a straightforward manner.
+
+== CNK Memory Information ==
+
+This is from Hal Finkel.
+
+<pre>
+#include <stdio.h>
+#include <spi/include/kernel/memory.h>
+
+int main(int argc, char** argv)
+{
+  uint64_t shared, persist, heapavail, stackavail, stack, heap, guard, mmap;
+
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_SHARED, &shared);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_PERSIST, &persist);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_HEAPAVAIL, &heapavail);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_STACKAVAIL, &stackavail);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_STACK, &stack);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_HEAP, &heap);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_GUARD, &guard);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_MMAP, &mmap);
+
+  printf("Allocated heap: %.2f MB, avail. heap: %.2f MB\n", (double)heap/(1024*1024), (double)heapavail/(1024*1024));
+  printf("Allocated stack: %.2f MB, avail. stack: %.2f MB\n", (double)stack/(1024*1024), (double)stackavail/(1024*1024));
+  printf("Memory: shared: %.2f MB, persist: %.2f MB, guard: %.2f MB, mmap: %.2f MB\n", (double)shared/(1024*1024), (double)persist/(1024*1024), (double)guard/(1024*1024), (double)mmap/(1024*1024));
+
+  return 0;
+}
+</pre>
+
+=== SPI Memory Information in Fortran ===
+
+<pre>
+/* compile instructions:
+ * mpicc -std=gnu99 -c -g -O0 -Wall fortran_memory.c */
+
+#include <spi/include/kernel/memory.h>
+#include <spi/include/kernel/location.h>
+
+/* u = used
+ * a = available */
+
+void memory_info(double * heapu, double * stacku, double * heapa, double * stacka)
+{
+  //uint64_t shared, persist, guard, mmap;
+  //Kernel_GetMemorySize(KERNEL_MEMSIZE_SHARED,   &shared);
+  //Kernel_GetMemorySize(KERNEL_MEMSIZE_PERSIST,  &persist);
+  //Kernel_GetMemorySize(KERNEL_MEMSIZE_GUARD,    &guard);
+  //Kernel_GetMemorySize(KERNEL_MEMSIZE_MMAP,     &mmap);
+
+  uint64_t heap_used, stack_used, heap_avail, stack_avail;
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_HEAP,       &heap_used);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_STACK,      &stack_used);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_HEAPAVAIL,  &heap_avail);
+  Kernel_GetMemorySize(KERNEL_MEMSIZE_STACKAVAIL, &stack_avail);
+
+  *heapu  = (double) heap_used;
+  *stacku = (double) stack_used;
+  *heapa  = (double) heap_avail;
+  *stacka = (double) stack_avail;
+
+  return;
+}
+
+void memory_info_(double * heapu, double * stacku, double * heapa, double * stacka)
+{
+    memory_info(heapu, stacku, heapa, stacka);
+    return;
+}
+</pre>
+
+<pre>
+      program main
+      implicit none
+      double precision hu,su,ha,sa
+      call memory_info(hu,su,ha,sa)
+      print*,hu,su,ha,sa
+      return
+      end
+</pre>
+
+== Abusing the common heap ==
+
+One of the interesting features of the common heap feature that makes the available memory per process uniform is that it is ''actually a common heap'' and can be accessed by ''all'' processes within a node.  This means you can get the behavior of POSIX shared memory without actually doing anything and heap addresses can be passed between processes within the same node and used directly.
+
+Just like POSIX shared memory and low-level multithreading, you must take care to respect the weakly consistent PowerPC memory model when using (abusing) the common heap.  The test below shows odd (i.e. incorrect) behavior if the alignment doesn't cause their to be free space between each process' allocation (or at least that is what I think causes the problem).
+
+The following demonstrates abuse of the common heap.  Obviously, it will not work with <tt>BG_MAPCOMMONHEAP=0</tt>.
+
+<pre>
+/* Compile with mpicc -g -O0 -Wall -std=gnu99 commonheap.c -o commonheap.x */
+/* Submit with qsub -n 1 --mode=c16 -t 30 --env BG_MAPCOMMONHEAP=1 ./commonheap.x */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <spi/include/kernel/memory.h>
+#include <spi/include/kernel/location.h>
+#include <hwi/include/bqc/A2_inlines.h>
+#include <mpi.h>
+
+#define ALIGNMENT 1024
+
+void * safemalloc(int n) 
+{
+    //void * ptr = malloc( n );
+    int rc;
+    void * ptr;
+    rc = posix_memalign( &ptr , ALIGNMENT , n );
+
+    if ( ptr == NULL || n<0 )
+    {
+        fprintf( stderr , "%d bytes could not be allocated \n" , n );
+        exit(n);
+    }
+
+    return ptr;
+}
+
+int main(int argc, char** argv)
+{
+  int requested = MPI_THREAD_FUNNELED, provided;
+  MPI_Init_thread(&argc, &argv, requested, &provided);
+
+  int rank, size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  int myt  = Kernel_MyTcoord();
+  int ppn  = Kernel_ProcessCount();
+
+  int node = (rank-myt)/ppn;
+  printf("rank = %d node = %d \n", rank, node);
+
+  MPI_Comm NodeComm;
+  MPI_Comm_split(MPI_COMM_WORLD, node, myt, &NodeComm);
+
+  int n = 128;
+  int * buf = safemalloc( n * sizeof(int) );
+
+  printf("rank = %d buf = %p \n", rank, buf);
+  fflush(stdout);
+  
+  for (int i=0; i<n; i++) 
+    buf[i] = rank;
+
+  ppc_msync();
+  MPI_Barrier(NodeComm);
+
+  int ** ptr = (int **) safemalloc( size * sizeof(int *) );
+  
+  MPI_Allgather(&buf, sizeof(int*), MPI_BYTE,
+                ptr, sizeof(int*), MPI_BYTE,
+                NodeComm);
+
+  ppc_msync();
+  if (myt==0)
+  {
+      for (int i=0; i<ppn; i++)
+        for (int j=0; j<n; j++)
+          printf("node = %d rank = %d ptr[%d] = %p ptr[%d][%d] = %d \n", node, rank, i, ptr[i], i, j, ptr[i][j] );
+
+      fflush(stdout);
+  }
+
+  free(ptr);
+  free(buf);
+
+  MPI_Finalize();
+
+  return 0;
+}
+</pre>
+
+= File I/O =
+
+== Compute Node Ramdisk ==
+
+Compile the following code with <tt>mpicc -g -O0  test.c  -o test.x</tt>.
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <assert.h>
+
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include <pthread.h>
+
+#include <spi/include/kernel/memory.h>
+
+#define USE_DEV_LOCAL
+
+int main(int argc, char* argv[])
+{
+    int world_rank = 0;
+
+    int local_fs_size = 0;
+
+    {
+      char * env_char;
+      int units = 1;
+      int num_count = 0;
+      env_char = getenv("LOCAL_FILESYSTEM_SIZE");
+      if (env_char!=NULL)
+      {
+          if      ( NULL != strstr(env_char,"G") ) units = 1000000000;
+          else if ( NULL != strstr(env_char,"M") ) units = 1000000;
+          else if ( NULL != strstr(env_char,"K") ) units = 1000;
+          else                                     units = 1;
+
+          num_count = strspn(env_char, "0123456789");
+          memset( &env_char[num_count], ' ', strlen(env_char)-num_count);
+
+          local_fs_size = units * atoi(env_char);
+      }
+      else
+      {
+          local_fs_size = getpagesize();
+      }
+      printf("%d: LOCAL_FILESYSTEM_SIZE = %d bytes \n", world_rank, local_fs_size );
+
+#ifdef USE_DEV_LOCAL
+      void * local_fs = NULL;
+      int rc = posix_memalign(&local_fs, 4096, local_fs_size); /* 4096 is mostly arbitrary */
+      if (rc==0) printf("%d: posix_memalign succeeded \n", world_rank);
+      else       printf("%d: posix_memalign failed \n", world_rank);
+
+      rc = Kernel_SetLocalFSWindow(local_fs_size, local_fs);
+      if (rc==0) printf("%d: Kernel_SetLocalFSWindow succeeded \n", world_rank);
+      else       printf("%d: Kernel_SetLocalFSWindow failed \n", world_rank);
+#endif
+    }
+
+#ifdef USE_DEV_LOCAL
+    char * filename = "/dev/local/foo"; 
+#else
+    char * filename = "/dev/shm/foo"; 
+#endif
+    printf("%d: filename = %s \n", world_rank, filename);
+    int fd = open(filename, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR );
+    if (fd<0) printf("%d: open failed: %d \n", world_rank, fd);
+    else      printf("%d: open succeeded: %d \n", world_rank, fd);
+
+    if (fd>=0)
+    {
+        int rc = ftruncate(fd, local_fs_size);
+        if (rc==0) printf("%d: ftruncate succeeded \n", world_rank);
+        else       printf("%d: ftruncate failed \n", world_rank);
+    }
+
+    void * ptr = mmap( NULL, local_fs_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0 );
+    if (ptr==NULL) { printf("%d: mmap failed \n", world_rank); exit(1); }
+    else             printf("%d: mmap succeeded \n", world_rank);
+    
+    printf("%d: trying memset \n", world_rank);
+    memset(ptr, 'a', local_fs_size);
+    printf("%d: memset succeeded \n", world_rank);
+
+    void * tmp = malloc(local_fs_size); if (tmp==NULL) exit(2);
+    memset(tmp, 'a', local_fs_size);
+    {
+        int rc = memcmp(ptr, tmp, local_fs_size);
+        if (rc==0) printf("%d: memcmp succeeded \n", world_rank);
+        else       printf("%d: memcmp failed (%d) \n", world_rank, rc);
+    }
+    free(tmp);
+
+    if (fd>=0)
+    {
+        int rc = ftruncate(fd, 0);
+        if (rc==0) printf("%d: ftruncate succeeded \n", world_rank);
+        else       printf("%d: ftruncate failed \n", world_rank);
+    }
+
+    if (fd>=0)
+    {
+        int rc = close(fd);
+        if (rc==0) printf("%d: close succeeded \n", world_rank);
+        else       printf("%d: close failed \n", world_rank);
+    }
+
+    {
+        int rc = munmap(ptr, local_fs_size);
+        if (rc==0) printf("%d: munmap succeeded \n", world_rank);
+        else       printf("%d: munmap failed \n", world_rank);
+    }
+
+    printf("%d: test finished \n", world_rank);
+
+    return 0;
+}
+</pre>
+
+Submit the binary like this:
+<pre>
+qsub -n 1 --mode=c1 -t 30 --env LOCAL_FILESYSTEM_SIZE=1M ./test.x
+</pre>
+
+The output should resemble this:
+<pre>
+0: LOCAL_FILESYSTEM_SIZE = 1000000 bytes 
+0: posix_memalign succeeded 
+0: Kernel_SetLocalFSWindow succeeded 
+0: filename = /dev/local/foo 
+0: open succeeded: 3 
+0: ftruncate succeeded 
+0: mmap succeeded 
+0: trying memset 
+0: memset succeeded 
+0: memcmp succeeded 
+0: ftruncate succeeded 
+0: close succeeded 
+0: munmap succeeded 
+0: test finished 
+</pre>
+
+= Communication =
+
+The communication software stack on Blue Gene/Q is described in the following image.
+
+[[Image:PAMI_architecture2.jpg|600px]]
+
+== MPI ==
+
+See [[MPI]] for generic MPI information.
+
+See [[Mira MPI Documentation]] for important information about MPI on BGQ.  See [[MPI-BGQ]] for an explanation of changes from V1R2M0 to V1R2M1.
+
+https://github.com/jeffhammond/HPCInfo/wiki/MARPN allows one to use non-power-of-two processes-per-node on BGQ.
+
+If you want to build MPI from source on BGQ, see https://wiki.mpich.org/mpich/index.php/BGQ
+
+== Non-portable communication software ==
+
+[https://code.google.com/p/pami-examples/ PAMI] is the successor to DCMF (the communication API for Blue Gene/P) and LAPI (the communication API for IBM POWER systems).
+
+Below PAMI is the MU (messaging unit) SPI (system programming interface).  Programming in SPI is hard and almost certainly unnecessary.
+
+== Topology ==
+
+=== Node topology ===
+
+Below is an example of the SPI calls for the node topology, i.e. core and hardware thread placement.
+
+Compile the following file with this:
+<tt>powerpc64-bgq-linux-gcc -std=gnu99 -I/bgsys/drivers/ppcfloor -I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk/ -c bgq_threadid.c</tt>
+
+<pre>
+#ifdef __bgq__
+#include <spi/include/kernel/location.h>
+#endif
+
+/*=======================================*/
+/* routine to return the core number */
+/*=======================================*/
+int get_bgq_core(void)
+{
+#ifdef __bgq__
+    int core = Kernel_ProcessorCoreID();
+    return core;
+#else
+    return -1;
+#endif
+}
+
+/*==========================================*/
+/* routine to return the hwthread (0-3) */
+/*==========================================*/
+int get_bgq_hwthread(void)
+{
+#ifdef __bgq__
+    int hwthread = Kernel_ProcessorThreadID();
+    return hwthread;
+#else
+    return -1;
+#endif
+}
+
+/*======================================================*/
+/* routine to return the virtual core number (0-67) */
+/*======================================================*/
+int get_bgq_vcore(void)
+{
+#ifdef __bgq__
+    int hwthread = Kernel_ProcessorID();
+    return hwthread;
+#else
+    return -1;
+#endif
+}
+</pre>
+
+=== Low-level torus information ===
+
+In case you read the source below and wonder why I do not cache the core and thread id information, this is because software threads can, in principle, move between cores and hardware threads.  This is probably not going to happen in most cases, but since it is better to be safe than sorry, the conservative approach is taken.  The functions called on each invocation of those two procedures that do not cache the output are inline functions using macros and thus should have little to no software overhead relative to the cached implementation.  In fact, the non-cached version might be faster since it merely reads a control register, whereas the cached implementation may have to read data from main memory.  On the other hand, reading a control registrer might not be trivial; I haven't measured to cost of either case.
+
+In any case, if you find Q5d to be the bottleneck in your code, you are either the greatest programmer in the history of the world or the worst, as there is no reasonable usage where the performance of Q5d should matter.
+
+==== q5d.c ====
+<pre>
+/********************************************************************
+* The following is a notice of limited availability of the code, and disclaimer
+* which must be included in the prologue of the code and in all source listings
+* of the code.
+*
+* Author:
+*
+* Jeff R. Hammond (jhammond@alcf.anl.gov)
+* Argonne Leadership Computing Facility
+*
+* Permission is hereby granted to use, reproduce, prepare derivative works, and
+* to redistribute to others.
+*
+*                 LICENSE
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+*
+* - Redistributions of source code must retain the above copyright
+*   notice, this list of conditions and the following disclaimer.
+*
+*  - Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer listed
+*    in this license in the documentation and/or other materials
+*    provided with the distribution.
+*
+*  - Neither the name of the copyright holders nor the names of its
+*    contributors may be used to endorse or promote products derived from
+*    this software without specific prior written permission.
+*
+* The copyright holders provide no reassurances that the source code
+* provided does not infringe any patent, copyright, or any other
+* intellectual property rights of third parties.  The copyright holders
+* disclaim any liability to any recipient for claims brought against
+* recipient by any third party for infringement of that parties
+* intellectual property rights.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*********************************************************************/
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+#include <stdio.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <assert.h>
+
+#include <process.h>
+#include <location.h>
+#include <personality.h>
+
+/**************************************************/
+
+typedef struct
+{
+    int32_t TotalNodes;
+    int32_t TotalProcs;
+    int32_t NodeRank;
+    int32_t ProcRank;
+    int32_t Coords[6];
+    int32_t PartitionSize[6];
+    int32_t PartitionTorus[6];
+    int32_t JobSize[6];
+    int32_t JobTorus[6];
+}
+BGQ_Torus_t;
+
+/**************************************************/
+
+BGQ_Torus_t info;
+
+/**************************************************/
+
+void Q5D_Init(void)
+{
+    uint32_t rc;
+
+    Personality_t pers;
+    BG_JobCoords_t jobcoords;
+
+    rc = Kernel_GetPersonality(&pers, sizeof(pers));
+    assert(rc==0);
+
+    rc = Kernel_JobCoords(&jobcoords);
+    assert(rc==0);
+
+    info.ProcRank = Kernel_GetRank();
+
+    info.Coords[0] = pers.Network_Config.Acoord;
+    info.Coords[1] = pers.Network_Config.Bcoord;
+    info.Coords[2] = pers.Network_Config.Ccoord;
+    info.Coords[3] = pers.Network_Config.Dcoord;
+    info.Coords[4] = pers.Network_Config.Ecoord;
+    info.Coords[5] = Kernel_MyTcoord();
+
+    info.PartitionSize[0] = pers.Network_Config.Anodes;
+    info.PartitionSize[1] = pers.Network_Config.Bnodes;
+    info.PartitionSize[2] = pers.Network_Config.Cnodes;
+    info.PartitionSize[3] = pers.Network_Config.Dnodes;
+    info.PartitionSize[4] = pers.Network_Config.Enodes;
+    info.PartitionSize[5] = Kernel_ProcessCount();
+
+    /* shift rank back to 0 modulo the node then divide by procs per node to index by 1 */
+    info.NodeRank = ( info.ProcRank - info.Coords[5] ) / info.PartitionSize[5];
+
+    info.TotalNodes = info.PartitionSize[0] *
+                      info.PartitionSize[1] *
+                      info.PartitionSize[2] *
+                      info.PartitionSize[3] *
+                      info.PartitionSize[4];
+    info.TotalProcs = info.PartitionSize[5] * info.TotalNodes;
+
+    info.PartitionTorus[0] = ND_GET_TORUS(0,pers.Network_Config.NetFlags);
+    info.PartitionTorus[1] = ND_GET_TORUS(1,pers.Network_Config.NetFlags);
+    info.PartitionTorus[2] = ND_GET_TORUS(2,pers.Network_Config.NetFlags);
+    info.PartitionTorus[3] = ND_GET_TORUS(3,pers.Network_Config.NetFlags);
+    info.PartitionTorus[4] = ND_GET_TORUS(4,pers.Network_Config.NetFlags);
+    info.PartitionTorus[5] = 0;
+
+    info.JobSize[0] = jobcoords.shape.a;
+    info.JobSize[1] = jobcoords.shape.b;
+    info.JobSize[2] = jobcoords.shape.c;
+    info.JobSize[3] = jobcoords.shape.d;
+    info.JobSize[4] = jobcoords.shape.e;
+    info.JobSize[5] = jobcoords.shape.core;
+
+    info.JobTorus[0] = ND_GET_TORUS(0,pers.Network_Config.NetFlags) && jobcoords.shape.a==pers.Network_Config.Anodes;
+    info.JobTorus[1] = ND_GET_TORUS(1,pers.Network_Config.NetFlags) && jobcoords.shape.b==pers.Network_Config.Bnodes;
+    info.JobTorus[2] = ND_GET_TORUS(2,pers.Network_Config.NetFlags) && jobcoords.shape.c==pers.Network_Config.Cnodes;
+    info.JobTorus[3] = ND_GET_TORUS(3,pers.Network_Config.NetFlags) && jobcoords.shape.d==pers.Network_Config.Dnodes;
+    info.JobTorus[4] = ND_GET_TORUS(4,pers.Network_Config.NetFlags) && jobcoords.shape.e==pers.Network_Config.Enodes;
+    info.JobTorus[5] = 0;
+
+    return;
+}
+
+/* C implementation */
+
+void Q5D_Torus_coords(int32_t coords[])
+{
+    coords[0] = info.Coords[0];
+    coords[1] = info.Coords[1];
+    coords[2] = info.Coords[2];
+    coords[3] = info.Coords[3];
+    coords[4] = info.Coords[4];
+    coords[5] = info.Coords[5];
+    return;
+}
+
+void Q5D_Partition_size(int32_t coords[])
+{
+    coords[0] = info.PartitionSize[0];
+    coords[1] = info.PartitionSize[1];
+    coords[2] = info.PartitionSize[2];
+    coords[3] = info.PartitionSize[3];
+    coords[4] = info.PartitionSize[4];
+    coords[5] = info.PartitionSize[5];
+    return;
+}
+
+void Q5D_Partition_isTorus(int32_t coords[])
+{
+    coords[0] = info.PartitionTorus[0];
+    coords[1] = info.PartitionTorus[1];
+    coords[2] = info.PartitionTorus[2];
+    coords[3] = info.PartitionTorus[3];
+    coords[4] = info.PartitionTorus[4];
+    coords[5] = info.PartitionTorus[5];
+    return;
+}
+
+void Q5D_Job_size(int32_t coords[])
+{
+    coords[0] = info.JobSize[0];
+    coords[1] = info.JobSize[1];
+    coords[2] = info.JobSize[2];
+    coords[3] = info.JobSize[3];
+    coords[4] = info.JobSize[4];
+    coords[5] = info.JobSize[5];
+    return;
+}
+
+void Q5D_Job_isTorus(int32_t coords[])
+{
+    coords[0] = info.JobTorus[0];
+    coords[1] = info.JobTorus[1];
+    coords[2] = info.JobTorus[2];
+    coords[3] = info.JobTorus[3];
+    coords[4] = info.JobTorus[4];
+    coords[5] = info.JobTorus[5];
+    return;
+}
+
+int32_t Q5D_Total_nodes(void)
+{
+    return info.TotalNodes;
+}
+
+int32_t Q5D_Total_procs(void)
+{
+    return info.TotalProcs;
+}
+
+int32_t Q5D_Node_rank(void)
+{
+    return info.NodeRank;
+}
+
+int32_t Q5D_Proc_rank(void)
+{
+    return info.ProcRank;
+}
+
+int32_t Q5D_Core_id(void)
+{
+    /* routine to return the BGQ core number (0-15) */
+    return (int32_t) Kernel_ProcessorCoreID();
+}
+
+int32_t Q5D_Thread_id(void)
+{
+    /* routine to return the BGQ virtual core number (0-67) */
+    return (int32_t) Kernel_ProcessorID();
+}
+
+#if defined(__cplusplus)
+}
+#endif
+</pre>
+
+==== q5d.h ====
+<pre>
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+void Q5D_Init(void);
+
+void Q5D_Torus_coords(int32_t coords[]);
+void Q5D_Partition_size(int32_t coords[]);
+void Q5D_Partition_isTorus(int32_t coords[]);
+void Q5D_Job_size(int32_t coords[]);
+void Q5D_Job_isTorus(int32_t coords[]);
+
+int32_t Q5D_Total_nodes(void);
+int32_t Q5D_Total_procs(void);
+int32_t Q5D_Node_rank(void);
+int32_t Q5D_Proc_rank(void);
+
+int32_t Q5D_Core_id(void);
+int32_t Q5D_Thread_id(void);
+
+#if defined(__cplusplus)
+}
+#endif
+</pre>
+
+==== capi.c ====
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <mpi.h>
+
+#include "q5d.h"
+
+int main(int argc, char* argv[])
+{
+    int rank, size;
+
+    int32_t coords[6];
+
+    MPI_Init(&argc,&argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    Q5D_Init();
+
+    if (rank==0)
+    {
+        printf("%d: Q5D_Total_nodes = %d, Q5D_Total_procs = %d \n", rank, Q5D_Total_nodes(), Q5D_Total_procs() );
+
+        Q5D_Partition_size(coords);
+        printf("%d: Q5D_Torus_size = %d %d %d %d %d %d \n", rank, coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+
+        Q5D_Partition_isTorus(coords);
+        printf("%d: Q5D_Partition_isTorus = %d %d %d %d %d %d \n", rank, coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+
+        Q5D_Job_size(coords);
+        printf("%d: Q5D_Job_size = %d %d %d %d %d %d \n", rank, coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+
+        Q5D_Job_isTorus(coords);
+        printf("%d: Q5D_Job_isTorus = %d %d %d %d %d %d \n", rank, coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+    }
+
+    fflush(stdout);
+    sleep(1);
+
+    Q5D_Torus_coords(coords);
+    printf("%d: Q5D_Node_rank() = %d, Q5D_Proc_rank = %d, Q5D_Core_id = %d, Q5D_Thread_id = %d, Q5D_Torus_coords = %d %d %d %d %d %d \n", rank, 
+            Q5D_Node_rank(), Q5D_Proc_rank(), Q5D_Core_id(), Q5D_Thread_id(),
+            coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+
+    fflush(stdout);
+    sleep(1);
+
+    MPI_Finalize();
+
+    return 0;
+}
+</pre>
+
+==== Makefile ====
+<pre>
+INCLUDE  = -I/bgsys/drivers/ppcfloor 
+INCLUDE += -I/bgsys/drivers/ppcfloor/firmware/include
+INCLUDE += -I/bgsys/drivers/ppcfloor/spi/include/kernel 
+INCLUDE += -I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk
+
+CC        = mpicc
+CFLAGS    = -g -O2 -Wall -std=gnu99 $(INCLUDE)
+
+LD        = $(CC)
+LDFLAGS   = -g -O2 -Wall -std=gnu99
+
+AR        = powerpc64-bgq-linux-ar
+
+all: libq5d.a
+
+check: capi.x
+
+libq5d.a: q5d.o
+	$(AR) -r libq5d.a q5d.o
+
+q5d.o: q5d.c q5d.h
+	$(CC) $(CFLAGS) -c q5d.c -o q5d.o
+
+capi.x: capi.o libq5d.a
+	$(LD) capi.o -L. -lq5d -o capi.x
+
+capi.o: capi.c q5d.h
+	$(CC) $(CFLAGS) -c capi.c -o capi.o
+
+clean:
+	-rm -f *.o
+
+distclean: clean
+	-rm -f *.a
+	-rm -f *.x
+</pre>
+
+=== High-level torus information ===
+
+This example code demonstrates the high-level torus query calls available through MPIX.
+
+<pre>
+#include <stdio.h>
+#include <mpi.h>
+#ifdef __bgq__
+#  include <mpix.h>
+#else
+#  warning This test should be run on a Blue Gene.
+#endif
+
+int main(int argc, char *argv[])
+{
+    int provided;
+    MPI_Init_thread( &argc, &argv, MPI_THREAD_SINGLE, &provided );
+
+    int rank, size;
+    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    MPI_Comm_size( MPI_COMM_WORLD, &size );
+
+    MPIX_Hardware_t hw;
+    MPIX_Hardware(&hw);
+
+    if (rank==0)
+    {
+        printf("%d: MPIX test on %d MPI processes \n", rank, size);
+        printf("%d: clock freq    = %u MHz memory size   = %u MB \n", rank, hw.clockMHz, hw.memSize);
+        printf("%d: torus dim.    = %u sizeOfPset    = %u\n", rank, hw.torus_dimension, hw.sizeOfPset);
+        printf("%d: torus size    = (%u,%u,%u,%u,%u,%u) \n", rank, hw.Size[0], hw.Size[1], hw.Size[2], hw.Size[3], hw.Size[4], hw.Size[5] );
+        printf("%d: torus wraps?  = (%u,%u,%u,%u,%u,%u) \n", rank, hw.isTorus[0], hw.isTorus[1], hw.isTorus[2], hw.isTorus[3], hw.isTorus[4], hw.isTorus[5] );
+    }
+
+    fflush(stdout);
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    for (int i=0; i<size; i++)
+    {
+        if (rank==i)
+        {
+            printf("%d: physical rank = %u physical size = %u \n", rank, hw.prank, hw.psize);
+            printf("%d: idOfPset      = %u rankInPset    = %u \n", rank, hw.idOfPset, hw.rankInPset);
+            printf("%d: core ID       = %u proc per node = %u \n", rank, hw.coreID, hw.ppn);
+            printf("%d: torus coords = (%u,%u,%u,%u,%u,%u) \n", rank, hw.Coords[0], hw.Coords[1], hw.Coords[2], hw.Coords[3], hw.Coords[4], hw.Coords[5] );
+            fflush(stdout);
+        }
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    MPI_Finalize();
+
+    return 0;
+}
+</pre>
+
+The output looks like this:
+<pre>
+0: MPIX test on 2048 MPI processes 
+0: clock freq    = 1600 MHz memory size   = 16384 MB 
+0: torus dim.    = 5 sizeOfPset    = 0
+0: torus size    = (2,2,4,4,2) 
+0: torus wraps?  = (0,0,1,1,1) 
+0: physical rank = 0 physical size = 2048 
+0: idOfPset      = 0 rankInPset    = 0 
+0: core ID       = 0 proc per node = 16 
+0: torus coords = (0,0,0,0,0) 
+1: physical rank = 1 physical size = 2048 
+1: idOfPset      = 0 rankInPset    = 0 
+1: core ID       = 1 proc per node = 16 
+1: torus coords = (0,0,0,0,0) 
+...
+</pre>
+
+
+'''2013/05/08 IMPORTANT NOTE:  The ION fields are not filled in correctly (rankInPset = 0, sizeOfPset = 0, idOfPset = 0 for all ranks). A PMR has been filed.'''
+
+= Vectorization =
+
+== Compiler autovectorization ==
+
+<tt>bgxlc_r -g -O3 -qhot -qsimd=auto -qtune=qp -qarch=qp</tt>
+
+== Intrinsics ==
+
+See the compiler documentation.
+
+You can find the PDF documentation in, e.g., <tt>${IBM_MAIN_DIR}/vacpp/bg/12.1/doc/en_US/pdf/</tt>.
+
+== Assembly ==
+
+Documentation: [[Media:qpx.pdf | QPX Architecture - Quad Processing eXtension to the Power ISA]]
+
+= OpenMP =
+
+See [[OpenMP]] for portable OpenMP content.
+
+== General Blue Gene/Q Advice ==
+
+Blue Gene/Q has a special form of 4-way SMT.  Technically, it's not true SMT (thanks, Jim Dinan) but that's the most reasonable approximate term I've found.  This means that 4 hardware threads share a single L1 cache.  If you are running 16 MPI ranks per node and 4 OpenMP threads, you should make your OpenMP loops very small so that they do not thrash L1.
+
+It has been our experience that static scheduling is best for most uses of OpenMP.
+
+Eventually, I'll have examples here.
+
+== Transactional Memory (TM) ==
+
+The following code is derived from the example in the XL compiler documentation (page 380).  The performance of TM in this use case is not good, in part because the conflict granularity is smaller than a cache line (thanks to Hal Finkel for pointing this out).
+
+Compile with <tt>mpixlc_r -g -O3 -qtm -qsmp=omp:speculative page380.c -o page380.x</tt>.
+
+<pre>
+#include <stdio.h>
+#include <omp.h>
+#include <hwi/include/bqc/A2_inlines.h>
+
+#define SIZE 400
+
+int main(void)
+{
+    int v, w, z;
+    int a[SIZE], b[SIZE];
+
+    printf("omp_get_max_threads() = %d \n",  omp_get_max_threads() );
+
+    int r;
+    for (r=0; r<10; r++)
+    {
+        uint64_t t0, t1;
+
+        for (v=0; v<SIZE; v++)
+        {
+            a[v] = v;
+            b[v] = -v;
+        }
+
+        t0 = GetTimeBase();
+        #pragma omp parallel for private(v,w,z)
+        for (v=0; v<SIZE; v++)
+          for (w=0; w<SIZE; w++)
+            for (z=0; z<SIZE; z++)
+            {
+              #pragma tm_atomic
+              {
+                a[v] = a[w] + b[z];
+              }
+            }
+
+        t1 = GetTimeBase();
+        printf("tm_atomic    ran in %llu cycles \n", t1-t0);
+
+        for (v=0; v<SIZE; v++)
+        {
+            a[v] = v;
+            b[v] = -v;
+        }
+
+        t0 = GetTimeBase();
+        #pragma omp parallel for private(v,w,z)
+        for (v=0; v<SIZE; v++)
+          for (w=0; w<SIZE; w++)
+            for (z=0; z<SIZE; z++)
+            {
+              #pragma omp critical
+              {
+                a[v] = a[w] + b[z];
+              }
+            }
+
+        t1 = GetTimeBase();
+        printf("omp critical ran in %llu cycles \n", t1-t0);
+    }
+
+    printf("page380 completed successfully \n");
+
+    return 0;
+}
+</pre>
+
+= Other low-level features =
+
+Don't use these features unless you know ''exactly'' what you're doing.  Using these features may cause your application to do terrible things if you use them incorrectly.  There is no assurance the you will get a warning.  Far worse, you can get incorrect warnings due to memory corruption (I saw this on Blue Gene/P).
+
+== Stochastic Rounding ==
+
+<pre>
+#ifndef NOHELP
+#error mpicc -g -O2 -Wall -I/bgsys/drivers/ppcfloor -DNOHELP stochround2.c -o stochround2.x
+#endif
+
+#include <stdio.h> 
+
+#include <hwi/include/bqc/A2_core.h> 
+#include <spi/include/kernel/process.h> 
+
+int main(int argc, char **argv) 
+{ 
+    uint64_t value; 
+
+    value = Kernel_GetAXUCR0(); 
+    printf("AXUCR0 = %lx\n", value); 
+
+    uint64_t rc; 
+    rc = Kernel_SetAXUCR0(AXUCR0_SR_ENABLE | AXUCR0_LFSR_RESET); 
+    if (rc != 0) { 
+        printf("SetAXUCR0 failed, rc = %ld.\n", rc); 
+        return 1; 
+    } 
+    rc = Kernel_SetAXUCR0(AXUCR0_SR_ENABLE); 
+    if (rc != 0) { 
+        printf("SetAXUCR0 failed, rc = %ld.\n", rc); 
+        return 1; 
+    } 
+
+    value = Kernel_GetAXUCR0(); 
+    printf("AXUCR0 = %lx\n", value); 
+
+    return 0; 
+} 
+</pre>
+
+== L1 Prefetch ==
+
+TODO
+
+== Atomics ==
+
+=== PowerPC ===
+
+See [[PowerPC]] atomics (<tt>lwarx</tt> and <tt>stwcx</tt>).
+
+=== L2 Atomics ===
+
+See slide 38 of http://spscicomp.org/wordpress/wp-content/uploads/2012/04/ScicomP-2012-Tutorial-BGQ-Amy-Wang.pdf for a brief overview.
+
+==== L2 Barrier ====
+
+Compiler this test as follows:
+<pre>
+powerpc64-bgq-linux-gcc -g -O2 -Wall -std=gnu99 -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk test_barrier.c \
+-L/bgsys/drivers/ppcfloor/spi/lib -lSPI -lSPI_cnk -lrt -lpthread -o test_barrier.x
+</pre>
+
+If you want a nontrivial test, provide an argument greater than one:
+<pre>
+qsub -n 1 -t 30 --mode=c1 ./test_lock.x 16
+</pre>
+
+This is <tt>test_barrier.c</tt>
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#include <spi/include/kernel/memory.h>
+#include <spi/include/l2/barrier.h>
+
+int num_threads;
+pthread_t * pool;
+
+static L2_Barrier_t barrier = L2_BARRIER_INITIALIZER;
+
+int debug = 0;
+
+int get_thread_id(void)
+{
+    for (int i=0; i<num_threads; i++)
+        if (pthread_self()==pool[i])
+            return i;
+
+    return -1;
+}
+
+void * fight(void * input)
+{
+    int tid = get_thread_id();
+
+    int count = 100000;
+
+    if (debug) 
+        printf("%d: before L2_Barrier \n", tid);
+
+    uint64_t t0 = GetTimeBase();
+    for (int i=0; i<count; i++)
+        L2_Barrier(&barrier, num_threads);
+    uint64_t t1 = GetTimeBase();
+
+    if (debug) {
+        printf("%d: after  L2_Barrier \n", tid);
+        fflush(stdout);
+    }
+
+    uint64_t dt = t1-t0;
+    printf("%2d: %d calls to %s took %llu cycles per call \n", 
+           tid, count, "L2_Barrier", dt/count);
+    fflush(stdout);
+
+    pthread_exit(NULL);
+
+    return NULL;
+}
+
+int main(int argc, char * argv[])
+{
+    num_threads = (argc>1) ? atoi(argv[1]) : 1;
+    printf("L2 barrier test using %d threads \n", num_threads );
+
+    /* this "activates" the L2 atomic data structure */
+    Kernel_L2AtomicsAllocate(&barrier, sizeof(L2_Barrier_t) );
+
+    pool = (pthread_t *) malloc( num_threads * sizeof(pthread_t) );
+    assert(pool!=NULL);
+
+    for (int i=0; i<num_threads; i++) {
+        int rc = pthread_create(&(pool[i]), NULL, &fight, NULL);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+
+    printf("threads created \n");
+    fflush(stdout);
+
+    for (int i=0; i<num_threads; i++) {
+        void * junk;
+        int rc = pthread_join(pool[i], &junk);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+    
+    printf("threads joined \n");
+    fflush(stdout);
+
+    free(pool);
+ 
+    return 0;   
+}
+</pre>
+
+Here's some performance data:
+<pre>
+[jhammond@vestalac1 L2atomics]$ x=test_barrier.x ; for t in 1 2 3 7 15 31 47 63 ; do tail -n999 $x.t$t.*put ; done
+L2 barrier test using 1 threads 
+threads created 
+ 0: 100000 calls to L2_Barrier took 108 cycles per call 
+threads joined 
+L2 barrier test using 2 threads 
+threads created 
+ 0: 100000 calls to L2_Barrier took 298 cycles per call 
+ 1: 100000 calls to L2_Barrier took 298 cycles per call 
+threads joined 
+L2 barrier test using 3 threads 
+threads created 
+ 0: 100000 calls to L2_Barrier took 332 cycles per call 
+ 1: 100000 calls to L2_Barrier took 332 cycles per call 
+ 2: 100000 calls to L2_Barrier took 332 cycles per call 
+threads joined 
+L2 barrier test using 7 threads 
+threads created 
+ 1: 100000 calls to L2_Barrier took 364 cycles per call 
+ 2: 100000 calls to L2_Barrier took 363 cycles per call 
+ 4: 100000 calls to L2_Barrier took 363 cycles per call 
+ 3: 100000 calls to L2_Barrier took 363 cycles per call 
+ 5: 100000 calls to L2_Barrier took 363 cycles per call 
+ 6: 100000 calls to L2_Barrier took 363 cycles per call 
+ 0: 100000 calls to L2_Barrier took 364 cycles per call 
+threads joined 
+L2 barrier test using 15 threads 
+threads created 
+ 2: 100000 calls to L2_Barrier took 424 cycles per call 
+11: 100000 calls to L2_Barrier took 422 cycles per call 
+ 9: 100000 calls to L2_Barrier took 423 cycles per call 
+ 7: 100000 calls to L2_Barrier took 423 cycles per call 
+13: 100000 calls to L2_Barrier took 422 cycles per call 
+10: 100000 calls to L2_Barrier took 422 cycles per call 
+ 8: 100000 calls to L2_Barrier took 423 cycles per call 
+ 5: 100000 calls to L2_Barrier took 423 cycles per call 
+ 4: 100000 calls to L2_Barrier took 424 cycles per call 
+ 1: 100000 calls to L2_Barrier took 424 cycles per call 
+ 0: 100000 calls to L2_Barrier took 424 cycles per call 
+ 3: 100000 calls to L2_Barrier took 424 cycles per call 
+14: 100000 calls to L2_Barrier took 422 cycles per call 
+ 6: 100000 calls to L2_Barrier took 423 cycles per call 
+12: 100000 calls to L2_Barrier took 422 cycles per call 
+threads joined 
+L2 barrier test using 31 threads 
+threads created 
+18: 100000 calls to L2_Barrier took 476 cycles per call 
+15: 100000 calls to L2_Barrier took 477 cycles per call 
+ 4: 100000 calls to L2_Barrier took 479 cycles per call 
+20: 100000 calls to L2_Barrier took 476 cycles per call 
+ 2: 100000 calls to L2_Barrier took 480 cycles per call 
+22: 100000 calls to L2_Barrier took 476 cycles per call 
+ 6: 100000 calls to L2_Barrier took 479 cycles per call 
+21: 100000 calls to L2_Barrier took 476 cycles per call 
+ 5: 100000 calls to L2_Barrier took 479 cycles per call 
+19: 100000 calls to L2_Barrier took 476 cycles per call 
+11: 100000 calls to L2_Barrier took 478 cycles per call 
+23: 100000 calls to L2_Barrier took 475 cycles per call 
+ 3: 100000 calls to L2_Barrier took 479 cycles per call 
+27: 100000 calls to L2_Barrier took 474 cycles per call 
+29: 100000 calls to L2_Barrier took 474 cycles per call 
+13: 100000 calls to L2_Barrier took 478 cycles per call 
+10: 100000 calls to L2_Barrier took 478 cycles per call 
+30: 100000 calls to L2_Barrier took 474 cycles per call 
+ 7: 100000 calls to L2_Barrier took 479 cycles per call 
+26: 100000 calls to L2_Barrier took 475 cycles per call 
+14: 100000 calls to L2_Barrier took 477 cycles per call 
+ 8: 100000 calls to L2_Barrier took 478 cycles per call 
+24: 100000 calls to L2_Barrier took 475 cycles per call 
+16: 100000 calls to L2_Barrier took 477 cycles per call 
+ 0: 100000 calls to L2_Barrier took 480 cycles per call 
+28: 100000 calls to L2_Barrier took 474 cycles per call 
+12: 100000 calls to L2_Barrier took 478 cycles per call 
+ 1: 100000 calls to L2_Barrier took 480 cycles per call 
+17: 100000 calls to L2_Barrier took 477 cycles per call 
+25: 100000 calls to L2_Barrier took 475 cycles per call 
+ 9: 100000 calls to L2_Barrier took 478 cycles per call 
+threads joined 
+L2 barrier test using 47 threads 
+threads created 
+45: 100000 calls to L2_Barrier took 552 cycles per call 
+15: 100000 calls to L2_Barrier took 558 cycles per call 
+31: 100000 calls to L2_Barrier took 555 cycles per call 
+10: 100000 calls to L2_Barrier took 559 cycles per call 
+40: 100000 calls to L2_Barrier took 553 cycles per call 
+13: 100000 calls to L2_Barrier took 559 cycles per call 
+24: 100000 calls to L2_Barrier took 556 cycles per call 
+42: 100000 calls to L2_Barrier took 552 cycles per call 
+29: 100000 calls to L2_Barrier took 555 cycles per call 
+ 8: 100000 calls to L2_Barrier took 560 cycles per call 
+38: 100000 calls to L2_Barrier took 553 cycles per call 
+41: 100000 calls to L2_Barrier took 553 cycles per call 
+39: 100000 calls to L2_Barrier took 553 cycles per call 
+23: 100000 calls to L2_Barrier took 557 cycles per call 
+ 7: 100000 calls to L2_Barrier took 560 cycles per call 
+26: 100000 calls to L2_Barrier took 556 cycles per call 
+ 6: 100000 calls to L2_Barrier took 560 cycles per call 
+27: 100000 calls to L2_Barrier took 556 cycles per call 
+25: 100000 calls to L2_Barrier took 556 cycles per call 
+ 9: 100000 calls to L2_Barrier took 560 cycles per call 
+11: 100000 calls to L2_Barrier took 559 cycles per call 
+43: 100000 calls to L2_Barrier took 552 cycles per call 
+ 1: 100000 calls to L2_Barrier took 561 cycles per call 
+22: 100000 calls to L2_Barrier took 557 cycles per call 
+33: 100000 calls to L2_Barrier took 554 cycles per call 
+ 5: 100000 calls to L2_Barrier took 560 cycles per call 
+ 0: 100000 calls to L2_Barrier took 561 cycles per call 
+36: 100000 calls to L2_Barrier took 554 cycles per call 
+ 3: 100000 calls to L2_Barrier took 561 cycles per call 
+21: 100000 calls to L2_Barrier took 557 cycles per call 
+35: 100000 calls to L2_Barrier took 554 cycles per call 
+20: 100000 calls to L2_Barrier took 557 cycles per call 
+17: 100000 calls to L2_Barrier took 558 cycles per call 
+19: 100000 calls to L2_Barrier took 558 cycles per call 
+37: 100000 calls to L2_Barrier took 554 cycles per call 
+16: 100000 calls to L2_Barrier took 558 cycles per call 
+ 4: 100000 calls to L2_Barrier took 561 cycles per call 
+32: 100000 calls to L2_Barrier took 555 cycles per call 
+44: 100000 calls to L2_Barrier took 552 cycles per call 
+46: 100000 calls to L2_Barrier took 551 cycles per call 
+14: 100000 calls to L2_Barrier took 559 cycles per call 
+30: 100000 calls to L2_Barrier took 555 cycles per call 
+18: 100000 calls to L2_Barrier took 558 cycles per call 
+28: 100000 calls to L2_Barrier took 556 cycles per call 
+12: 100000 calls to L2_Barrier took 559 cycles per call 
+34: 100000 calls to L2_Barrier took 554 cycles per call 
+ 2: 100000 calls to L2_Barrier took 561 cycles per call 
+threads joined 
+L2 barrier test using 63 threads 
+threads created 
+47: 100000 calls to L2_Barrier took 643 cycles per call 
+31: 100000 calls to L2_Barrier took 647 cycles per call 
+53: 100000 calls to L2_Barrier took 641 cycles per call 
+37: 100000 calls to L2_Barrier took 645 cycles per call 
+15: 100000 calls to L2_Barrier took 650 cycles per call 
+21: 100000 calls to L2_Barrier took 649 cycles per call 
+ 5: 100000 calls to L2_Barrier took 652 cycles per call 
+ 9: 100000 calls to L2_Barrier took 651 cycles per call 
+20: 100000 calls to L2_Barrier took 649 cycles per call 
+41: 100000 calls to L2_Barrier took 644 cycles per call 
+ 4: 100000 calls to L2_Barrier took 652 cycles per call 
+39: 100000 calls to L2_Barrier took 645 cycles per call 
+57: 100000 calls to L2_Barrier took 640 cycles per call 
+25: 100000 calls to L2_Barrier took 648 cycles per call 
+48: 100000 calls to L2_Barrier took 643 cycles per call 
+52: 100000 calls to L2_Barrier took 642 cycles per call 
+ 7: 100000 calls to L2_Barrier took 652 cycles per call 
+36: 100000 calls to L2_Barrier took 645 cycles per call 
+24: 100000 calls to L2_Barrier took 648 cycles per call 
+23: 100000 calls to L2_Barrier took 648 cycles per call 
+ 8: 100000 calls to L2_Barrier took 651 cycles per call 
+ 0: 100000 calls to L2_Barrier took 653 cycles per call 
+40: 100000 calls to L2_Barrier took 644 cycles per call 
+55: 100000 calls to L2_Barrier took 641 cycles per call 
+32: 100000 calls to L2_Barrier took 646 cycles per call 
+13: 100000 calls to L2_Barrier took 650 cycles per call 
+56: 100000 calls to L2_Barrier took 641 cycles per call 
+16: 100000 calls to L2_Barrier took 650 cycles per call 
+ 3: 100000 calls to L2_Barrier took 652 cycles per call 
+45: 100000 calls to L2_Barrier took 643 cycles per call 
+ 1: 100000 calls to L2_Barrier took 653 cycles per call 
+46: 100000 calls to L2_Barrier took 643 cycles per call 
+51: 100000 calls to L2_Barrier took 642 cycles per call 
+ 2: 100000 calls to L2_Barrier took 653 cycles per call 
+35: 100000 calls to L2_Barrier took 646 cycles per call 
+19: 100000 calls to L2_Barrier took 649 cycles per call 
+49: 100000 calls to L2_Barrier took 642 cycles per call 
+61: 100000 calls to L2_Barrier took 639 cycles per call 
+17: 100000 calls to L2_Barrier took 650 cycles per call 
+33: 100000 calls to L2_Barrier took 646 cycles per call 
+12: 100000 calls to L2_Barrier took 651 cycles per call 
+10: 100000 calls to L2_Barrier took 651 cycles per call 
+29: 100000 calls to L2_Barrier took 647 cycles per call 
+11: 100000 calls to L2_Barrier took 651 cycles per call 
+50: 100000 calls to L2_Barrier took 642 cycles per call 
+60: 100000 calls to L2_Barrier took 640 cycles per call 
+59: 100000 calls to L2_Barrier took 640 cycles per call 
+44: 100000 calls to L2_Barrier took 643 cycles per call 
+34: 100000 calls to L2_Barrier took 646 cycles per call 
+18: 100000 calls to L2_Barrier took 649 cycles per call 
+43: 100000 calls to L2_Barrier took 644 cycles per call 
+30: 100000 calls to L2_Barrier took 647 cycles per call 
+28: 100000 calls to L2_Barrier took 647 cycles per call 
+62: 100000 calls to L2_Barrier took 639 cycles per call 
+27: 100000 calls to L2_Barrier took 647 cycles per call 
+14: 100000 calls to L2_Barrier took 650 cycles per call 
+58: 100000 calls to L2_Barrier took 640 cycles per call 
+42: 100000 calls to L2_Barrier took 644 cycles per call 
+26: 100000 calls to L2_Barrier took 648 cycles per call 
+22: 100000 calls to L2_Barrier took 648 cycles per call 
+ 6: 100000 calls to L2_Barrier took 652 cycles per call 
+38: 100000 calls to L2_Barrier took 645 cycles per call 
+54: 100000 calls to L2_Barrier took 641 cycles per call 
+threads joined 
+</pre>
+
+==== L2 Lock ====
+
+Compile and submit just like the previous example.
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#include <spi/include/kernel/memory.h>
+#include <spi/include/l2/barrier.h>
+#include <spi/include/l2/lock.h>
+
+int num_threads;
+pthread_t * pool;
+
+int64_t counter;
+
+L2_Barrier_t barrier = L2_BARRIER_INITIALIZER;
+L2_Lock_t lock;
+
+int get_thread_id(void)
+{
+    for (int i=0; i<num_threads; i++)
+        if (pthread_self()==pool[i])
+            return i;
+
+    return -1;
+}
+
+void * fight(void * input)
+{
+    int tid = get_thread_id();
+
+    printf("%d: before L2_Barrier 1 \n", tid);
+    L2_Barrier(&barrier, num_threads);
+    printf("%d: after  L2_Barrier 1 \n", tid);
+    fflush(stdout);
+
+#if 1
+    int64_t mycounter = 0;
+
+    while (mycounter<100)
+    {
+        L2_LockAcquire(&lock);
+        if ( counter%num_threads == tid ) {
+            mycounter++;
+            printf("%d: mycounter = %lld counter = %lld \n", tid, mycounter, counter);
+            counter++;
+        }
+        L2_LockRelease(&lock);
+    }
+#endif
+
+    printf("%d: before L2_Barrier 2 \n", tid);
+    L2_Barrier(&barrier, num_threads);
+    printf("%d: after  L2_Barrier 2 \n", tid);
+    fflush(stdout);
+    
+    pthread_exit(NULL);
+
+    return NULL;
+}
+
+int main(int argc, char * argv[])
+{
+    num_threads = (argc>1) ? atoi(argv[1]) : 1;
+    printf("L2 lock test using %d threads \n", num_threads );
+
+    /* this "activates" the L2 atomic data structures */
+    Kernel_L2AtomicsAllocate(&barrier, sizeof(L2_Barrier_t) );
+    Kernel_L2AtomicsAllocate(&lock, sizeof(L2_Lock_t));
+
+    L2_LockInit(&lock);
+
+    pool = (pthread_t *) malloc( num_threads * sizeof(pthread_t) );
+    assert(pool!=NULL);
+
+    counter = 0;
+
+    for (int i=0; i<num_threads; i++) {
+        int rc = pthread_create(&(pool[i]), NULL, &fight, NULL);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+
+    printf("threads created \n");
+    fflush(stdout);
+
+    for (int i=0; i<num_threads; i++) {
+        void * junk;
+        int rc = pthread_join(pool[i], &junk);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+    
+    printf("threads joined \n");
+    fflush(stdout);
+
+    free(pool);
+ 
+    return 0;   
+}
+</pre>
+
+==== L2 Counters ====
+
+Compile and submit like the others.
+
+Here's the source:
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <pthread.h>
+#include <unistd.h>
+
+#include <hwi/include/common/bgq_alignment.h>
+#include <hwi/include/bqc/A2_inlines.h>
+#include <spi/include/kernel/memory.h>
+#include <spi/include/l2/barrier.h>
+#include <spi/include/l2/atomic.h>
+
+typedef struct BGQ_Atomic64_s
+{
+    volatile uint64_t atom;
+}
+ALIGN_L1D_CACHE BGQ_Atomic64_t;
+
+/* TODO: test all of these functions
+   uint64_t L2_AtomicLoad(volatile uint64_t *ptr)
+   uint64_t L2_AtomicLoadClear(volatile uint64_t *ptr)
+   uint64_t L2_AtomicLoadIncrement(volatile uint64_t *ptr)
+   uint64_t L2_AtomicLoadDecrement(volatile uint64_t *ptr)
+   uint64_t L2_AtomicLoadIncrementBounded(volatile uint64_t *ptr)
+   uint64_t L2_AtomicLoadDecrementBounded(volatile uint64_t *ptr)
+   uint64_t L2_AtomicLoadIncrementIfEqual(volatile uint64_t *ptr)
+   void     L2_AtomicStore(volatile uint64_t *ptr, uint64_t value)
+   void     L2_AtomicStoreTwin(volatile uint64_t *ptr, uint64_t value)
+   void     L2_AtomicStoreAdd(volatile uint64_t *ptr, uint64_t value)
+   void     L2_AtomicStoreAddCoherenceOnZero(volatile uint64_t *ptr,
+   void     L2_AtomicStoreOr(volatile uint64_t *ptr, uint64_t value)
+   void     L2_AtomicStoreXor(volatile uint64_t *ptr, uint64_t value)
+   void     L2_AtomicStoreMax(volatile uint64_t *ptr, uint64_t value)
+   void     L2_AtomicStoreMaxSignValue(volatile uint64_t *ptr,
+*/
+
+int num_threads;
+pthread_t * pool;
+
+L2_Barrier_t barrier = L2_BARRIER_INITIALIZER;
+BGQ_Atomic64_t counter;
+BGQ_Atomic64_t slowcounter;
+
+int debug = 0;
+
+int get_thread_id(void)
+{
+    for (int i=0; i<num_threads; i++)
+        if (pthread_self()==pool[i])
+            return i;
+
+    return -1;
+}
+
+void * slowfight(void * input)
+{
+    int tid = get_thread_id();
+
+    if (debug) 
+        printf("%d: before L2_Barrier 1 \n", tid);
+    L2_Barrier(&barrier, num_threads);
+    if (debug) {
+        printf("%d: after  L2_Barrier 1 \n", tid);
+        fflush(stdout);
+    }
+
+    int count = 1000000;
+
+    uint64_t rval;
+
+    uint64_t t0 = GetTimeBase();
+    for (int i=0; i<count; i++)
+        rval = Fetch_and_Add(&(slowcounter.atom), 1);
+    uint64_t t1 = GetTimeBase();
+
+    if (debug) 
+        printf("%d: before L2_Barrier 2 \n", tid);
+    L2_Barrier(&barrier, num_threads);
+    if (debug) {
+        printf("%d: after  L2_Barrier 2 \n", tid);
+        fflush(stdout);
+    }
+    
+    uint64_t dt = t1-t0;
+    printf("%2d: %d calls to %s took %llu cycles per call \n", 
+           tid, count, "Fetch_and_Add", dt/count);
+    fflush(stdout);
+
+    pthread_exit(NULL);
+
+    return NULL;
+}
+
+void * fight(void * input)
+{
+    int tid = get_thread_id();
+
+    if (debug) 
+        printf("%d: before L2_Barrier 1 \n", tid);
+    L2_Barrier(&barrier, num_threads);
+    if (debug) {
+        printf("%d: after  L2_Barrier 1 \n", tid);
+        fflush(stdout);
+    }
+
+    int count = 1000000;
+
+    uint64_t rval;
+
+    uint64_t t0 = GetTimeBase();
+    for (int i=0; i<count; i++)
+        rval = L2_AtomicLoadIncrement(&(counter.atom));
+    uint64_t t1 = GetTimeBase();
+
+    if (debug) 
+        printf("%d: before L2_Barrier 2 \n", tid);
+    L2_Barrier(&barrier, num_threads);
+    if (debug) {
+        printf("%d: after  L2_Barrier 2 \n", tid);
+        fflush(stdout);
+    }
+    
+    uint64_t dt = t1-t0;
+    printf("%2d: %d calls to %s took %llu cycles per call \n", 
+           tid, count, "L2_AtomicLoadIncrement", dt/count);
+    fflush(stdout);
+
+    pthread_exit(NULL);
+
+    return NULL;
+}
+
+int main(int argc, char * argv[])
+{
+    num_threads = (argc>1) ? atoi(argv[1]) : 1;
+    printf("L2 counter test using %d threads \n", num_threads );
+
+    //printf("sizeof(BGQ_Atomic64_t) = %zu \n", sizeof(BGQ_Atomic64_t) );
+
+    /* this "activates" the L2 atomic data structures */
+    Kernel_L2AtomicsAllocate(&counter, sizeof(BGQ_Atomic64_t) );
+
+    L2_AtomicStore(&(counter.atom), 0);
+    out64_sync(&(counter.atom), 0);
+
+    pool = (pthread_t *) malloc( num_threads * sizeof(pthread_t) );
+    assert(pool!=NULL);
+
+    /**************************************************/
+
+    for (int i=0; i<num_threads; i++) {
+        int rc = pthread_create(&(pool[i]), NULL, &fight, NULL);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+
+    if (debug) {
+        printf("threads created \n");
+        fflush(stdout);
+    }
+
+    for (int i=0; i<num_threads; i++) {
+        void * junk;
+        int rc = pthread_join(pool[i], &junk);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+    
+    if (debug) {
+        printf("threads joined \n");
+        fflush(stdout);
+    }
+
+    uint64_t rval = L2_AtomicLoad(&(counter.atom));
+    printf("final value of counter is %llu \n", rval);
+
+    /**************************************************/
+
+    for (int i=0; i<num_threads; i++) {
+        int rc = pthread_create(&(pool[i]), NULL, &slowfight, NULL);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+
+    printf("threads created \n");
+    fflush(stdout);
+
+    for (int i=0; i<num_threads; i++) {
+        void * junk;
+        int rc = pthread_join(pool[i], &junk);
+        if (rc!=0) {
+            printf("pthread error \n");
+            fflush(stdout);
+            sleep(1);
+        }
+        assert(rc==0);
+    }
+    
+    printf("threads joined \n");
+    fflush(stdout);
+
+    rval = in64(&(slowcounter.atom));
+    printf("final value of slowcounter is %llu \n", rval);
+
+    /**************************************************/
+
+    free(pool);
+ 
+    return 0;   
+}
+</pre>
+
+Here's some performance data:
+<pre>
+[jhammond@vestalac1 L2atomics]$ x=test_counter.x ; for t in 1 2 3 7 15 31 47 63 ; do tail -n999 $x.t$t.*put ; done
+L2 counter test using 1 threads 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 99 cycles per call 
+final value of counter is 1000000 
+threads created 
+ 0: 1000000 calls to Fetch_and_Add took 257 cycles per call 
+threads joined 
+final value of slowcounter is 1000000 
+L2 counter test using 2 threads 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 99 cycles per call 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 99 cycles per call 
+final value of counter is 2000000 
+threads created 
+ 0: 1000000 calls to Fetch_and_Add took 452 cycles per call 
+ 1: 1000000 calls to Fetch_and_Add took 448 cycles per call 
+threads joined 
+final value of slowcounter is 2000000 
+L2 counter test using 3 threads 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 99 cycles per call 
+ 2: 1000000 calls to L2_AtomicLoadIncrement took 99 cycles per call 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 99 cycles per call 
+final value of counter is 3000000 
+threads created 
+ 1: 1000000 calls to Fetch_and_Add took 556 cycles per call 
+ 0: 1000000 calls to Fetch_and_Add took 538 cycles per call 
+ 2: 1000000 calls to Fetch_and_Add took 528 cycles per call 
+threads joined 
+final value of slowcounter is 3000000 
+L2 counter test using 7 threads 
+ 2: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+ 3: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+ 4: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+ 5: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+ 6: 1000000 calls to L2_AtomicLoadIncrement took 102 cycles per call 
+final value of counter is 7000000 
+threads created 
+ 2: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+ 3: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+ 6: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+ 0: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+ 4: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+ 1: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+ 5: 1000000 calls to Fetch_and_Add took 810 cycles per call 
+threads joined 
+final value of slowcounter is 7000000 
+L2 counter test using 15 threads 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+12: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 9: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 7: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+10: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 4: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 6: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+11: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+13: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 3: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+14: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 8: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 5: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+ 2: 1000000 calls to L2_AtomicLoadIncrement took 110 cycles per call 
+final value of counter is 15000000 
+threads created 
+ 1: 1000000 calls to Fetch_and_Add took 1620 cycles per call 
+11: 1000000 calls to Fetch_and_Add took 1601 cycles per call 
+ 7: 1000000 calls to Fetch_and_Add took 1477 cycles per call 
+ 6: 1000000 calls to Fetch_and_Add took 1588 cycles per call 
+ 5: 1000000 calls to Fetch_and_Add took 1472 cycles per call 
+10: 1000000 calls to Fetch_and_Add took 1584 cycles per call 
+13: 1000000 calls to Fetch_and_Add took 1479 cycles per call 
+ 8: 1000000 calls to Fetch_and_Add took 1587 cycles per call 
+ 3: 1000000 calls to Fetch_and_Add took 1592 cycles per call 
+ 2: 1000000 calls to Fetch_and_Add took 1474 cycles per call 
+12: 1000000 calls to Fetch_and_Add took 1475 cycles per call 
+ 4: 1000000 calls to Fetch_and_Add took 1476 cycles per call 
+ 0: 1000000 calls to Fetch_and_Add took 1547 cycles per call 
+ 9: 1000000 calls to Fetch_and_Add took 1620 cycles per call 
+14: 1000000 calls to Fetch_and_Add took 1581 cycles per call 
+threads joined 
+final value of slowcounter is 15000000 
+L2 counter test using 31 threads 
+16: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+15: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 4: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+20: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+13: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+29: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+18: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 2: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+17: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 3: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+19: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 5: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+21: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 7: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 9: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+23: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+12: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+28: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+25: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+30: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+27: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+24: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 8: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+10: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+26: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+11: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+14: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+22: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+ 6: 1000000 calls to L2_AtomicLoadIncrement took 159 cycles per call 
+final value of counter is 31000000 
+threads created 
+ 1: 1000000 calls to Fetch_and_Add took 1889 cycles per call 
+24: 1000000 calls to Fetch_and_Add took 3480 cycles per call 
+21: 1000000 calls to Fetch_and_Add took 3604 cycles per call 
+28: 1000000 calls to Fetch_and_Add took 3604 cycles per call 
+22: 1000000 calls to Fetch_and_Add took 3563 cycles per call 
+27: 1000000 calls to Fetch_and_Add took 3563 cycles per call 
+30: 1000000 calls to Fetch_and_Add took 3486 cycles per call 
+29: 1000000 calls to Fetch_and_Add took 3486 cycles per call 
+25: 1000000 calls to Fetch_and_Add took 3472 cycles per call 
+26: 1000000 calls to Fetch_and_Add took 3472 cycles per call 
+ 0: 1000000 calls to Fetch_and_Add took 3620 cycles per call 
+ 2: 1000000 calls to Fetch_and_Add took 3620 cycles per call 
+ 6: 1000000 calls to Fetch_and_Add took 3572 cycles per call 
+ 4: 1000000 calls to Fetch_and_Add took 3572 cycles per call 
+ 9: 1000000 calls to Fetch_and_Add took 3604 cycles per call 
+10: 1000000 calls to Fetch_and_Add took 3604 cycles per call 
+16: 1000000 calls to Fetch_and_Add took 3476 cycles per call 
+ 5: 1000000 calls to Fetch_and_Add took 3572 cycles per call 
+ 3: 1000000 calls to Fetch_and_Add took 3572 cycles per call 
+17: 1000000 calls to Fetch_and_Add took 3484 cycles per call 
+15: 1000000 calls to Fetch_and_Add took 3484 cycles per call 
+11: 1000000 calls to Fetch_and_Add took 3573 cycles per call 
+12: 1000000 calls to Fetch_and_Add took 3573 cycles per call 
+14: 1000000 calls to Fetch_and_Add took 3488 cycles per call 
+20: 1000000 calls to Fetch_and_Add took 3476 cycles per call 
+13: 1000000 calls to Fetch_and_Add took 3488 cycles per call 
+ 7: 1000000 calls to Fetch_and_Add took 3568 cycles per call 
+ 8: 1000000 calls to Fetch_and_Add took 3568 cycles per call 
+19: 1000000 calls to Fetch_and_Add took 3567 cycles per call 
+18: 1000000 calls to Fetch_and_Add took 3567 cycles per call 
+23: 1000000 calls to Fetch_and_Add took 3480 cycles per call 
+threads joined 
+final value of slowcounter is 31000000 
+L2 counter test using 47 threads 
+22: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+15: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+38: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+30: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+37: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+28: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 6: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+14: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+33: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 5: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+36: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+11: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+31: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+46: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+44: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+17: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+26: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 4: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+42: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+20: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+34: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+27: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 2: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+21: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+10: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+13: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 3: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+29: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+19: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 7: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+12: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+35: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+25: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+18: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+43: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+23: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+39: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+41: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 8: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+32: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+24: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+ 9: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+40: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+45: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+16: 1000000 calls to L2_AtomicLoadIncrement took 241 cycles per call 
+final value of counter is 47000000 
+threads created 
+12: 1000000 calls to Fetch_and_Add took 2365 cycles per call 
+32: 1000000 calls to Fetch_and_Add took 6872 cycles per call 
+46: 1000000 calls to Fetch_and_Add took 6869 cycles per call 
+41: 1000000 calls to Fetch_and_Add took 6871 cycles per call 
+ 1: 1000000 calls to Fetch_and_Add took 2366 cycles per call 
+ 7: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+28: 1000000 calls to Fetch_and_Add took 6865 cycles per call 
+30: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+45: 1000000 calls to Fetch_and_Add took 6866 cycles per call 
+38: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+21: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+33: 1000000 calls to Fetch_and_Add took 6864 cycles per call 
+13: 1000000 calls to Fetch_and_Add took 6870 cycles per call 
+27: 1000000 calls to Fetch_and_Add took 6871 cycles per call 
+23: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+26: 1000000 calls to Fetch_and_Add took 6867 cycles per call 
+ 3: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+35: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+37: 1000000 calls to Fetch_and_Add took 6872 cycles per call 
+29: 1000000 calls to Fetch_and_Add took 6868 cycles per call 
+14: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+10: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+20: 1000000 calls to Fetch_and_Add took 6870 cycles per call 
+17: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+34: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+15: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+ 8: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+19: 1000000 calls to Fetch_and_Add took 6872 cycles per call 
+11: 1000000 calls to Fetch_and_Add took 6870 cycles per call 
+ 5: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+ 2: 1000000 calls to Fetch_and_Add took 6876 cycles per call 
+39: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+ 6: 1000000 calls to Fetch_and_Add took 6876 cycles per call 
+31: 1000000 calls to Fetch_and_Add took 6871 cycles per call 
+22: 1000000 calls to Fetch_and_Add took 6869 cycles per call 
+43: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+ 0: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+ 4: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+36: 1000000 calls to Fetch_and_Add took 6862 cycles per call 
+24: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+ 9: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+25: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+16: 1000000 calls to Fetch_and_Add took 6871 cycles per call 
+18: 1000000 calls to Fetch_and_Add took 6874 cycles per call 
+44: 1000000 calls to Fetch_and_Add took 6873 cycles per call 
+42: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+40: 1000000 calls to Fetch_and_Add took 6875 cycles per call 
+threads joined 
+final value of slowcounter is 47000000 
+L2 counter test using 63 threads 
+24: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+47: 1000000 calls to L2_AtomicLoadIncrement took 246 cycles per call 
+31: 1000000 calls to L2_AtomicLoadIncrement took 246 cycles per call 
+27: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+54: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+38: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+59: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+36: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+16: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+32: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+37: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 5: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+48: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 0: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+45: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 6: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+52: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+53: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 7: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+56: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 4: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+40: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 8: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+22: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+21: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+11: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+43: 1000000 calls to L2_AtomicLoadIncrement took 324 cycles per call 
+15: 1000000 calls to L2_AtomicLoadIncrement took 246 cycles per call 
+20: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 3: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+42: 1000000 calls to L2_AtomicLoadIncrement took 324 cycles per call 
+55: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+41: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 9: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+61: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+51: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+19: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+35: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+50: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+23: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+39: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+17: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+29: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+13: 1000000 calls to L2_AtomicLoadIncrement took 324 cycles per call 
+34: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 1: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+ 2: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+33: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+49: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+58: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+18: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+10: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+26: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+14: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+57: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+46: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+62: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+30: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+25: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+12: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+44: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+28: 1000000 calls to L2_AtomicLoadIncrement took 324 cycles per call 
+60: 1000000 calls to L2_AtomicLoadIncrement took 323 cycles per call 
+final value of counter is 63000000 
+threads created 
+27: 1000000 calls to Fetch_and_Add took 5178 cycles per call 
+57: 1000000 calls to Fetch_and_Add took 11251 cycles per call 
+56: 1000000 calls to Fetch_and_Add took 11240 cycles per call 
+58: 1000000 calls to Fetch_and_Add took 11247 cycles per call 
+54: 1000000 calls to Fetch_and_Add took 11239 cycles per call 
+33: 1000000 calls to Fetch_and_Add took 11249 cycles per call 
+59: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+ 0: 1000000 calls to Fetch_and_Add took 11260 cycles per call 
+61: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+21: 1000000 calls to Fetch_and_Add took 11260 cycles per call 
+22: 1000000 calls to Fetch_and_Add took 11259 cycles per call 
+ 4: 1000000 calls to Fetch_and_Add took 11239 cycles per call 
+ 5: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+15: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+23: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+ 2: 1000000 calls to Fetch_and_Add took 5177 cycles per call 
+ 1: 1000000 calls to Fetch_and_Add took 5179 cycles per call 
+19: 1000000 calls to Fetch_and_Add took 11260 cycles per call 
+52: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+32: 1000000 calls to Fetch_and_Add took 11245 cycles per call 
+26: 1000000 calls to Fetch_and_Add took 11255 cycles per call 
+42: 1000000 calls to Fetch_and_Add took 11248 cycles per call 
+51: 1000000 calls to Fetch_and_Add took 11255 cycles per call 
+34: 1000000 calls to Fetch_and_Add took 11247 cycles per call 
+43: 1000000 calls to Fetch_and_Add took 11235 cycles per call 
+ 6: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+25: 1000000 calls to Fetch_and_Add took 11249 cycles per call 
+14: 1000000 calls to Fetch_and_Add took 11248 cycles per call 
+62: 1000000 calls to Fetch_and_Add took 11255 cycles per call 
+12: 1000000 calls to Fetch_and_Add took 11259 cycles per call 
+60: 1000000 calls to Fetch_and_Add took 11246 cycles per call 
+ 9: 1000000 calls to Fetch_and_Add took 11260 cycles per call 
+55: 1000000 calls to Fetch_and_Add took 11252 cycles per call 
+ 7: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+ 8: 1000000 calls to Fetch_and_Add took 11260 cycles per call 
+20: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+13: 1000000 calls to Fetch_and_Add took 11260 cycles per call 
+ 3: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+16: 1000000 calls to Fetch_and_Add took 11252 cycles per call 
+28: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+53: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+35: 1000000 calls to Fetch_and_Add took 11247 cycles per call 
+30: 1000000 calls to Fetch_and_Add took 11252 cycles per call 
+49: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+31: 1000000 calls to Fetch_and_Add took 11257 cycles per call 
+40: 1000000 calls to Fetch_and_Add took 11257 cycles per call 
+11: 1000000 calls to Fetch_and_Add took 11255 cycles per call 
+47: 1000000 calls to Fetch_and_Add took 11258 cycles per call 
+38: 1000000 calls to Fetch_and_Add took 11258 cycles per call 
+50: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+18: 1000000 calls to Fetch_and_Add took 11248 cycles per call 
+44: 1000000 calls to Fetch_and_Add took 11258 cycles per call 
+46: 1000000 calls to Fetch_and_Add took 11259 cycles per call 
+39: 1000000 calls to Fetch_and_Add took 11257 cycles per call 
+37: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+36: 1000000 calls to Fetch_and_Add took 11253 cycles per call 
+29: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+41: 1000000 calls to Fetch_and_Add took 11257 cycles per call 
+48: 1000000 calls to Fetch_and_Add took 11256 cycles per call 
+17: 1000000 calls to Fetch_and_Add took 11255 cycles per call 
+45: 1000000 calls to Fetch_and_Add took 11258 cycles per call 
+24: 1000000 calls to Fetch_and_Add took 11253 cycles per call 
+10: 1000000 calls to Fetch_and_Add took 11254 cycles per call 
+threads joined 
+final value of slowcounter is 63000000 
+</pre>
+
+==17th Core App Agents ==
+
+If you use app agents incorrectly, very bad things can happen.
+
+=== Explanation ===
+
+This explanation of the activity on the 17th core is courtesy of Tom Gooding (IBM).
+
+'''Current usage of the 17th core'''
+
+The 17th core is being used by the BGQ system software for a variety of important functions. The functions on this core are divided across the four hardware threads in the following manner: 
+
+'''Thread 0:''' PAMI Application Agent: The PAMI application agent is a special system process used to manage/pace inter-node communication activity. This agent is started by default when a job is launched.  The starting of this agent can be controlled by environment variables.  The agent runs as a separate task in user-space and communicates with the other processes on the node via shared memory, global memory windows, and L2 atomics.  The agent cannot perform normal IO although stdout/stderr messages are sent to the mailbox to allow for debugging.   
+
+'''Thread 1:''' Utility and Maintenance thread.  This thread gets control for all node scoped machine checks conditions (occurring outside of the A2 core) including recoverable machine check conditions. This thread also supports the mailbox interface, processing mailbox interrupts, flight recorders, and performing RAS event reporting.  This thread is also manages ddr scrubbing and reactive power management events.  All of the activities on this hardware thread are interrupt-driven.  When otherwise idle, the thread enters the scheduler.  A second application agent can be launched in this thread at job start.  However, this application agent will be always be preempted as events fire on this hardware thread.  The agent cannot perform normal IO although stdout/stderr messages are sent to the mailbox to allow for debugging.   
+
+'''Thread 2:'''  Job Control and Tool Control thread. This thread is used by CNK to process all CDTI messages from the IO node tool control daemon and to process all job control messages from the IO node job control daemon. This includes requests to load jobs, setup jobs, start jobs, and signal jobs,  stop/step/start threads, read/write memory and registers, and all other request that a tool may make.  This thread is critical for tool performance and job control functionality - - it remains in kernel-space and does not call the scheduler.   
+
+'''Thread 3:''' System IO torus management thread. This thread is dedicated as the network interface thread, monitoring the IO link supporting communication between CNK and the IO node.  The kernel network polling thread receives all incoming messages on the system channel of the message unit.  When a message arrives, the kernel network polling thread wakes up the thread that is waiting for the message.  This thread is critical for good IO communication performance with the ionode - - it remains in kernel-space and does not call the scheduler.
+
+=== Building App Agents ===
+
+Go to <tt>agents/src/comm</tt> in the driver source.  Modify the top of the Makefile as follows.
+<pre>
+# the following 4 lines are the modification
+BGQ_INSTALL_DIR = /bgsys/drivers/ppcfloor
+BGQ_CROSS_CC    = powerpc64-bgq-linux-gcc
+BGQ_CROSS_CXX   = powerpc64-bgq-linux-g++
+BGQ_CROSS_FC    = powerpc64-bgq-linux-gfortran
+</pre>
+
+This is what you should see:
+<pre>
+$ make
+
+powerpc64-bgq-linux-gcc -O3 -g -Wall -I/bgsys/drivers/ppcfloor/gnu/runtime \
+-MMD -MF .dep.commagent.c.d -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk    -c -o commagent.o commagent.c
+
+powerpc64-bgq-linux-gcc -O3 -g -Wall -I/bgsys/drivers/ppcfloor/gnu/runtime \
+-MMD -MF .dep.rgetpacing.c.d -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk    -c -o rgetpacing.o rgetpacing.c
+
+powerpc64-bgq-linux-gcc -O3 -g -Wall -I/bgsys/drivers/ppcfloor/gnu/runtime \
+-MMD -MF .dep.fence.c.d -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk    -c -o fence.o fence.c
+
+powerpc64-bgq-linux-gcc -static -Wl,--script=/bgsys/drivers/ppcfloor/cnk/tools/AppAgent0.lds \
+-o comm.elf commagent.o rgetpacing.o fence.o -L/bgsys/drivers/ppcfloor/spi/lib \
+-l SPI -l SPI_cnk -lpthread -lrt
+</pre>
+
+Now you can modify the PAMI App Agent source to create your own App Agent.
+
+=== App Agent "Hello, World!" ===
+
+This code is courtesy of Tom Gooding at IBM.
+
+==== agent1.c ====
+<pre>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <spi/include/kernel/location.h>
+
+int main(int argc, char **argv)
+{
+    int fd;
+    printf("Hello World from the AGENT 1\n");
+
+    unsigned long *address;
+    fd = shm_open("mystorage", O_RDWR | O_CREAT, 0);
+    if (fd<0)
+    {
+        printf("shm_open failure in agent 1\n");
+        return 1;
+    }
+    int rc = ftruncate(fd, 1024*1024);
+    if (rc<0)
+    {
+        printf("ftruncate failure in agent 1\n");
+        return 1;
+    }
+    address = mmap(NULL, 1024*1024, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    address[Kernel_ProcessorID()] = 777;
+    ppc_msync();
+    
+    unsigned long spin = 1;
+    while (spin) spin++;
+    printf("Should not get here %ld\n",spin);
+
+    return 0; 
+}
+</pre>
+
+==== agent2.c ====
+<pre>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <spi/include/kernel/location.h>
+
+int main(int argc, char **argv)
+{
+    int fd;
+    printf("Hello World from the AGENT 2\n");
+
+    unsigned long *address;
+    fd = shm_open("mystorage", O_RDWR | O_CREAT, 0);
+    if (fd<0)
+    {
+        printf("shm_open failure in agent 2\n");
+        return 1;
+    }
+    int rc = ftruncate(fd, 1024*1024);
+    if (rc<0)
+    {
+        printf("ftruncate failure in agent 2\n");
+        return 1;
+    }
+    address = mmap(NULL, 1024*1024, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    address[Kernel_ProcessorID()] = 123;
+    ppc_msync();
+
+    unsigned long spin = 1;
+    while (spin) spin++;
+    printf("Should not get here %ld\n",spin);
+
+    return 0;
+}
+</pre>
+
+==== appagent.c ====
+<pre>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <spi/include/kernel/location.h>
+
+int main(int argc, char **argv)
+{
+    int fd;
+    unsigned long * volatile address;
+    printf("Hello World from the APPLICATION\n");
+    fd = shm_open("mystorage", O_RDWR | O_CREAT, 0);
+    if (fd<0)
+    {
+        printf("shm_open failure in application\n");
+        return 1;
+    }
+    int rc = ftruncate(fd, 1024*1024);
+    if (rc<0)
+    {
+        printf("ftruncate failure in application\n");
+        return 1;
+    }
+    address = mmap(NULL, 1024*1024, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    address[Kernel_ProcessorID()] = Kernel_ProcessorID();
+    sleep(1);
+    
+    if(address[64] != 777)
+    {
+        printf("agent1 did not correctly write its data:  read=%lx.  expected=%x\n", address[64], 777);
+    }
+    
+    if(address[65] != 123)
+    {
+        printf("agent2 did not correctly write its data:  read=%lx.  expected=%x\n", address[65], 123);
+    }
+    return 0;
+}
+</pre>
+
+==== Building ====
+The linker script is '''extremely''' important here, meaning mandatory.
+
+<pre>
+powerpc64-bgq-linux-gcc -m64 -Wall -Werror -g  -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk -c appagent.c -o appagent.o
+powerpc64-bgq-linux-gcc -static -o appagent.elf appagent.o \
+-L/bgsys/drivers/ppcfloor/spi/lib -l SPI_cnk -lpthread -lrt
+
+
+powerpc64-bgq-linux-gcc -m64 -Wall -Werror -g   -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk -c agent1.c -o agent1.o
+powerpc64-bgq-linux-gcc -static -Wl,--script=/bgsys/drivers/ppcfloor/cnk/tools/AppAgent0.lds \
+-o agent1.elf agent1.o -L/bgsys/drivers/ppcfloor/spi/lib -l SPI_cnk -lpthread -lrt
+
+
+powerpc64-bgq-linux-gcc -m64 -Wall -Werror -g  -I/bgsys/drivers/ppcfloor \
+-I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk -c agent2.c -o agent2.o
+powerpc64-bgq-linux-gcc -static -Wl,--script=/bgsys/drivers/ppcfloor/cnk/tools/AppAgent1.lds \
+-o agent2.elf agent2.o -L/bgsys/drivers/ppcfloor/spi/lib -l SPI_cnk -lpthread -lrt
+</pre>

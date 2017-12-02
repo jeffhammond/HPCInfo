@@ -1,0 +1,83 @@
+== Motivation ==
+
+It always surprises me to learn that people still think it is hard to get time on supercomputers, or that it costs money to do so.  The purpose of this page is to explain where and how to get supercomputer time ''for free''.
+
+'''This is very much a work in progress.  I apologize for the delay in creating this content.'''
+
+== Disclaimer ==
+
+I work for the [http://www.alcf.anl.gov/ Argonne Leadership Computing Facility (ALCF)] and was formerly a summer student at the [http://www.pnl.gov/ PNNL] [http://www.emsl.pnl.gov/ EMSL] [http://mscf.emsl.pnl.gov Molecular Sciences Computing Facility (MSCF)] and thus my perspective may be biased due to familiarity.  I have been a user of [http://www.nersc.gov/ NERSC] and the [http://www.olcf.ornl.gov/ Oak Ridge Leadership Computing Facility (OLCF)] for a few years as well and due to my DOE-centric perspective, I may also appear biased in this regard.  However, I've used supercomputers in at least three countries know supercomputing facility staff in at least as many countries, so I think I'm reasonably qualified to talk about sites around the world.
+
+== Supercomputer Facilities ==
+
+=== Sites inside the US ===
+
+==== DOE Leadership Computing Facilities ==== 
+
+* [http://www.alcf.anl.gov/ Argonne Leadership Computing Facility (ALCF)]
+* [http://www.olcf.ornl.gov/ Oak Ridge Leadership Computing Facility (OLCF)]
+
+==== Other DOE Office of Science Facilities ====
+
+* [http://www.nersc.gov National Energy Research Scientific Computing Center (NERSC)]
+* [http://www.emsl.pnl.gov/capabilities/computing/ Molecular Science Computing Facility (MSCF)]
+
+==== NSF Facilities ====
+
+* [http://www.ncsa.illinois.edu/ National Center for Supercomputing Applications (NCSA)]
+* [http://www.tacc.utexas.edu/ Texas Advanced Computing Center (TACC)]
+* [http://www.nics.tennessee.edu/ National Institute for Computational Sciences (NICS)]
+* [http://www.psc.edu/ Pittsburgh Supercomputing Center (PSC)]
+* [http://www.sdsc.edu/ San Diego Supercomputer Center (SDSC)]
+
+==== Regional Facilities ====
+
+OSC
+
+==== Local Facilities ====
+
+Local facilities: UChicago (as an example)
+
+=== Sites outside the US ===
+
+* [http://www2.fz-juelich.de/jsc/jugene Juelich Supercomputing Centre (JSC)] (Germany): Time at JSC is allocated primarily through [http://www.prace-project.eu/Resource-Allocation PRACE].  It's best to consult the PRACE website for information since my access to JSC is not through PRACE.
+* [http://www.cscs.ch/ Swiss National Supercomputing Centre (CSCS)] (Switzerland): See [http://www.cscs.ch/nss/allocation_schemes/index.html] for more information on getting time at CSCS.
+
+See [http://en.wikipedia.org/wiki/Supercomputing_in_Europe Supercomputing in Europe] on Wikipedia for other sites in Europe and [http://en.wikipedia.org/wiki/Category:Supercomputer_sites Supercomputer sites] on Wikipedia for the rest of the world.
+
+=== How to choose a facility ===
+
+==== Accessibility ====
+
+Some facilities require foreign nationals to provide additional information.
+
+==== Machine Architecture ====
+
+* Clusters with [[CPU_comparison|CPU]] nodes.
+* [[Cray]] systems.
+* [[Blue Gene/Q|Blue Gene]] systems.
+* Systems with [[GPU]]s or [[MIC]].
+
+==== Support Resources ====
+
+* Pre-installed libraries and applications.
+* Application expertise among support staff.
+* Availability of support staff for advanced questions.
+
+== How to write an application ==
+
+=== Beginner DOE Allocations ===
+
+NERSC
+
+Director's Discretionary 
+
+=== Expert DOE Allocations ===
+
+INCITE
+
+ALCC
+
+=== XSEDE (formerly Teragrid) ===
+
+=== Other Sites ===

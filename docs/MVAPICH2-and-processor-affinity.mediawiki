@@ -1,0 +1,33 @@
+TODO: clean this up.
+
+== Background ==
+
+MVAPICH2 sets CPU affinity by default, which I believe has negative performance implications for threaded codes due to the pinning of [[Pthreads]] to the same core as a compute process.
+
+For example, [[NWChem]] developers have noticedthat NWChem performs better with OpenMPI than MVAPICH2 on Infiniband, which is likely because of side effects like this rather than the actual quality of the MPI implementation itself, since, if nothing else, many modules in NWChem use MPI sparingly.
+
+The [[MADNESS]] code, which uses MPI+Pthreads, suffers incredibly due to this issue because all of the <tt>ncores</tt> Pthreads are pinned to core zero and thus performance is limited to <tt>1/ncores</tt> fraction of peak.
+
+== Solution ==
+
+This is the patch in C.  See the MADNESS source noted below for the C++ version.
+<pre>
+#if defined(MVAPICH2_VERSION) 
+       char * mv2_string; 
+       int mv2_affinity = 1; /* this is the default behavior of MVAPICH2 */ 
+       if ((mv2_string = getenv("MV2_ENABLE_AFFINITY")) != NULL) { 
+           mv2_affinity = atoi(mv2_string); 
+       } 
+       if (mv2_affinity!=0 /* && procid==0 FIXME */) { 
+           printf("WARNING: You are using MVAPICH2 with affinity enabled, probably by default. \n"); 
+           printf("WARNING: This will cause performance issues for ARMCI. \n"); 
+           printf("WARNING: Please rerun your job with MV2_ENABLE_AFFINITY=0 \n"); 
+       } 
+#endif 
+</pre>
+
+== Applications/Libraries that implement the fix ==
+
+* MADNESS [https://code.google.com/p/m-a-d-n-e-s-s/source/browse/local/trunk/src/lib/world/safempi.h]
+* PMRRR [https://code.google.com/p/pmrrr/issues/detail?id=1]
+* Global Arrays [https://groups.google.com/group/hpctools/msg/9b49bedd902bddc6?dmode=source&output=gplain&noredirect] (in-progress)

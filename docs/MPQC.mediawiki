@@ -1,0 +1,247 @@
+= Overview =
+
+MPQC (Massively Parallel Quantum Chemistry) is an object-oriented quantum chemistry code which supports SCF, DFT, MP2 and MP2-R12 methods.  It is licensed under the GPL.  You can find more information from the [http://www.mpqc.org/ MPQC home page], although the [http://sourceforge.net/projects/mpqc/ MPQC Sourceforge page] may be more useful.
+
+= Download =
+
+== New ==
+
+https://github.com/ValeevGroup/mpqc
+
+<pre>
+git clone https://github.com/ValeevGroup/mpqc.git
+</pre>
+
+== Old ==
+
+The latest version of the code is available via Mercurial.
+<pre>
+hg clone http://hg.code.sf.net/p/mpqc/code mpqc-code
+</pre>
+
+The last release, which is really quite old at this point, can be obtained as follows.
+<pre>
+http://downloads.sourceforge.net/project/mpqc/mpqc/2.3.1/mpqc-2.3.1.tar.bz2
+</pre>
+
+The following is a deprecated way to get MPQC via Subversion.
+
+<pre>
+svn co http://mpqc.svn.sourceforge.net/svnroot/mpqc/trunk/mpqc mpqc-trunk
+</pre>
+
+= Compiling =
+
+== New ==
+
+=== Help ===
+
+<pre>
+> ./configure --help
+Usage: '"$0"' [<options>...]
+Options: [defaults in brackets after descriptions]
+Configuration:
+  --help                  print this message
+  --new-features          MPQC new features (-DMPQC_NEW_FEATURES=TRUE)
+  --debug                 debug build (CMAKE_BUILD_TYPE=Debug)
+  --prefix=               install prefix (CMAKE_INSTALL_PREFIX=)
+  --lapack=               LAPACK libraries (LAPACK_LIBRARIES=)
+  --integer8              assume integer*8 in fortran
+  --mpicc=                MPI C compiler to deduce MPI environment (MPI_C_COMPILER=)
+  --libint=               TRUE/FALSE or Libint path
+  --boost=                Boost path
+  --search=               paths to search for files/libraries, separated by semicolon
+                          (CMAKE_PREFIX_PATH=)
+  --expert                Expert mode: disables building dependencies (MPQC_EXPERT=TRUE)
+  --openmp                Enable OpenMP (MPQC_OPENMP=TRUE)
+  --ci=                   Enable/disable CI
+  -D*                     passed verbatim to cmake command
+
+Some influential environment variables:
+  CC          C compiler command       (e.g. CC='mpicc')
+  CFLAGS      C compiler flags         (e.g. CFLAGS='-O0 -g -std=c11')
+  CXX         C++ compiler command     (e.g. CXX='mpicxx')
+  CXXFLAGS    C++ compiler flags       (e.g. CXXFLAGS='-O0 -g -std=c++0x')
+  CPPFLAGS    C/C++ proprocessor flags (e.g. CPPFLAGS='-I/opt/local/include -DNDEBUG')
+  F77         Fortran 77 compiler command  (e.g. F77='gfortran')
+  FFLAGS      Fortran 77 compiler flags    (e.g. FFLAGS='-fdefault-integer-8')
+  LDFLAGS     linker flags             (e.g. LDFLAGS=-L/libdir)
+  CMAKE       cmake command to use     (e.g. CMAKE='/opt/local/bin/cmake')
+</pre>
+
+=== Tukey ===
+
+<pre>
+../configure \
+--prefix=$HOME/TUKEY/MPQC/github/install-mvapich-2.9.x-gcc-4.8.1-gotoblas \
+--lapack="-L/soft/libraries/unsupported/GotoBLAS2-1.13/gfortran/ \
+-lgoto2_barcelonap-r1.13 -lgfortran -lpthread" \
+--integer8 \
+--mpicc=mpicc \
+CC=mpicc \
+CXX=mpicxx \
+F77=mpif77
+</pre>
+
+=== Blue Gene/Q ===
+
+Refer to [[Blue_Gene/Q#Linking_ESSL]] for how to set <tt>MATH_LIBS</tt>.  XLF causes [[CMake]] to fail.
+
+<pre>
+../configure \
+--mpicc=mpiclang \
+--lapack="${MATH_LIBS}" \
+--prefix="${HOME}/MPQC/git/install-xlc" \
+CC=mpiclang \
+CXX=mpiclang++ \
+F77=powerpc64-bgq-linux-gfortran
+</pre>
+
+== Old ==
+
+These instructions apply to the Sourceforge Mercurial repo.  As of <tt>9829:8dc04999b1e3</tt>, this was working.
+
+Create the configure script:
+
+<pre>
+make configure
+</pre>
+
+=== Blue Gene/P===
+
+<pre>
+./configure \
+--prefix=~/mpqc/build \
+--host=powerpc-bgp-linux\
+--enable-cross-compile \
+--enable-static \
+--enable-always-use-mpi \
+--enable-threads \
+--with-default-parallel=mtmpi \
+--with-mpi-thread=multiple \
+--with-cc="mpixlc_r" \
+--with-cxx="mpixlcxx_r" \
+--with-f77="bgxlf_r" \
+--with-libdir="-L/soft/apps/LAPACK -L/soft/apps/ESSL-4.4.1-0/lib -L/soft/apps/ibmcmp/xlf/bg/11.1/bglib -L/soft/apps/ibmcmp/xlsmp/bg/1.7/bglib/"
+--with-libs="-llapack_bgp -lesslbg -lxlf90_r -lxlsmp -lpthread"
+</pre>
+
+Change a few lines:
+
+'''XLC ONLY''' Make <tt>src/lib/scconfig.h</tt> look like this around line 29:
+<pre>
+/* Define if the deprecated attribute exists in C++.  */
+#define CXX_DEPRECATED 1
+
+#define DEPRECATED
+
+#endif
+
+/* Define if you want to optimize the reference counting code.  */
+</pre>
+
+Build it:
+
+<pre>
+make
+make install
+</pre>
+
+= Running Jobs =
+
+Use the following script (<tt>run_mpqc</tt>) to submit jobs on BGP:
+
+<pre>
+#! /bin/bash -f
+
+# Usage: ./run_mpqc <input_file> <nproc> <time> <queue>
+
+# change this path to your binary
+mpqc=/intrepid-fs0/users/jhammond/persistent/bin/mpqc-trunk_2april2010
+
+file=${1}
+procs=${2}
+time=${3}
+queue=${4}
+mode=smp
+
+input=${file%%.*}
+
+threadgrp="<PthreadThreadGrp>:(num_threads=3)"
+memorygrp="<MTMPIMemoryGrp>:(n=1)"
+
+directory=${input}_${procs}proc_${mode}_`date +%d%b%Y_%Hh%Mm`
+mkdir ${directory}
+cp ${file} ${directory}
+cd ${directory}
+
+# default DCMF_RECFIFO=8388608 craps out on w21_mp2_cc-pVTZ_2048proc_smp
+qsub -q ${queue} -n ${procs} -t ${time} --mode ${mode} \
+--env THREADGRP=${threadgrp}:MEMORYGRP=${memorygrp}:DCMF_RECFIFO=33554432:MPIRUN_VERBOSE=2 \
+${mpqc} ${file}
+</pre>
+
+== Example Input File ==
+
+<tt>w2_scf_cc-pVDZ_energy.in</tt>:
+
+<pre>
+% molecule specification
+molecule<Molecule>: (
+%symmetry = C1
+ angstroms = yes
+ { atoms geometry } = {
+ O  [    -0.000545       1.517541       0.000000 ]
+ H  [     0.094538       0.553640       0.000000 ]
+ H  [     0.901237       1.847958       0.000000 ]
+ O  [    -0.000545      -1.389760       0.000000 ]
+ H  [    -0.493527      -1.711924       0.761014 ]
+ H  [    -0.493527      -1.711924      -0.761014 ]
+ }
+)
+% basis set specification
+basis<GaussianBasisSet>: (
+ name = "cc-pVDZ"
+ molecule = $:molecule
+)
+% guess basis set specification
+gbasis<GaussianBasisSet>: (
+ name = "STO-3G"
+ molecule = $:molecule
+)
+mpqc: (
+ savestate = no
+ restart = no
+ do_energy = yes
+ do_gradient = no
+ % method for computing the energy
+ mole<MBPT2>: (
+  molecule = $:molecule
+  basis = $:basis
+  memory = 240000000
+  nfzc = auto
+  nfzv = 0
+  method = mp
+  algorithm = memgrp
+  reference<CLHF>: (
+    molecule = $:molecule
+    basis = $:basis
+    memory = 240000000
+    guess_wavefunction<CLHF>: (
+       molecule = $:molecule
+       basis = $:gbasis
+    )
+  )
+ )
+)
+</pre>
+
+= Performance =
+
+== Blue Gene/P ==
+
+'''April 7th, 2010:''' MPQC has been run on as many as 40K nodes of Intrepid for MP2 calculations.  Scaling from 512 to 16K nodes was near-perfect.  We are currently working to improve the scaling of the SCF code at 32K and beyond.
+
+https://wiki.alcf.anl.gov/parts/index.php/File:New_rubene_timings.jpg
+
+== Blue Gene/Q ==

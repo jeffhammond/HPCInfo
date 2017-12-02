@@ -1,0 +1,12 @@
+== Overview ==
+
+The K supercomputer was the fastest machine in the world in 2011, according to the [http://top500.org/system/177232 Top500] list.  It has a theoretical peak of 11.2 PF, a LINPACK rating of 10.5 PF and consumes 12.7 MW of electricity.
+
+See [http://en.wikipedia.org/wiki/K_computer Wikipedia] for more information.
+
+== Documentation ==
+
+* [http://www.fujitsu.com/downloads/MAG/vol48-3/paper04.pdf  SPARC64 VIIIfx: CPU for the K computer]
+* [http://img.jp.fujitsu.com/downloads/jp/jhpc/sparc64viiifx-extensions.pdf SPARC64™ VIIIfx Extensions]
+* [http://www.hotchips.org/wp-content/uploads/hc_archives/hc21/3_tues/HC21.25.500.ComputingAccelerators-Epub/HC21.25.51A.Maruyama-Fujitsu-Octo-Core-VIIIfx.pdf SPARC64™ VIIIfx: Fujitsu’s New Generation Octo Core Processor for PETA Scale computing]
+* [http://www.computer.org/csdl/mags/co/2009/11/mco2009110036-abs.html Tofu: A 6D Mesh/Torus Interconnect for Exascale Computers]

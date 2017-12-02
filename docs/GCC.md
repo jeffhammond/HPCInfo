@@ -1,0 +1,1 @@
+see https://github.com/jeffhammond/HPCInfo/tree/master/buildscripts instead

@@ -1,0 +1,169 @@
+= Ensembles =
+
+An efficient of implement of ensemble jobs using the LAMMPS library interface, including support for parallel [http://www.plumed-code.org/ PLUMED] jobs, was developed by Luke Westby, Mladen Rasic, Adrian Lange and [http://jeffhammond.github.io/ Jeff Hammond] beginning in the summer of 2012.  Adrian was the most recent development of this project, but it is no longer maintained.
+
+The Voth group made effective use of LAMMPS Ensembles for complex simulations, as described [http://www.alcf.anl.gov/sites/www.alcf.anl.gov/files/multiscalemolsimesptechreportwrapped.pdf here].
+
+The non-public Subversion repository is located at https://repo.anl-external.org/repos/lammps-ensembles/.  Adrian has a much newer version on [https://github.com/awlange/lammps_ensembles Github].
+
+= Compiler Comparison =
+
+== Study 1 ==
+
+=== Machine ===
+
+Intel Sandy Bridge dual-socket 8 cores per socket with 64 GB memory running CentOS (<tt>2.6.32-358.6.2.el6.x86_64</tt>).
+<pre>
+processor	: 31
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 45
+model name	: Genuine Intel(R) CPU  @ 2.60GHz
+stepping	: 5
+cpu MHz		: 2593.809
+cache size	: 20480 KB
+physical id	: 1
+siblings	: 16
+core id		: 7
+cpu cores	: 8
+apicid		: 47
+initial apicid	: 47
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36
+clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc 
+arch_perfmon pebs bts rep_good xtopology nonstop_tsc aperfmperf pni pclmulqdq dtes64 monitor 
+ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic popcnt 
+tsc_deadline_timer aes xsave avx lahf_lm arat epb xsaveopt pln pts dts tpr_shadow vnmi
+flexpriority ept vpid
+bogomips	: 5186.77
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+</pre>
+
+<pre>
+             total       used       free     shared    buffers     cached
+Mem:      65917468   24806684   41110784          0     306208   22742672
+-/+ buffers/cache:    1757804   64159664
+Swap:     33030136      
+</pre>
+
+=== Compilers ===
+
+* LLVM trunk from 19 June 2013
+* GCC 4.8.1 with lots of bells-and-whistles
+* Intel 13.1.1
+
+<pre>
+$ clang -v
+clang version 3.4 (http://llvm.org/git/clang.git 896436706037daf3c24e66bb95cb6ef9750a15b0) 
+(http://llvm.org/git/llvm.git 4532c280f540de22c83ca2525f1a9a7722b4d7e3)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+
+$ gcc -v
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=~/GCC/4.8.1/libexec/gcc/x86_64-unknown-linux-gnu/4.8.1/lto-wrapper
+Target: x86_64-unknown-linux-gnu
+Configured with: ../configure --prefix=~/GCC/4.8.1/ --enable-threads=posix 
+--enable-checking=release --with-system-zlib --enable-__cxa_atexit --enable-gnu-unique-object 
+--enable-languages=c,c++,fortran --with-tune=corei7-avx --with-gmp=~/GCC/4.8.1 
+--with-mpfr=~/GCC/4.8.1 --with-mpc=~/GCC/4.8.1 --with-cloog=~/GCC/4.8.1 
+--with-isl=~/GCC/4.8.1 --disable-isl-version-check --enable-bootstrap --enable-lto
+Thread model: posix
+gcc version 4.8.1 (GCC) 
+
+$ icpc -v
+icpc version 13.1.1 (gcc version 4.7.0 compatibility)
+</pre>
+
+=== Libraries and Compilation ===
+
+* MPICH trunk from 19 June 2013: roughly equivalent to 3.0.5 release.
+<pre>
+../configure CC=gcc CXX=g++ FC=gfortran F77=gfortran --enable-fc --enable-f77 --enable-cxx \
+--enable-threads --with-device=ch3:nemesis --prefix=~/MPICH/gcc --enable-static --enable-wrapper-rpath
+
+../configure CC=icc CXX=icpc FC=ifort F77=ifort --enable-fc --enable-f77 --enable-cxx \
+--enable-threads --with-device=ch3:nemesis --prefix=~/MPICH/intel --enable-static --enable-wrapper-rpath
+
+../configure CC=clang CXX=clang++ FC=false F77=false --disable-fc --disable-f77 --enable-cxx \
+--enable-threads --with-device=ch3:nemesis --prefix=~/MPICH/llvm --enable-static --enable-wrapper-rpath
+</pre>
+* FFTW 3.3.3 compiled with the same compiler as LAMMPS (when LLVM is used, <tt>F77=gfortran</tt>).
+<pre>
+../configure CC=gcc F77=gfortran --enable-avx --enable-sse2 --prefix=~/FFTW/fftw-3.3.3/install-gcc481
+
+../configure CC=icc F77=ifort --enable-avx --enable-sse2 --prefix=/home~/FFTW/fftw-3.3.3/install-intel
+
+../configure CC=clang F77=gfortran --enable-avx --enable-sse2 --prefix=~/FFTW/fftw-3.3.3/install-llvm
+</pre>
+* LAMMPS 17Jun13 release.
+**LLVM: <tt>CCFLAGS = -O3</tt>
+**GCC: <tt>CCFLAGS = -O3 -march=corei7-avx -mtune=corei7-avx -fopenmp -ffast-math</tt>
+**Intel: <tt>CCFLAGS = -Ofast -openmp</tt>
+
+=== LJ Performance ===
+
+==== Input File ====
+
+<pre>
+# 3d Lennard-Jones melt
+
+variable	x index 1
+variable	y index 1
+variable	z index 1
+
+variable	xx equal 50*$x
+variable	yy equal 50*$y
+variable	zz equal 50*$z
+
+units		lj
+atom_style	atomic
+
+lattice		fcc 0.8442
+region		box block 0 ${xx} 0 ${yy} 0 ${zz}
+create_box	1 box
+create_atoms	1 box
+mass		1 1.0
+
+velocity	all create 1.44 87287 loop geom
+
+pair_style	lj/cut 2.5
+pair_coeff	1 1 1.0 1.0 2.5
+
+neighbor	0.3 bin
+neigh_modify	delay 0 every 20 check no
+
+fix		1 all nve
+
+run		1000
+</pre>
+
+==== Launch ====
+
+<pre>
+for c in llvm intel gcc ; do 
+ for m in 32 16 8 4 2 1 ; do 
+  for t in 1 ; do 
+   mpiexec -n $m ../lmp_$c -in in.lj -log lj50.log.$c.mpi$m  
+  done
+ done
+done
+</pre>
+
+==== Results ====
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>MPI</th><th>LLVM</th><th>GCC</th><th>Intel</th></tr>
+<tr><td>1</td><td>446.12</td><td>406.12</td><td>463.95</td></tr>
+<tr><td>2</td><td>234.07</td><td>212.84</td><td>238.54</td></tr>
+<tr><td>4</td><td>124.16</td><td>114.58</td><td>124.35</td></tr>
+<tr><td>8</td><td>67.81</td><td>62.02</td><td>65.89</td></tr>
+<tr><td>16</td><td>43.00</td><td>38.55</td><td>40.73</td></tr>
+<tr><td>32</td><td>71.93</td><td>56.73</td><td>73.08</td></tr>
+</table>

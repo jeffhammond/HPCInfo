@@ -1,0 +1,65 @@
+= Developer Documentation =
+
+* Overall https://wiki.mpich.org/mpich/index.php/Developer_Documentation
+* Hydra: http://wiki.mpich.org/mpich/index.php/Using_the_Hydra_Process_Manager
+* VCS 101: https://wiki.mpich.org/mpich/index.php/Version_Control_Systems_101
+* Git: http://wiki.mpich.org/mpich/index.php/Git ([http://git.mpich.org/ repo])
+* Building: https://wiki.mpich.org/mpich/index.php/Building_MPICH_For_Development
+
+= TODO List =
+
+== Trac ==
+
+* [https://trac.mpich.org/projects/mpich/query?status=!closed&reporter=jhammond Trac ticket I reported]
+* [http://trac.mpich.org/projects/mpich/query?status=!closed&owner=jhammond Trac tickets I own]
+
+== Urgent ==
+
+* GCC-PGI bug
+** http://trac.mpich.org/projects/mpich/ticket/1869
+** http://www.mpich.org/static/cron/tests/runs/x86_64-Linux-GNU-PG-hydra-ch3:nemesis-2013-06-07-23-15-testsumm-mpich2-fail.xml
+** http://trac.mpich.org/projects/mpich/changeset/cabd1a06512932ffbbe8c307b0bfa537aba9a118
+** http://trac.mpich.org/projects/mpich/changeset/a803acf6b206d59d09229605324f10b964f98e8f
+** Configure: <tt>/home/MPI/testing/mpich2/mpich2/configure --prefix=/sandbox/wbland/mpich2_work/nightly/x86_64-Linux-GNU-PG/cb/mpi2-inst --enable-romio --enable-cxx --enable-nemesis-dbg-localoddeven --with-device=ch3:nemesis --with-pm=hydra</tt>
+** Environment = <tt>FC = pgf90; F77 = pgf77; CXX = g++; CC = gcc;</tt>
+
+== Features ==
+
+=== RMA ===
+
+* http://trac.mpich.org/projects/mpich/ticket/1750
+* http://trac.mpich.org/projects/mpich/ticket/1778
+* http://trac.mpich.org/projects/mpich/ticket/1779
+* http://trac.mpich.org/projects/mpich/ticket/1780
+
+[http://trac.mpich.org/projects/mpich/query?id=1702%2C1741%2C1744%2C1746%2C1747%2C1764%2C1791%2C1737%2C1750%2C1778%2C1779%2C1780 These] are all of Jim's old tickets...
+
+=== Collectives ===
+
+* <tt>Reduce_scatter(_block)</tt> over <tt>Allreduce</tt>
+* <tt>MPI_Op=MPIX_KAHAN_SUM</tt> - See [[Kahan sum reduction]].
+
+=== Datatypes ===
+
+* http://spcl.inf.ethz.ch/Research/Parallel_Programming/MPI_Datatypes/libpack/
+
+== Test Suite ==
+
+=== RMA ===
+
+* https://trac.mpich.org/projects/mpich/ticket/1709
+
+== Documentation ==
+
+Work on the [http://wiki.mpich.org/mpe/index.php/Main_Page MPE Wiki].  In particular, pull content from http://www.mcs.anl.gov/research/projects/perfvis/software/MPE/
+
+= Blue Gene/Q =
+
+See [[MPICH on Blue Gene/Q]]
+
+= Count safety =
+
+When trying to fix such issues, use the following, to ensure that `configure` tests do not fail due to incorrect declaration.
+```
+-Wshorten-64-to-32 -Werror -Wno-incompatible-library-redeclaration
+```
