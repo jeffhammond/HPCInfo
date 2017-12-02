@@ -27,3 +27,6 @@ atomics/ping-pong/cxx11-dekker.clang
 atomics/ping-pong/cxx11-dekker2.clang
 atomics/ping-pong/cxx11-ping-pong.clang
 atomics/ping-pong/gcc-ping-pong.clang
+opencl/atomic/add
+lapack/test_dsygv
+lapack/test_dsyev
