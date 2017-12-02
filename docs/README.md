@@ -73,9 +73,9 @@ http://apfel.mathematik.uni-ulm.de/~lehn/sghpc/gemm/index.html
 
 ### The standard models
 
-[MPI](https://github.com/jeffhammond/HPCInfo/tree/master/mpi) is far and away the most popular parallel programming and is used in more than 99% of the parallel applications that run on modern supercomputers and clusters.
+[MPI](../mpi) is far and away the most popular parallel programming and is used in more than 99% of the parallel applications that run on modern supercomputers and clusters.
 
-[Shared memory](https://github.com/jeffhammond/HPCInfo/tree/master/posix/shm) (between processes) of the POSIX variety is not widely used by application programmers but is widely used in system software.
+[Shared memory](../posix/shm) (between processes) of the POSIX variety is not widely used by application programmers but is widely used in system software.
 
 While Charm++ is not widely used in the way that MPI is, NAMD is arguably the most widely used code in all of open science, hence one can argue that Charm++ is used by the tens of thousands of people running NAMD.
 
@@ -83,19 +83,19 @@ While Charm++ is not widely used in the way that MPI is, NAMD is arguably the mo
 
 Note that I conflate PGAS with one-sided despite understanding the difference between the two.  If a one-sided model takes remote addresses as an argument, that's close enough to PGAS for my purposes.
 
-[GA/ARMCI](https://github.com/jeffhammond/HPCInfo/tree/master/ga-armci) and [SHMEM](https://github.com/jeffhammond/HPCInfo/tree/master/shmem) are library implementations of the PGAS programming model.
+[GA/ARMCI](../ga-armci) and [SHMEM](../shmem) are library implementations of the PGAS programming model.
 
-[UPC](https://github.com/jeffhammond/HPCInfo/tree/master/upc) and [CAF](https://github.com/jeffhammond/HPCInfo/tree/master/coarray-f) are C-based and Fortran-based PGAS programming languages.
+[UPC](../upc) and [CAF](../coarray-f) are C-based and Fortran-based PGAS programming languages.
 
-[Implementing a Symmetric Heap](https://github.com/jeffhammond/HPCInfo/tree/master/mpi/advanced) is related to implementing PGAS models efficiently.
+[Implementing a Symmetric Heap](../mpi/advanced) is related to implementing PGAS models efficiently.
 
-[MPI3-RMA](https://github.com/jeffhammond/HPCInfo/tree/master/mpi/rma) provides all of the communication features required by ''most'' PGAS models.
+[MPI3-RMA](../mpi/rma) provides all of the communication features required by ''most'' PGAS models.
 
 ### Threading models
 
 #### Library-Based Models
 
-[Pthreads](https://github.com/jeffhammond/HPCInfo/tree/master/posix/threads) is common for systems programming and for codes like MADNESS and MPQC that require a more dynamic threading model than [OpenMP](https://github.com/jeffhammond/HPCInfo/tree/master/openmp) provides.  Using Pthreads from C and C++ is straightforward but not so much from other languages (e.g. Fortran).
+[Pthreads](../posix/threads) is common for systems programming and for codes like MADNESS and MPQC that require a more dynamic threading model than [OpenMP](../openmp) provides.  Using Pthreads from C and C++ is straightforward but not so much from other languages (e.g. Fortran).
 
 Intel Thread Building Blocks (TBB), provides dynamic and static parallelism for C++, along with a number of helpful utility features, such as multidimensional iterators.  TBB is available as OSS from Intel and it is quite portable and runs on a number of non-x86 platforms, including Blue Gene systems.
 
@@ -103,19 +103,19 @@ OpenCL is an industry-standard interface for GPUs.  It's probably best described
 
 #### Language Extensions/Directives
 
-[OpenMP](https://github.com/jeffhammond/HPCInfo/tree/master/openmp) is probably the most common threading model for scientific applications.  It is primarily a fork-join model and well-suited for data parallelism.  Implementing more complex parallel motifs can be more challenging.
+[OpenMP](../openmp) is probably the most common threading model for scientific applications.  It is primarily a fork-join model and well-suited for data parallelism.  Implementing more complex parallel motifs can be more challenging.
 
-[OpenACC](https://github.com/jeffhammond/HPCInfo/tree/master/openacc) is a directive-based model that resembles OpenMP, but explicitly targets accelerators.  At least some of the features of OpenACC will be part of OpenMP 4.
+[OpenACC](../openacc) is a directive-based model that resembles OpenMP, but explicitly targets accelerators.  At least some of the features of OpenACC will be part of OpenMP 4.
 
 ### Machine-specific models
 
-[DCMF](https://github.com/jeffhammond/HPCInfo/tree/master/dcmf) was for Blue Gene/P.
+[DCMF](../dcmf) was for Blue Gene/P.
 
-[PAMI](https://github.com/jeffhammond/HPCInfo/tree/master/pami) is for [Blue Gene/Q](https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q) and IBM PERCS.
+[PAMI](../pami) is for [Blue Gene/Q](https://wiki.alcf.anl.gov/parts/index.php/Blue_Gene/Q) and IBM PERCS.
 
-[DMAPP](https://github.com/jeffhammond/HPCInfo/tree/master/dmapp) is for [[Cray]] systems.
+[DMAPP](../dmapp) is for [[Cray]] systems.
 
-[CUDA](https://github.com/jeffhammond/HPCInfo/tree/master/cuda) is the best way to get performance out of an NVIDIA GPU.  Do not let anyone tell you otherwise.
+[CUDA](../cuda) is the best way to get performance out of an NVIDIA GPU.  Do not let anyone tell you otherwise.
 
 ## Supercomputers
 
