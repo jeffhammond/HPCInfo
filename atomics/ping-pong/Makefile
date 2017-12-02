@@ -3,12 +3,12 @@ ifndef COMPILER
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       := gcc-6
-CXX      := g++-6
+CC       := gcc-7
+CXX      := g++-7
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
-CC       := clang-3.8
-CXX      := clang++-3.8
+CC       := /usr/local/Cellar/llvm/4.0.0_1/bin/clang
+CXX      := /usr/local/Cellar/llvm/4.0.0_1/bin/clang++
 OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
 OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
 ASMFLAGS  = -S -fverbose-asm
