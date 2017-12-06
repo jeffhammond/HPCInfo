@@ -1,6 +1,6 @@
 # Overview
 
-[LLVM](http://llvm.org/) is an open-source compiler project and is an alternative to [[GCC]] for C/C++.  [Clang](http://clang.llvm.org/) is the C/C++ front-end for LLVM.
+[LLVM](http://llvm.org/) is an open-source compiler project and is an alternative to [GCC](https://gcc.gnu.org) for C/C++.  [Clang](http://clang.llvm.org/) is the C/C++ front-end for LLVM.
 
 # Documentation
 
