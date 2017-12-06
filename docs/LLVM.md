@@ -14,43 +14,4 @@
 
 # Building
 
-```sh
-#!/bin/bash -ex
-
-export LLVM_TOP=$HOME/LLVM
-
-mkdir -p $LLVM_TOP
-
-cd $LLVM_TOP
-git clone http://llvm.org/git/llvm.git
-cd $LLVM_TOP/llvm
-git config branch.master.rebase true
-
-cd $LLVM_TOP/llvm/tools
-git clone http://llvm.org/git/clang.git
-
-cd $LLVM_TOP/llvm/projects
-git clone http://llvm.org/git/compiler-rt.git
-
-cd $LLVM_TOP/llvm/projects
-git clone http://llvm.org/git/openmp.git
-
-cd $LLVM_TOP/llvm/projects
-git clone http://llvm.org/git/libcxx.git
-git clone http://llvm.org/git/libcxxabi.git
-
-cd $LLVM_TOP/llvm/projects
-git clone http://llvm.org/git/test-suite.git
-
-cd $LLVM_TOP/llvm
-mkdir -p $LLVM_TOP/llvm/build
-cd $LLVM_TOP/llvm/build
-cmake ..  -G "Unix Makefiles" \
-    -DCMAKE_INSTALL_PREFIX=$HOME/LLVM/install \
-    -DCMAKE_C_COMPILER=gcc \
-    -DCMAKE_CXX_COMPILER=g++ \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_TARGETS_TO_BUILD=X86
-make -j12
-make -j12 install
-```
+See https://github.com/jeffhammond/HPCInfo/tree/master/buildscripts/llvm-git.sh
