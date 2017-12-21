@@ -130,9 +130,10 @@ Some of these were obtained from the site linked above and are assumed to be cor
 
 OS|Macro|Details
 ---|---|---
-Linux|``__linux__ ``|
-Mac OSX|``__APPLE__ ``| This may not be the _best_ way to do this since this macro may be defined in other operating systems produced by Apple.
-BSD|``__FreeBSD__ ``, ``__NetBSD__ ``, ``__OpenBSD__ ``, ``__bsdi__ ``, ``__DragonFly__ ``|Unverified.
+Linux|``__linux__``|
+Mac OSX|``__APPLE__``| This may not be the _best_ way to do this since this macro may be defined in other operating systems produced by Apple.
+Mac OSX|``__MACH__``| Distinguishes Darwin/Mach kernel from iOS.
+BSD|``__FreeBSD__``, ``__NetBSD__``, ``__OpenBSD__``, ``__bsdi__``, ``__DragonFly__``|Unverified.
 AIX|``_AIX``| Unverified due to lack of system access.
 Blue Gene CNK|``__bg__``| See below for details.
 
