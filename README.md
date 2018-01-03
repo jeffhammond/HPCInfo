@@ -3,7 +3,7 @@ HPCInfo
 
 This is basically my programming diary.  Whenever I am trying to learn something new, I write some simple tests, which I store here so that I don't lose them even if my local copy is not available.
 
-This project started out as an ALCF MediaWiki, but I have converted most of it to MarkDown and moved as much of the non-code content to topic-specific README files.
+This project started out as an [ALCF MediaWiki](https://wiki.alcf.anl.gov/parts/index.php/Main_Page), but I have converted most of it to MarkDown and moved as much of the non-code content to topic-specific README files.
 
 The content here is in some cases many years old and may reveal my past ignorance or pertain to technology that no longer exists (e.g. IBM Blue Gene/P).
 
