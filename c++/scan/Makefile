@@ -1,6 +1,14 @@
-CXX      = icpc
-CXXFLAGS = -O2 -std=c++14
-LIBS     = -tbb
+#CXX      = icpc
+#CXXFLAGS = -O2 -std=c++17 -gxx-name=g++-7
+#LIBS     = -tbb
+
+#CXX      = g++-8
+#CXXFLAGS = -O2 -std=c++17
+#LIBS     =
+
+CXX      = /opt/llvm/HEAD/bin/clang++
+CXXFLAGS = -O2 -std=c++17 -stdlib=libc++
+LIBS     =
 
 TESTS = scan
 

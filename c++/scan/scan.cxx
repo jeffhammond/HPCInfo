@@ -4,7 +4,7 @@
 #include <iterator>
 #include <functional>
 
-#include "tbb/tbb.h"
+//#include "tbb/tbb.h"
 
 template <class Container, class String>
 void print(Container & v, String & name)
@@ -38,12 +38,14 @@ int main(int argc, char* argv[])
     std::partial_sum(in.begin(), in.end(), psum.begin());
     print(psum,"psum");
 
-#if (defined(__cplusplus) && (__cplusplus >= 201703L))
+#if defined(_LIBCPP_VERSION)
     std::inclusive_scan(in.begin(), in.end(), iscan.begin());
     print(iscan,"iscan");
 
-    std::exclusive_scan(in.begin(), in.end(), xscan.begin());
+    std::exclusive_scan(in.begin(), in.end(), xscan.begin(), 0);
     print(xscan,"xscan");
+#else
+#warning GCC libstdc++ does not yet support C++17 {in,ex}clusive_scan...
 #endif
 
     return 0;
