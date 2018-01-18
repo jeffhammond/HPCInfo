@@ -103,16 +103,16 @@ rm -rf $LLVM_TMP
 mkdir -p $LLVM_TMP
 cd $LLVM_TMP
 cmake $LLVM_TOP/git  -G "Unix Makefiles" \
-    -DCMAKE_C_COMPILER=/opt/llvm/4.0.0/bin/clang \
-    -DCMAKE_CXX_COMPILER=/opt/llvm/4.0.0/bin/clang++ \
+    -DCMAKE_C_COMPILER=/opt/llvm/5.0.1/bin/clang \
+    -DCMAKE_CXX_COMPILER=/opt/llvm/5.0.1/bin/clang++ \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_LLD=YES \
     -DLLVM_ENABLE_CXX1Y=YES \
     -DLLVM_ENABLE_LIBCXX=YES \
     -DPYTHON_EXECUTABLE=`which python` \
     -DCMAKE_INSTALL_PREFIX=$LLVM_TOP/HEAD
-    #-DLLVM_ENABLE_LTO=Full \
     #-DLLVM_TARGETS_TO_BUILD=X86 \
+    #-DLLVM_ENABLE_LTO=Full \
     #-DLLVM_EXTERNAL_PROJECTS=clang,lld,polly \
     #-DLLVM_EXTERNAL_CLANG_SOURCE_DIR=$LLVM_TOP/git/tools/clang \
     #-DLLVM_EXTERNAL_POLLY_SOURCE_DIR=$LLVM_TOP/git/polly/polly \
