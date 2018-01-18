@@ -4,8 +4,6 @@
 #include <iterator>
 #include <functional>
 
-//#include "tbb/tbb.h"
-
 template <class Container, class String>
 void print(Container & v, String & name)
 {
