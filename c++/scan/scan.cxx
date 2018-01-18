@@ -22,6 +22,9 @@ int main(int argc, char* argv[])
 {
     size_t n = (argc>1) ? atol(argv[1]) : 1000;
 
+    std::cout << "====================================\n"
+              << "C++17 scan test for " << n << " elements" << std::endl;
+
     std::vector<double> in;
     in.resize(n,0);
 
@@ -45,6 +48,7 @@ int main(int argc, char* argv[])
 #else
 #warning GCC libstdc++ does not yet support C++17 {in,ex}clusive_scan...
 #endif
+    std::cout << "====================================" << std::endl;
 
     return 0;
 }

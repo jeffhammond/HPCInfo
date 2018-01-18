@@ -24,6 +24,9 @@ int main(int argc, char* argv[])
 {
     size_t n = (argc>1) ? atol(argv[1]) : 1000;
 
+    std::cout << "====================================\n"
+              << "TBB scan test for " << n << " elements" << std::endl;
+
     const char* envvar = std::getenv("TBB_NUM_THREADS");
     const int num_threads = (envvar!=NULL) ? std::atoi(envvar) : tbb::task_scheduler_init::default_num_threads();
     tbb::task_scheduler_init init(num_threads);
@@ -58,6 +61,8 @@ int main(int argc, char* argv[])
                        }
                       );
     print(psum,"tbbscan");
+
+    std::cout << "====================================" << std::endl;
 
     return 0;
 }
