@@ -43,13 +43,15 @@ int main(int argc, char * argv[])
     for (auto & f : flags) { f = -1; }
     flags[nt-1] = 0;
 
-    std::cout << "BEFORE: ";
+    std::cerr << "BEFORE: ";
     for (auto & f : flags) {
-        std::cout << f << ",";
+        std::cerr << f << ",";
     }
-    std::cout << std::endl;
+    std::cerr << std::endl;
 
-    #pragma omp parallel
+    double dtmin(1e9), dtmax(0), dtavg(0);
+
+    #pragma omp parallel reduction(min:dtmin) reduction(max:dtmax) reduction(+:dtavg)
     {
         int me    = omp_get_thread_num();
         int end   = nt-1;
@@ -63,11 +65,11 @@ int main(int argc, char * argv[])
 #if DEBUG
             #pragma omp critical
             {
-                std::cout << "BEFORE " << me << ": ";
+                std::cerr << "BEFORE " << me << ": ";
                 for (auto & f : flags) {
-                    std::cout << f << ",";
+                    std::cerr << f << ",";
                 }
-                std::cout << std::endl;
+                std::cerr << std::endl;
             }
 #endif
 
@@ -94,11 +96,11 @@ int main(int argc, char * argv[])
             #pragma omp barrier
             #pragma omp critical
             {
-                std::cout << "AFTER " << me << ": ";
+                std::cerr << "AFTER " << me << ": ";
                 for (auto & f : flags) {
-                    std::cout << f << ",";
+                    std::cerr << f << ",";
                 }
-                std::cout << std::endl;
+                std::cerr << std::endl;
             }
 #endif
         }
@@ -107,18 +109,29 @@ int main(int argc, char * argv[])
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
         std::chrono::duration<double> dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1-t0);
+
+#ifdef DEBUG
         #pragma omp critical
         {
-            std::cout << "total time elapsed = " << dt.count() << "\n";
-            std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
+            std::cerr << "total time elapsed = " << dt.count() << "\n";
+            std::cerr << "time per iteration = " << dt.count()/iterations  << "\n";
         }
+#endif
+
+        dtmax = dt.count();
+        dtmin = dt.count();
+        dtavg = dt.count();
     }
 
-    std::cout << "AFTER: ";
+    std::cout << "MAX=" << dtmax/iterations << "\n";
+    std::cout << "MIN=" << dtmin/iterations << "\n";
+    std::cout << "AVG=" << dtavg/nt/iterations << std::endl;
+
+    std::cerr << "AFTER: ";
     for (auto & f : flags) {
-        std::cout << f << ",";
+        std::cerr << f << ",";
     }
-    std::cout << std::endl;
+    std::cerr << std::endl;
 
     return 0;
 }

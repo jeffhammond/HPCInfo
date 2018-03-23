@@ -3,8 +3,8 @@ ifndef COMPILER
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       := gcc-7
-CXX      := g++-7
+CC       := gcc
+CXX      := g++
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
 CC       := /usr/local/Cellar/llvm/5.0.0/bin/clang

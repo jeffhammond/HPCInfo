@@ -18,7 +18,7 @@ LIBS	= #-static-intel
 LD	= $(CC)
 LDFLAGS = $(CFLAGS)
 
-all: test_vadd.x test_syscall.x
+all: test_vadd.x test_syscall.x test_memory_model.x
 
 %.x: %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
