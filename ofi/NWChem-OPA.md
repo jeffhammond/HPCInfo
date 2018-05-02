@@ -120,9 +120,7 @@ cd $NWCHEM_ROOT/armci-mpi/
 ./autogen.sh # if this fails, upgrade Autotools
 mkdir $NWCHEM_ROOT/armci-mpi/build
 cd $NWCHEM_ROOT/armci-mpi/build
-../configure MPICC=$MPICC MPIEXEC=$MPI_ROOT/bin/mpirun \
-             --enable-win-allocate --enable-explicit-progress \
-             --prefix=$NWCHEM_ROOT/deps
+../configure MPICC=$MPICC MPIEXEC=$MPI_ROOT/bin/mpirun --prefix=$NWCHEM_ROOT/deps
 make -j8 install
 ```
 
@@ -140,7 +138,7 @@ make check MPIEXEC="$MPI_ROOT/bin/mpirun -n 4 -genv CSP_NG 1 -genv LD_PRELOAD $N
 
 ## NWChem
 
-Download NWChem from http://www.nwchem-sw.org/index.php/Download.  If PNNL's website is down, you can download https://github.com/jeffhammond/nwchem/archive/master.zip instead.
+Download NWChem from http://www.nwchem-sw.org/index.php/Download or clone the official GitHub repo (https://github.com/nwchemgit/nwchem).
 
 However you get NWChem, please set `$NWCHEM_TOP` to its location.
 
