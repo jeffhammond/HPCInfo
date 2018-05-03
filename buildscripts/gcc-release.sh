@@ -55,30 +55,10 @@ process_lib() {
     fi
 }
 
-for v in 7.2.0 6.4.0 5.5.0 ; do
+#for v in 8.1.0 7.3.0 6.4.0 5.5.0 ; do
+for v in 7.3.0 6.4.0 5.5.0 ; do
     GCC_VERSION=$v
-    process_lib gcc $GCC_VERSION xz releases/gcc-$GCC_VERSION /bin/gcc "
-      --program-suffix=-${GCC_VERSION:0:1} \
-      --enable-shared --enable-static \
-      --enable-threads=posix \
-      --enable-checking=release \
-      --with-system-zlib \
-      --enable-__cxa_atexit \
-      --enable-languages=c,c++,fortran \
-      --with-tune=$CPU \
-      --enable-bootstrap \
-      --enable-lto \
-      --enable-gold=yes \
-      --enable-ld=yes \
-      --disable-multilib
-    "
-done
-
-exit
-
-for v in 7.1.0 6.3.0 5.4.0 4.9.4 4.8.5 ; do
-    GCC_VERSION=$v
-    process_lib gcc $GCC_VERSION bz2 releases/gcc-$GCC_VERSION /bin/gcc "
+    process_lib gcc $GCC_VERSION gz releases/gcc-$GCC_VERSION /bin/gcc "
       --program-suffix=-${GCC_VERSION:0:1} \
       --enable-shared --enable-static \
       --enable-threads=posix \
