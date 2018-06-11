@@ -39,13 +39,13 @@ int main(int argc, char* argv[])
         auto rvi = boost::irange(0,n);
 
         //std::cout << "boost::irange(0,n)";
-        //for (auto i : rvi) std::cout << i << ",";
+        //for (auto const & i : rvi) std::cout << i << ",";
         //std::cout << "\n";
 
         std::cout << "boost::irange\n";
         double k(0);
         auto t0 = wtime();
-        for (auto i : rvi) k+=1.0;
+        for (auto const & i : rvi) k+=1.0;
         auto t1 = wtime();
         std::cout << "dt = " << t1-t0 << "\n";
         std::cout << "k = " << k << "\n";
@@ -54,13 +54,13 @@ int main(int argc, char* argv[])
         auto rvi = ranges::view::iota(0,n);
 
         //std::cout << "ranges::view::iota(0,n) = ";
-        //for (auto i : rvi) std::cout << i << ",";
+        //for (auto const & i : rvi) std::cout << i << ",";
         //std::cout << "\n";
 
         std::cout << "ranges::view::iota\n";
         double k(0);
         auto t0 = wtime();
-        for (auto i : rvi) k+=1.0;
+        for (auto const & i : rvi) k+=1.0;
         auto t1 = wtime();
         std::cout << "dt = " << t1-t0 << "\n";
         std::cout << "k = " << k << "\n";
@@ -69,13 +69,13 @@ int main(int argc, char* argv[])
         auto rvi = ranges::view::iota(0) | ranges::view::slice(0,n);
 
         //std::cout << "ranges::view::iota(0) | ranges::view::slice(0,n) = ";
-        //for (auto i : rvi) std::cout << i << ",";
+        //for (auto const & i : rvi) std::cout << i << ",";
         //std::cout << "\n";
 
         std::cout << "ranges::view::iota | ranges::view::slice\n";
         double k(0);
         auto t0 = wtime();
-        for (auto i : rvi) k+=1.0;
+        for (auto const & i : rvi) k+=1.0;
         auto t1 = wtime();
         std::cout << "dt = " << t1-t0 << "\n";
         std::cout << "k = " << k << "\n";

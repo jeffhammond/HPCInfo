@@ -1,7 +1,7 @@
-CXX      = g++-7
-CXXFLAGS = -g -O2 -std=c++14
+CXX      = clang++
+CXXFLAGS = -g -O2 -std=c++11 -Wall -Wextra
 
-CXXFLAGS += -I$(HOME)/Work/Languages/ranges-impl/include
+CXXFLAGS += -I$(HOME)/Work/Languages/range-v3/include
 
 TESTS = ranges
 
