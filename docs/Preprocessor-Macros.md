@@ -179,6 +179,21 @@ The ``__bg__``, ``__bgp__``, and ``__bgq__`` have been verified on both Blue Gen
 
 # Processor Features
 
+## Intel/AMD
+
+Suffix|Macro|Description
+---|---|---
+SSE|``__SSE__``|Introduced with Pentium 3.
+SSE2|``__SSE2__``|Introduced with Willamette (Pentium 4).
+SSE3|``__SSE3__``|Introduced with Prescott.
+SSE4.1|``__SSE4_1__``|Introduced with Penryn.
+SSE4.2|``__SSE4_2__``|Introduced with Penryn.
+SSSE3|``__SSSE3__``|Introduced with Merom.
+AVX|``__AVX__``|Introduced with Sandy Bridge.
+AVX2|``__AVX2__``|Introduced with Haswell.
+FMA|``__FMA__``|Fused-multiple-add instructions.
+FMA4|``__FMA4__``|See https://en.wikipedia.org/wiki/FMA_instruction_set.
+
 ## AVX-512
 
 Suffix|Macro|Description
