@@ -40,8 +40,9 @@ int main(int argc, char* argv[])
         f1[i] = 0;
         f2[i] = 0;
         f3[i] = 0;
-        f4[i] = 0;
+        f4[i] = 0; f4[2*i] = 0;
         f5[i] = 0;
+        f6[i] = 0;
     }
 
     uint16_t * pf1 = (uint16_t*)f1;
@@ -70,12 +71,10 @@ int main(int argc, char* argv[])
         f4[2*i+1] = bf[i];
     }
 
-    // BROKEN
-    const __m256i zeros = _mm256_setzero_si256();
-    for (int i=0; i<n; i+=8) {
-        __m256i upper = _mm256_load_si256((__m256i*)&bf[i]);
-        __m256i blend = _mm256_unpacklo_epi16(zeros,upper);
-        _mm256_store_si256((__m256i*)&f5[i],blend);
+    uint32_t * pf5 = (uint32_t*)f5;
+    PRAGMA_SIMD
+    for (int i=0; i<n; i++) {
+        pf5[i] = ((uint32_t)bf[i]) << 16;
     }
 
     for (int i=0; i<n; i+=8) {
@@ -91,7 +90,7 @@ int main(int argc, char* argv[])
                   << std::setw(10) << f2[i]
                   << std::setw(10) << f3[i]
                   << std::setw(10) << f4[2*i+1]*UINT16_MAX
-                  //<< std::setw(10) << f5[i]
+                  << std::setw(10) << f5[i]
                   << std::setw(10) << f6[i] << "\n";
     }
 
