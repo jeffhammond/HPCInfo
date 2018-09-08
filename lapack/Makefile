@@ -1,20 +1,25 @@
+CC	 = gcc
 FC       = gfortran
-FFLAGS   = -O2 -ffast-math
+OFLAGS    = -O2 -ffast-math
 LIBS     = -framework Accelerate
 
+CC	 = icc
 FC       = ifort
-FFLAGS   = -Ofast
-LIBS     = -mkl
+OFLAGS   = -Ofast
+LIBS     = -mkl -DMKL
 
-LD       = $(FC)
-LDFLAGS  = $(FFLAGS)
+CFLAGS   = $(OFLAGS) -std=c99 -DDEBUG
+FFLAGS   = $(OFLAGS)
 
-TESTS = test_dsygv test_dsyev
+TESTS = test_dsygv test_dsyev test_xgemm
 
 all: $(TESTS)
 
 %: %.f90
 	$(FC) $(FFLAGS) $< $(LIBS) -o $@
+
+%: %.c
+	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
