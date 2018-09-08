@@ -16,11 +16,9 @@ This is Jeff's TODO list for the MPI Forum, as opposed to any implementation.  F
 
 ## RMA
 
-* [RMA <tt>same_disp</tt> key (#369)](https://svn.mpi-forum.org/trac/mpi-forum-web/ticket/369)
-* [RMA needs new assertions for passive-target epochs (#396)](https://svn.mpi-forum.org/trac/mpi-forum-web/ticket/396)
-* [extend the use of <tt>MPI_WIN_SHARED_QUERY</tt> to all windows (#397)](https://svn.mpi-forum.org/trac/mpi-forum-web/ticket/397)
-* [request-based remote completion for RMA (#398)](https://svn.mpi-forum.org/trac/mpi-forum-web/ticket/398)
-* [generalize <tt>same_op_no_op</tt> and allow user to specify all ops to be used (#399)](https://svn.mpi-forum.org/trac/mpi-forum-web/ticket/399)
+* [new assertions for passive-target epochs](https://github.com/mpi-forum/mpi-issues/issues/24)
+* [relax constraints on <tt>MPI_WIN_SHARED_QUERY</tt>](https://github.com/mpi-forum/mpi-issues/issues/23)
+* [fine-grain specification of RMA op+type in window info](https://github.com/mpi-forum/mpi-issues/issues/46)
 
 ## Generalized Requests and Active Messages
 
