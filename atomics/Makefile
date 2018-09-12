@@ -1,10 +1,10 @@
-CXX		 = clang++
-CXXFLAGS	 = -std=c++11
+#CXX		 = g++-8 -std=c++2a
+CXX		 = clang++ -std=c++14
 
 all: lock-free.x
 
 %.x: %.cc
-	$(CXX) $(CXXFLAGS) $< -o $@
+	$(CXX) $< -o $@
 
 clean:
 	-rm -f *.o
