@@ -9,7 +9,7 @@ CXXFLAGS	=	-g -Wall -O3 -qopenmp -xCORE-AVX2
 #CXXFLAGS	=	-g -Wall -O3 -qopenmp -xCORE-AVX512 -qopt-zmm-usage=high
 ASMFLAGS	=	-fsource-asm -fverbose-asm -fasm-blocks -fcode-asm
 
-all: bfloat16 bfloat16.s
+all: bfloat16 bfloat16.s time_conversion
 
 bfloat16: bfloat16.cc
 	${CXX} ${CXXFLAGS} $< -o $@
