@@ -2,10 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef MKL
-#include "mkl.h"
+#if defined(MKL)
+# include <mkl.h>
+# ifdef MKL_ILP64
+#  error Use the MKL library for 32-bit integers!
+# endif
+#elif defined(ACCELERATE)
+/* The location of cblas.h is not in the system
+ * include path when -framework Accelerate is provided. */
+# include <Accelerate/Accelerate.h>
 #else
-#include "cblas.h"
+# include <cblas.h>
 #endif
 
 #if (__STDC_VERSION__ < 199901L)
@@ -17,6 +24,18 @@
 #else
 #define PDEBUG(fmt, ...)
 #endif
+
+void test_sgemm(const int m, const int n, const int k)
+{
+
+    const double alpha = 1.0;
+    const double beta  = 1.0;
+    const int lda = k;
+    const int ldb = n;
+    const int ldc = n;
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+}
 
 int main(int argc, char* argv[])
 {
@@ -96,6 +115,9 @@ int main(int argc, char* argv[])
         printf("You have chosen an unsupported datatype...\n");
         goto input_error;
     }
+    printf("C+=A*B with m=%d, n=%d, k=%d\n", m, n, k);
+
+    test_xgemm(type, m, n k);
 
     printf("SUCCESS\n");
     return 0;
@@ -112,5 +134,6 @@ int main(int argc, char* argv[])
         goto fail;
 
     fail:
+        printf("FAILURE\n");
         return 1;
 }
