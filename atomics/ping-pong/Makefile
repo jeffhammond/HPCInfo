@@ -37,7 +37,7 @@ CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
 endif
 
 # Apple debug 
-OFLAGS += -g3 -Wl,-pie
+#OFLAGS += -g3 -Wl,-pie
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
