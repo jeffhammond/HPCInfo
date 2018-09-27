@@ -68,3 +68,11 @@ cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
          -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
          -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang && $MAKE_JNUM install
 
+cd $WHAT/runtime/libpgmath
+mkdir -p build && cd build
+cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
+         -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
+         -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang && $MAKE_JNUM install
+
