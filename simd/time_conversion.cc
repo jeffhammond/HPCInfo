@@ -21,13 +21,8 @@ int main(int argc, char* argv[])
 
     uint16_t * ibf16 = new uint16_t[n];
     uint16_t * if16  = new uint16_t[n];
-    float    * f32   = new float[n];
     uint16_t * obf16 = new uint16_t[n];
     uint16_t * of16  = new uint16_t[n];
-
-    for (int i=0; i<n; i++) {
-        f32[i] = (float)i;
-    }
 
     for (int i=0; i<n; ++i) {
         uint16_t j = i % 16384;
@@ -37,6 +32,7 @@ int main(int argc, char* argv[])
         of16[i]  = j;
     }
 
+#if defined(__AVX512F__) && defined(__AVX512BW__)
     for (int i=0; i<n; i+=8) {
         __m128i a = _mm_load_si128((__m128i*)&ibf16[i]);
         __m256i b = _mm256_cvtepu16_epi32(a);
@@ -44,6 +40,13 @@ int main(int argc, char* argv[])
 
         _mm_store_si128((__m128i*)&obf16[i],c);
     }
+#else
+    PRAGMA_SIMD
+    for (int i=0; i<n; i++) {
+        uint32_t u32 = ((uint32_t)bf[i]) << 16;
+        float    f32 = *(float*)&u32;
+    }
+#endif
 
     for (int i=0; i<n; i++) {
         std::cout << std::setw(10) << i << ": "
