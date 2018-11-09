@@ -10,24 +10,26 @@ mkdir -p $LLVM_TOP
 WHAT=$LLVM_TOP/llvm-git
 if [ -d $WHAT ] ; then
     cd $WHAT
-    git checkout release_40
+    git fetch --all
+    git checkout release_60
     git pull
 else
     cd $LLVM_TOP
-    git clone -b release_40 https://github.com/llvm-mirror/llvm.git llvm-git
+    git clone -b release_60 https://github.com/llvm-mirror/llvm.git llvm-git
 fi
 cd $WHAT
 mkdir -p build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP && $MAKE_JNUM install
 
-WHAT=$LLVM_TOP/clang-git
+WHAT=$LLVM_TOP/flang-driver-git
 if [ -d $WHAT ] ; then
     cd $WHAT
-    git checkout flang_release_40
+    git fetch --all
+    git checkout release_60
     git pull
 else
     cd $LLVM_TOP
-    git clone -b flang_release_40 https://github.com/flang-compiler/clang.git clang-git
+    git clone -b release_60 https://github.com/flang-compiler/flang-driver.git flang-driver-git
 fi
 cd $WHAT
 mkdir -p build && cd build
@@ -37,11 +39,12 @@ cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
 WHAT=$LLVM_TOP/openmp-git
 if [ -d $WHAT ] ; then
     cd $WHAT
-    git checkout release_40
+    git fetch --all
+    git checkout release_60
     git pull
 else
     cd $LLVM_TOP
-    git clone -b release_40 https://github.com/llvm-mirror/openmp.git openmp-git
+    git clone -b release_60 https://github.com/llvm-mirror/openmp.git openmp-git
 fi
 cd $WHAT
 mkdir -p build && cd build
@@ -51,6 +54,7 @@ cmake .. \
 WHAT=$LLVM_TOP/flang-git
 if [ -d $WHAT ] ; then
     cd $WHAT
+    git fetch --all
     git pull
 else
     cd $LLVM_TOP
@@ -62,5 +66,13 @@ cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
          -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
          -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
          -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
-         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang && $MAKE_JNUM install ; $MAKE_JNUM check
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang && $MAKE_JNUM install
+
+cd $WHAT/runtime/libpgmath
+mkdir -p build && cd build
+cmake .. -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
+         -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
+         -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang && $MAKE_JNUM install
 
