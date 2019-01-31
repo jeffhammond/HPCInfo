@@ -46,7 +46,7 @@ process_lib() {
         if [ -f ./contrib/download_prerequisites ] ; then
             ./contrib/download_prerequisites
         fi
-        mkdir build ; cd build
+        mkdir -p build ; cd build
         ../configure --prefix=${GCC_DIR} $6 && make ${MAKE_JNUM} && make install
         if [ "x$?" != "x0" ] ; then
             echo FAILURE 1

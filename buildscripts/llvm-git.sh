@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-export MAKE_JNUM="make -j4"
+export MAKE_JNUM="make -j8"
 
 #export GCC_VERSION=-7
 #export GCC_PREFIX=/opt/gcc/latest
@@ -103,8 +103,8 @@ rm -rf $LLVM_TMP
 mkdir -p $LLVM_TMP
 cd $LLVM_TMP
 cmake $LLVM_TOP/git  -G "Unix Makefiles" \
-    -DCMAKE_C_COMPILER=/opt/llvm/5.0.1/bin/clang \
-    -DCMAKE_CXX_COMPILER=/opt/llvm/5.0.1/bin/clang++ \
+    -DCMAKE_C_COMPILER=/opt/llvm/latest/bin/clang \
+    -DCMAKE_CXX_COMPILER=/opt/llvm/latest/bin/clang++ \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_LLD=YES \
     -DLLVM_ENABLE_CXX1Y=YES \
