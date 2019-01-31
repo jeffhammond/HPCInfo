@@ -13,6 +13,17 @@
 //#define DEV_SHM
 #define POSIX_SHM
 
+#ifdef __bgp__
+#  include <asm-generic/errno-base.h> /* BGP only? */
+#  include </bgsys/drivers/ppcfloor/arch/include/spi/kernel_interface.h>
+#  include </bgsys/drivers/ppcfloor/arch/include/common/bgp_personality.h>
+#  include </bgsys/drivers/ppcfloor/arch/include/common/bgp_personality_inlines.h>
+#endif
+
+#ifdef __bgq__
+#  include <spi/include/kernel/location.h>
+#endif
+
 int main(int argc, char* argv[])
 {
     int i,j;
@@ -24,7 +35,7 @@ int main(int argc, char* argv[])
     int ranks_per_node = -1;
     MPI_Comm IntraNodeComm;
 
-    int node_shmem_bytes;
+    int node_shmem_bytes; 
 
     MPI_Init(&argc,&argv);
     mpi_result = MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -65,9 +76,20 @@ int main(int argc, char* argv[])
     fflush(stdout);
     MPI_Barrier(MPI_COMM_WORLD);
 
-    color = 0;
+#if defined(__bgp__)
+    uint32_t xSize, ySize, zSize, tSize;
+    uint32_t xRank, yRank, zRank, tRank;
 
-    mpi_result = MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &IntraNodeComm);
+    MPIX_rank2torus( world_size-1, &xSize, &ySize, &zSize, &tSize );
+    xSize++; ySize++; zSize++;
+
+    MPIX_rank2torus( world_rank, &xRank, &yRank, &zRank, &tRank );
+    color = xRank + yRank*xSize + zRank*ySize*xSize;
+#else
+    color = 0;
+#endif
+
+    mpi_result = MPI_Comm_split(MPI_COMM_WORLD, color, 0, &IntraNodeComm);
     assert(mpi_result==MPI_SUCCESS);
 
     int subcomm_rank = -1;
@@ -109,7 +131,29 @@ int main(int argc, char* argv[])
     mpi_result = MPI_Barrier(MPI_COMM_WORLD);
     assert(mpi_result==MPI_SUCCESS);
 
+#ifdef __bgp__
+    double * ptr = NULL;
+    _BGP_Personality_t pers;
+    Kernel_GetPersonality(&pers, sizeof(pers));
+
+    if( BGP_Personality_processConfig(&pers) == _BGP_PERS_PROCESSCONFIG_SMP )
+    {
+        printf("SMP mode => MAP_PRIVATE | MAP_ANONYMOUS \n");
+        ptr = mmap( NULL, node_shmem_bytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, fd, 0 );
+    }
+    else
+    {
+        if (node_shmem_bytes>pers.Kernel_Config.SharedMemMB)
+        {
+            printf("node_shmem_bytes (%d) greater than pers.Kernel_Config.SharedMemMB (%d) - allocating the latter \n", 
+                   node_shmem_bytes, pers.Kernel_Config.SharedMemMB );
+            node_shmem_bytes = pers.Kernel_Config.SharedMemMB;
+        }
+        ptr = mmap( NULL, node_shmem_bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0 );
+    }
+#else
     double * ptr = mmap( NULL, node_shmem_bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0 );
+#endif
     if (ptr==NULL) printf("%7d: mmap failed \n", world_rank);
     else           printf("%7d: mmap succeeded \n", world_rank);
     fflush(stdout);
