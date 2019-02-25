@@ -54,7 +54,7 @@ void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b)
     }
 #else
     {
-#ifdef __INTEL_COMPILER
+#if HAS_GNU_EXTENDED_ASM
         asm("rep movsq"
             : "=D" (b), "=S" (a), "=c" (n)
             : "0" (b), "1" (a), "2" (n)

@@ -13,10 +13,12 @@
 #define RESTRICT restrict
 #endif
 
-#if defined(_OPENMP) && (( __STDC_VERSION__ >= 199901L ) || (__cplusplus >= 201103L ))
+#if (__STDC_VERSION__ >= 199901L) || (__cplusplus >= 201103L)
+#ifdef _OPENMP
 #define PRAGMA(x) _Pragma(#x)
+#endif
 #else
-#warning Your compiler does not support C99/C++11's _Pragma.
+#warning Your compiler does not support C99/C++11 _Pragma.
 #define PRAGMA(x)
 #endif
 
@@ -30,6 +32,12 @@
 
 #if defined(__GNUC__) && !defined(__INTEL_COMPILER)
 typedef int64_t __int64;
+#endif
+
+#if defined(__GNUC__) || defined(__INTEL_COMPILER)
+#define HAS_GNU_EXTENDED_ASM 1
+#else
+#define HAS_GNU_EXTENDED_ASM 0
 #endif
 
 #include "immintrin.h"
@@ -52,6 +60,9 @@ typedef int64_t __int64;
 #else
 #define OMP_PARALLEL_FOR
 static inline int omp_get_thread_num() { return 0; }
+static inline int omp_get_num_threads() { return 1; }
+static inline int omp_get_max_threads() { return 1; }
+static inline double omp_get_wtime() { return 0.0; }
 #endif
 
 #endif /* COMPILER_H */
