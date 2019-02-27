@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 
     double t0 = MPI_Wtime();
 
-    for (long i=0; LONG_MAX; i++) {
+    for (long i=0; i<3000000000L; i++) {
         int flag = 0;
         MPI_Status status;
         int rc = MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status);
