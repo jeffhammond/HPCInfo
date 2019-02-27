@@ -2,14 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _OPENMP
-#include <omp.h>
-#else
-int omp_get_thread_num() { return 0; }
-int omp_get_num_threads() { return 1; }
-int omp_get_max_threads() { return 1; }
-double omp_get_wtime() { return 0.0; }
-#endif
 
 #include "util.h"
 #include "setup.h"
@@ -40,6 +32,10 @@ int main(int argc, char* argv[])
     printf("number of warmups       = %zu\n", nwarm);
 
     size_t bytes = nelem * sizeof(double);
+    // the number of bytes actually allocated are padded out by 7 * max_stride
+    // to provide a buffer for non-power of true stides which read slightly beyond
+    // the end of the array
+    size_t alloc_bytes = (nelem + 7 * 64) * sizeof(double);
 
     if (nelem >= 1024*1024) {
         printf("number of bytes         = %zu MiB\n", bytes/(1024*1024));
@@ -50,8 +46,8 @@ int main(int argc, char* argv[])
     printf("OpenMP threads = %d\n", omp_get_max_threads() );
 
 #ifndef STATIC_ALLOCATION
-    double * a = (double*)mymalloc(bytes);
-    double * b = (double*)mymalloc(bytes);
+    double * a = (double*)mymalloc(alloc_bytes);
+    double * b = (double*)mymalloc(alloc_bytes);
     printf("allocation finished\n");
 #endif
 
