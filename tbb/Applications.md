@@ -2,6 +2,8 @@ These are some applications/libraries/frameworks that use TBB...
 
 # TBLIS
 
+TBLIS is the C++ brother of [BLIS](https://github.com/flame/blis); both are high-performance dense linear algebra libraries that provide BLAS-like functionality.  TBLIS adds explicit support for tensor operations.
+
 Source: https://github.com/devinamatthews/tblis.git (in `develop` branch right now)
 
 ```c++
@@ -16,6 +18,8 @@ src/external/tci/tci/tci_global.h:#include <tbb/tbb.h>
 ```
 
 # RAJA
+
+RAJA is a performance portability framework that supports node-level parallelism (e.g. multicore+vector CPUs and GPUs).
 
 Source: https://github.com/LLNL/RAJA
 
@@ -50,6 +54,8 @@ include/RAJA/policy/tbb/scan.hpp:  tbb::parallel_scan(tbb::blocked_range<Index_t
 ```
 
 # MADNESS
+
+MADNESS is a numerical framework for solving e.g. partial differential equations.  It includes an implementation of Hartree-Fock and other quantum chemistry methods implemented in integral operator form.
 
 Source: https://github.com/m-a-d-n-e-s-s/madness
 
@@ -95,6 +101,8 @@ src/madness/world/worldrmi.h:                tbb::task::destroy(*tbb_rmi_parent_
 
 # Moose
 
+Moose is a multi-physics framework.
+
 Source: https://github.com/idaholab/moose
 
 ```c++
@@ -104,6 +112,8 @@ framework/src/utils/ParallelUniqueId.C:tbb::concurrent_bounded_queue<unsigned in
 ```
 
 # deal.II
+
+deal.II is a finite element library.
 
 Source: https://github.com/dealii/dealii
 
