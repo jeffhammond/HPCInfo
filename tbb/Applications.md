@@ -6,37 +6,6 @@ Source: https://github.com/devinamatthews/tblis.git (in `develop` branch right n
 
 ```c++
 $ git grep tbb
-.travis.yml:  - RUN_TEST=0 THREADING="tbb" BUILD_CONFIG="auto"
-.travis.yml:        brew update && brew install gcc@6 tbb llvm@3.9;
-.travis.yml:    - libtbb-dev
-src/external/tci/configure:                          none, auto, task, openmp, pthreads, tbb, omptask,
-src/external/tci/configure:for ac_header in tbb/tbb.h
-src/external/tci/configure:  ac_fn_cxx_check_header_mongrel "$LINENO" "tbb/tbb.h" "ac_cv_header_tbb_tbb_h" "$ac_includes_default"
-src/external/tci/configure:if test "x$ac_cv_header_tbb_tbb_h" = xyes; then :
-src/external/tci/configure:for ac_lib in '' tbb; do
-src/external/tci/configure:if test x"$ac_cv_header_tbb_tbb_h" = xyes && \
-src/external/tci/configure:    have_tbb=yes
-src/external/tci/configure:    have_tbb=no
-src/external/tci/configure:    elif test x"$have_tbb" = xyes; then
-src/external/tci/configure:        thread_model=tbb
-src/external/tci/configure:    if test x"$have_tbb" = xyes; then
-src/external/tci/configure:        thread_model=tbb
-src/external/tci/configure:elif test x"$thread_model" = xtbb; then
-src/external/tci/configure:    if test x"$have_tbb" = xno; then
-src/external/tci/configure:        as_fn_error $? "tbb requested but not available" "$LINENO" 5
-src/external/tci/configure.ac:    openmp, pthreads, tbb, omptask, winthreads, ppl, or dispatch @<:@default=auto@:>@]),
-src/external/tci/configure.ac:AC_CHECK_HEADERS([tbb/tbb.h])
-src/external/tci/configure.ac:AC_SEARCH_LIBS([TBB_runtime_interface_version], [tbb])
-src/external/tci/configure.ac:if test x"$ac_cv_header_tbb_tbb_h" = xyes && \
-src/external/tci/configure.ac:    have_tbb=yes
-src/external/tci/configure.ac:    have_tbb=no
-src/external/tci/configure.ac:    elif test x"$have_tbb" = xyes; then
-src/external/tci/configure.ac:        thread_model=tbb
-src/external/tci/configure.ac:    if test x"$have_tbb" = xyes; then
-src/external/tci/configure.ac:        thread_model=tbb
-src/external/tci/configure.ac:elif test x"$thread_model" = xtbb; then
-src/external/tci/configure.ac:    if test x"$have_tbb" = xno; then
-src/external/tci/configure.ac:        AC_MSG_ERROR([tbb requested but not available])
 src/external/tci/tci/communicator.c:    tbb::task_group tg;
 src/external/tci/tci/communicator.c:    tbb::task_group tg;
 src/external/tci/tci/task_set.c:    set->comm = (tci_comm*)new tbb::task_group();
@@ -44,6 +13,40 @@ src/external/tci/tci/task_set.c:    ((tbb::task_group*)set->comm)->wait();
 src/external/tci/tci/task_set.c:    delete (tbb::task_group*)set->comm;
 src/external/tci/tci/task_set.c:    ((tbb::task_group*)set->comm)->run(
 src/external/tci/tci/tci_global.h:#include <tbb/tbb.h>
+```
+
+# RAJA
+
+Source: https://github.com/LLNL/RAJA
+
+Applications/proxies/benchmarks that use RAJA:
+- https://github.com/LLNL/RAJAperf
+- https://github.com/LLNL/Kripke
+- https://github.com/LLNL/RAJAProxies - This is where LULESH@RAJA lives, but also includes Kripke as a subproject.
+
+```c++
+$ git grep "tbb::"
+include/RAJA/policy/tbb/forall.hpp:using tbb_static_partitioner = tbb::static_partitioner;
+include/RAJA/policy/tbb/forall.hpp:using tbb_static_partitioner = tbb::auto_partitioner;
+include/RAJA/policy/tbb/forall.hpp:  using brange = ::tbb::blocked_range<decltype(iter.begin())>;
+include/RAJA/policy/tbb/forall.hpp:  ::tbb::parallel_for(brange(begin(iter), end(iter), p.grain_size),
+include/RAJA/policy/tbb/forall.hpp:  using brange = ::tbb::blocked_range<decltype(iter.begin())>;
+include/RAJA/policy/tbb/forall.hpp:  ::tbb::parallel_for(brange(begin(iter), end(iter), ChunkSize),
+include/RAJA/policy/tbb/policy.hpp:using policy::tbb::tbb_for_dynamic;
+include/RAJA/policy/tbb/policy.hpp:using policy::tbb::tbb_for_exec;
+include/RAJA/policy/tbb/policy.hpp:using policy::tbb::tbb_for_static;
+include/RAJA/policy/tbb/policy.hpp:using policy::tbb::tbb_reduce;
+include/RAJA/policy/tbb/policy.hpp:using policy::tbb::tbb_segit;
+include/RAJA/policy/tbb/reduce.hpp:  std::shared_ptr<tbb::combinable<T>> data;
+include/RAJA/policy/tbb/reduce.hpp:    data = std::shared_ptr<tbb::combinable<T>>(
+include/RAJA/policy/tbb/reduce.hpp:        std::make_shared<tbb::combinable<T>>([=]() { return initializer; }));
+include/RAJA/policy/tbb/scan.hpp:  scan_adapter(scan_adapter& b, tbb::split)
+include/RAJA/policy/tbb/scan.hpp:  void operator()(const tbb::blocked_range<Index_type>& r, Tag)
+include/RAJA/policy/tbb/scan.hpp:  void operator()(const tbb::blocked_range<Index_type>& r, Tag)
+include/RAJA/policy/tbb/scan.hpp:  tbb::parallel_scan(tbb::blocked_range<Index_type>{0,
+include/RAJA/policy/tbb/scan.hpp:  tbb::parallel_scan(tbb::blocked_range<Index_type>{0,
+include/RAJA/policy/tbb/scan.hpp:  tbb::parallel_scan(tbb::blocked_range<Index_type>{0,
+include/RAJA/policy/tbb/scan.hpp:  tbb::parallel_scan(tbb::blocked_range<Index_type>{0,
 ```
 
 # MADNESS
@@ -99,3 +102,9 @@ $ git grep "tbb::"
 framework/include/utils/ParallelUniqueId.h:  static tbb::concurrent_bounded_queue<unsigned int> _ids;
 framework/src/utils/ParallelUniqueId.C:tbb::concurrent_bounded_queue<unsigned int> ParallelUniqueId::_ids;
 ```
+
+# deal.II
+
+Source: https://github.com/dealii/dealii
+
+Details: https://www.dealii.org/current/doxygen/deal.II/group__threads.html
