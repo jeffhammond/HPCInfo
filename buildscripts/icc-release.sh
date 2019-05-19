@@ -1,5 +1,7 @@
 #!/bin/bash
 
+unset no_proxy
+
 # save e.g. https://registrationcenter.intel.com/en/products/download/3470/ as xxx.html and run this on it:
 #grep -wo '\<http.*parallel_studio.*\.tgz\"' xxx.html  | grep -v online | sed "s/\"//g"
 
