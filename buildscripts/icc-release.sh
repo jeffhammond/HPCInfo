@@ -8,7 +8,11 @@ unset no_proxy
 mkdir -p $HOME/Downloads
 cd $HOME/Downloads
 BASE=http://registrationcenter-download.intel.com/akdlm/irc_nas/tec
-for x in 14850/parallel_studio_xe_2019_update1_cluster_edition.tgz \
+for x in \
+         15533/parallel_studio_xe_2019_update4_cluster_edition.tgz \
+         15268/parallel_studio_xe_2019_update3_cluster_edition.tgz \
+         15088/parallel_studio_xe_2019_update2_cluster_edition.tgz \
+         14850/parallel_studio_xe_2019_update1_cluster_edition.tgz \
          13589/parallel_studio_xe_2019_cluster_edition.tgz         \
          13717/parallel_studio_xe_2018_update4_cluster_edition.tgz \
          12998/parallel_studio_xe_2018_update3_cluster_edition.tgz \
@@ -39,7 +43,11 @@ for x in 14850/parallel_studio_xe_2019_update1_cluster_edition.tgz \
     wget ${BASE}/$x
 done
 
-for x in parallel_studio_xe_2019_update1_cluster_edition.tgz \
+for x in \
+         parallel_studio_xe_2019_update4_cluster_edition.tgz \
+         parallel_studio_xe_2019_update3_cluster_edition.tgz \
+         parallel_studio_xe_2019_update2_cluster_edition.tgz \
+         parallel_studio_xe_2019_update1_cluster_edition.tgz \
          parallel_studio_xe_2019_cluster_edition.tgz         \
          parallel_studio_xe_2018_update4_cluster_edition.tgz \
          parallel_studio_xe_2018_update3_cluster_edition.tgz \
@@ -70,7 +78,11 @@ for x in parallel_studio_xe_2019_update1_cluster_edition.tgz \
     tar -xzf $x
 done
 
-for x in parallel_studio_xe_2019_update1_cluster_edition \
+for x in \
+         parallel_studio_xe_2019_update4_cluster_edition \
+         parallel_studio_xe_2019_update3_cluster_edition \
+         parallel_studio_xe_2019_update2_cluster_edition \
+         parallel_studio_xe_2019_update1_cluster_edition \
          parallel_studio_xe_2019_cluster_edition         \
          parallel_studio_xe_2018_update4_cluster_edition \
          parallel_studio_xe_2018_update3_cluster_edition \
