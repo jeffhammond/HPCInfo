@@ -56,7 +56,7 @@ process_lib() {
 }
 
 #for v in 8.1.0 7.3.0 6.4.0 5.5.0 ; do
-for v in 7.3.0 6.4.0 5.5.0 ; do
+for v in 9.1.0 8.3.0 7.4.0 6.5.0 5.5.0 ; do
     GCC_VERSION=$v
     process_lib gcc $GCC_VERSION gz releases/gcc-$GCC_VERSION /bin/gcc "
       --program-suffix=-${GCC_VERSION:0:1} \
