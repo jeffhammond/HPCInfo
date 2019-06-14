@@ -10,8 +10,8 @@
 #include <pthread.h>
 #include <mpi.h>
 
-//#define DEV_SHM
-#define POSIX_SHM
+#define DEV_SHM
+//#define POSIX_SHM
 
 int main(int argc, char* argv[])
 {
@@ -88,7 +88,11 @@ int main(int argc, char* argv[])
     if (fd<0) printf("%7d: shm_open failed: %d \n", world_rank, fd);
     else      printf("%7d: shm_open succeeded: %d \n", world_rank, fd);
 #elif defined(DEV_SHM)
+#if defined(__APPLE__) || defined(__MACOS)
+    int fd = open("/tmp/foo", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR );
+#else
     int fd = open("/dev/shm/foo", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR );
+#endif
     if (fd<0) printf("%7d: open failed: %d \n", world_rank, fd);
     else      printf("%7d: open succeeded: %d \n", world_rank, fd);
 #else
