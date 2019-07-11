@@ -1,6 +1,6 @@
-#include "copy.h"
+#include "triad.h"
 
-void copy_ref(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_ref(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
@@ -8,7 +8,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_mov(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_mov(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
@@ -20,7 +20,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_rep_movsq(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     /* It might make more sense to do rep-movsq a page at a time
      * and make the alignment nicer... */
@@ -70,7 +70,7 @@ void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b)
 #ifdef __SSE__
 
 #if 0 /* BROKEN */
-void copy_movntq(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movntq(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
@@ -86,7 +86,7 @@ OMP_PARALLEL_FOR
 #endif
 
 #ifdef __INTEL_COMPILER
-void copy_movntq64(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movntq64(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     //_mm_empty();
 OMP_PARALLEL_FOR
@@ -101,7 +101,7 @@ OMP_PARALLEL_FOR
 #endif /* SSE */
 
 #ifdef __SSE2__
-void copy_movnti(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movnti(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
@@ -115,7 +115,7 @@ OMP_PARALLEL_FOR
 }
 
 #ifdef __INTEL_COMPILER
-void copy_movnti64(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movnti64(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     //_mm_empty();
 OMP_PARALLEL_FOR
@@ -127,7 +127,7 @@ OMP_PARALLEL_FOR
 }
 #endif /* ICC */
 
-void copy_movapd128(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movapd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=2) {
@@ -136,7 +136,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_movntpd128(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movntpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=2) {
@@ -148,7 +148,7 @@ OMP_PARALLEL_FOR
 #endif /* SSE2 */
 
 #ifdef __SSE4_1__
-void copy_movntdqa128(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_movntdqa128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=2) {
@@ -160,7 +160,7 @@ OMP_PARALLEL_FOR
 #endif /* SSE4.1 */
 
 #ifdef __AVX__
-void copy_vmovapd256(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovapd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=4) {
@@ -169,7 +169,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vmovntpd256(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovntpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=4) {
@@ -181,7 +181,7 @@ OMP_PARALLEL_FOR
 #endif /* AVX */
 
 #ifdef __AVX2__
-void copy_vmovntdqa256(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovntdqa256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=4) {
@@ -191,7 +191,7 @@ OMP_PARALLEL_FOR
     _mm_sfence();
 }
 
-void copy_vgatherdpd128(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vgatherdpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m128i vindex = _mm_set_epi32(-1,-1,1,0); // start from the right...
 OMP_PARALLEL_FOR
@@ -202,7 +202,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vgatherqpd128(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vgatherqpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m128i vindex = _mm_set_epi64x(1,0); // works
 OMP_PARALLEL_FOR
@@ -213,7 +213,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vgatherdpd256(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vgatherdpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m128i vindex = _mm_set_epi32(3,2,1,0); // start from the right...
 OMP_PARALLEL_FOR
@@ -228,7 +228,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vgatherqpd256(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vgatherqpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m256i vindex = _mm256_set_epi64x(3,2,1,0); // works
 OMP_PARALLEL_FOR
@@ -243,7 +243,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_mvgatherqpd256(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_mvgatherqpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m256i vindex = _mm256_set_epi64x(3,2,1,0); // works
     // O in OQ means ordered, i.e. AND.  unordered is OR.  Q means quiet i.e. non-signaling.
@@ -263,7 +263,7 @@ OMP_PARALLEL_FOR
 #endif /* AVX2 */
 
 #ifdef __AVX512F__
-void copy_vmovapd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovapd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=8) {
@@ -272,7 +272,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vmovupd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovupd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=8) {
@@ -281,7 +281,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_mvmovapd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_mvmovapd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     __m512d src = {0};
     __mmask8 k = 255;
@@ -292,7 +292,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_mvmovupd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_mvmovupd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     __m512d src = {0};
     __mmask8 k = 255;
@@ -303,7 +303,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vmovntpd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovntpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=8) {
@@ -313,7 +313,7 @@ OMP_PARALLEL_FOR
     _mm_sfence();
 }
 
-void copy_vmovntdqa512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vmovntdqa512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=8) {
@@ -323,7 +323,7 @@ OMP_PARALLEL_FOR
     _mm_sfence();
 }
 
-void copy_vGSdpd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vGSdpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m256i vindex = _mm256_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
 OMP_PARALLEL_FOR
@@ -333,7 +333,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_mvGSdpd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_mvGSdpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     __m512d src = {0};
     __mmask8 k = 255;
@@ -345,7 +345,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_vGSqpd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_vGSqpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
 OMP_PARALLEL_FOR
@@ -355,7 +355,7 @@ OMP_PARALLEL_FOR
     }
 }
 
-void copy_mvGSqpd512(size_t n, const double * RESTRICT a, double * RESTRICT b)
+void triad_mvGSqpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
     __m512d src = {0};
     __mmask8 k = 255;
