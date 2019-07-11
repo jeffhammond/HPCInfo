@@ -7,10 +7,16 @@
 #define MAXTEST 64
 
 /* copy */
-double testtime[MAXTEST] = {0};
+double testtime0[MAXTEST] = {0};
 typedef void (*copyfn)(size_t, const double * RESTRICT, double * RESTRICT);
-copyfn testfns[MAXTEST] = {0};
-const char* testname[MAXTEST] = {0};
+copyfn testfns0[MAXTEST] = {0};
+const char* testname0[MAXTEST] = {0};
+
+/* triad */
+double testtime1[MAXTEST] = {0};
+typedef void (*triadfn)(size_t, double, const double * RESTRICT, const double * RESTRICT, double * RESTRICT);
+copyfn testfns1[MAXTEST] = {0};
+const char* testname1[MAXTEST] = {0};
 
 /* strided */
 double testtime2[MAXTEST] = {0};
@@ -155,6 +161,150 @@ int setup(void)
         i++;
         /* MVGSQPD512 */
         testfns[i]  = copy_mvGSqpd512;
+        testname[i] = "mvGSqpd512";
+        i++;
+    }
+#endif
+    return i;
+}
+
+int setup_triad(void)
+{
+    int i = 0;
+    {
+        /* Reference */
+        testfns[i]  = triad_ref;
+        testname[i] = "Reference";
+        i++;
+        /* MOV */
+        testfns[i]  = triad_mov;
+        testname[i] = "mov";
+        i++;
+        /* REP_MOVSQ */
+        testfns[i]  = triad_rep_movsq;
+        testname[i] = "rep_movsq";
+        i++;
+    }
+#ifdef __SSE2__
+    {
+        /* MOVNTI */
+        testfns[i]  = triad_movnti;
+        testname[i] = "movnti";
+        i++;
+#if 0 /* BROKEN */
+        /* MOVNTQ */
+        testfns[i]  = triad_movntq;
+        testname[i] = "movntq";
+        i++;
+#endif
+#ifdef __INTEL_COMPILER
+        /* MOVNTI64 */
+        testfns[i]  = triad_movnti64;
+        testname[i] = "movnti64";
+        i++;
+        /* MOVNTQ64 */
+        testfns[i]  = triad_movntq64;
+        testname[i] = "movntq64";
+        i++;
+#endif
+        /* MOVAPD128 */
+        testfns[i]  = triad_movapd128;
+        testname[i] = "movapd128";
+        i++;
+        /* MOVNTPD128 */
+        testfns[i]  = triad_movntpd128;
+        testname[i] = "movntpd128";
+        i++;
+    }
+#endif
+#ifdef __SSE4_1__
+    {
+        /* MOVNTDQA128 */
+        testfns[i]  = triad_movntdqa128;
+        testname[i] = "movntdqa128";
+        i++;
+    }
+#endif
+#ifdef __AVX__
+    {
+        /* VMOVAPD256 */
+        testfns[i]  = triad_vmovapd256;
+        testname[i] = "vmovapd256";
+        i++;
+        /* VMOVNTPD256 */
+        testfns[i]  = triad_vmovntpd256;
+        testname[i] = "vmovntpd256";
+        i++;
+    }
+#endif
+#ifdef __AVX2__
+    {
+        /* VMOVNTDQA256 */
+        testfns[i]  = triad_vmovntdqa256;
+        testname[i] = "vmovntdqa256";
+        i++;
+        /* VGATHERDPD128 */
+        testfns[i]  = triad_vgatherdpd128;
+        testname[i] = "vgatherdpd128";
+        i++;
+        /* VGATHERQPD128 */
+        testfns[i]  = triad_vgatherqpd128;
+        testname[i] = "vgatherqpd128";
+        i++;
+        /* VGATHERDPD256 */
+        testfns[i]  = triad_vgatherdpd256;
+        testname[i] = "vgatherdpd256";
+        i++;
+        /* VGATHERQPD256 */
+        testfns[i]  = triad_vgatherqpd256;
+        testname[i] = "vgatherqpd256";
+        i++;
+        /* MVGATHERQPD256 */
+        testfns[i]  = triad_mvgatherqpd256;
+        testname[i] = "mvgatherqpd256";
+        i++;
+    }
+#endif
+#ifdef __AVX512F__
+    {
+        /* VMOVAPD512 */
+        testfns[i]  = triad_vmovapd512;
+        testname[i] = "vmovapd512";
+        i++;
+        /* VMOVUPD512 */
+        testfns[i]  = triad_vmovupd512;
+        testname[i] = "vmovupd512";
+        i++;
+        /* MVMOVAPD512 */
+        testfns[i]  = triad_mvmovapd512;
+        testname[i] = "mvmovapd512";
+        i++;
+        /* MVMOVUPD512 */
+        testfns[i]  = triad_mvmovupd512;
+        testname[i] = "mvmovupd512";
+        i++;
+        /* VMOVNTPD512 */
+        testfns[i]  = triad_vmovntpd512;
+        testname[i] = "vmovntpd512";
+        i++;
+        /* VMOVNTDQA512 */
+        testfns[i]  = triad_vmovntdqa512;
+        testname[i] = "vmovntdqa512";
+        i++;
+        /* VGSDPD512 */
+        testfns[i]  = triad_vGSdpd512;
+        testname[i] = "vGSdpd512";
+        i++;
+        /* MVGSDPD512 */
+        testfns[i]  = triad_mvGSdpd512;
+        testname[i] = "mvGSdpd512";
+        i++;
+        /* VGSQPD512 */
+        testfns[i]  = triad_vGSqpd512;
+        testname[i] = "vGSqpd512";
+        i++;
+        /* MVGSQPD512 */
+        testfns[i]  = triad_mvGSqpd512;
         testname[i] = "mvGSqpd512";
         i++;
     }
