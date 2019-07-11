@@ -26,8 +26,8 @@ ASFLAGS	 = $(CFLAGS)
 ASFLAGS += -S -fcode-asm -fverbose-asm -fasm-blocks -fsource-asm
 
 BIN  = driver
-OBJ  = copy.o stride.o util.o
-INC  = copy.h stride.h util.h
+OBJ  = copy.o triad.o stride.o util.o
+INC  = copy.h triad.h stride.h util.h
 INC += setup.h compiler.h
 
 all: $(BIN)
@@ -41,7 +41,7 @@ driver: driver.c $(OBJ) $(INC)
 %.s: %.c $(INC)
 	$(AS) $(ASFLAGS) $< -o $@
 
-archive: driver.c copy.c copy.h stride.c stride.h util.c util.h
+archive: driver.c copy.c copy.h triad.c triad.h stride.c stride.h util.c util.h
 	git archive --prefix=simd-memtest/ -o ../simd-memtest.tar.gz HEAD
 clean:
 	-rm -f *.s
