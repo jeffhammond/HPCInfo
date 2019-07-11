@@ -55,32 +55,62 @@ int main(int argc, char* argv[])
     //set_doubles(nelem, 7777.3333, a);
     init_doubles(nelem, a);
 
-    int numtest = setup();
+    int numtest0 = setup();
 
-    for (int i=0; i<numtest; i++) {
-        if (testfns[i] != NULL) {
+    for (int i=0; i<numtest0; i++) {
+        if (testfns0[i] != NULL) {
 
             set_doubles(nelem, 1111.9999, b);
 
             double t0=0., t1=0.;
             for (size_t j = 0; j<niter; j++) {
                 if (j == nwarm) t0 = omp_get_wtime();
-                testfns[i](nelem, a, b);
+                testfns0[i](nelem, a, b);
             }
             t1 = omp_get_wtime();
-            testtime[i] = t1-t0;
-            testtime[i] /= (niter-nwarm);
+            testtime0[i] = t1-t0;
+            testtime0[i] /= (niter-nwarm);
 
             size_t testerrs = compare_doubles(nelem, a, b);
 
             if (testerrs != 0 || getenv("JEFFDEBUG") ) {
-                printf("====== %s ======\n", testname[i]);
+                printf("====== %s ======\n", testname0[i]);
                 printf("There were %zu errors!\n", testerrs);
                 print_doubles_2(nelem, a, b);
             } else {
                 //printf("There were no errors.\n");
                 printf("%20s Time = %lf seconds Bandwidth = %lf GB/s\n",
-                       testname[i], testtime[i], (2.e-9*bytes)/testtime[i]);
+                       testname0[i], testtime0[i], (2.e-9*bytes)/testtime0[i]);
+            }
+        }
+    }
+
+    int numtest1 = setup_triad();
+
+    for (int i=0; i<numtest1; i++) {
+        if (testfns1[i] != NULL) {
+
+            set_doubles(nelem, 1111.9999, b);
+
+            double t0=0., t1=0.;
+            for (size_t j = 0; j<niter; j++) {
+                if (j == nwarm) t0 = omp_get_wtime();
+                testfns1[i](nelem, s, a, b, c);
+            }
+            t1 = omp_get_wtime();
+            testtime1[i] = t1-t0;
+            testtime1[i] /= (niter-nwarm);
+
+            size_t testerrs = compare_doubles(nelem, a, b);
+
+            if (testerrs != 0 || getenv("JEFFDEBUG") ) {
+                printf("====== %s ======\n", testname1[i]);
+                printf("There were %zu errors!\n", testerrs);
+                print_doubles_2(nelem, a, b);
+            } else {
+                //printf("There were no errors.\n");
+                printf("%20s Time = %lf seconds Bandwidth = %lf GB/s\n",
+                       testname1[i], testtime1[i], (2.e-9*bytes)/testtime1[i]);
             }
         }
     }
