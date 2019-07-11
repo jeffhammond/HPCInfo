@@ -14,7 +14,8 @@ static double b[nelem];
 
 int main(int argc, char* argv[])
 {
-    if ((argc > 1) && ( 0==strncmp("-h",argv[1],2) ||
+    if ((argc == 1) ||
+        (argc > 1) && ( 0==strncmp("-h",argv[1],2) ||
                         0==strncmp("--h",argv[1],3) ) ) {
         printf("./driver.x <nelem> [<niter> [<nwarm>]]\n");
         exit(0);
