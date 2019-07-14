@@ -4,260 +4,119 @@ void triad_ref(size_t n, double s, const double * RESTRICT a, const double * RES
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
-        b[i] = a[i];
+        c[i] = s * a[i] + b[i];
     }
 }
-
-void triad_mov(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i++) {
-        double t;
-        //t = a[i];
-        asm ("mov %1, %0" : "=r" (t) : "m" (a[i]));
-        //b[i] = t;
-        asm ("mov %1, %0" : "=m" (b[i]) : "r" (t));
-    }
-}
-
-void triad_rep_movsq(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    /* It might make more sense to do rep-movsq a page at a time
-     * and make the alignment nicer... */
-#ifdef _OPENMP
-#pragma omp parallel
-    {
-        int me = omp_get_thread_num();
-        int nt = omp_get_num_threads();
-        size_t chunk = 1+(n-1)/nt;
-        size_t start = me*chunk;
-        size_t end   = (me+1)*chunk;
-        if (end>n) end = n;
-        size_t tn =  (end>start) ? end-start : 0;
-        //const double * RESTRICT ta = &( a[start] );
-        //      double * RESTRICT tb = &( b[start] );
-        const double * RESTRICT ta = a+start;
-              double * RESTRICT tb = b+start;
-        //printf("zzz %d: chunk=%zu\n", me, chunk); fflush(stdout);
-        //printf("zzz %d: start=%zu\n", me, start); fflush(stdout);
-        //printf("zzz %d: xend=%zu\n", me, end); fflush(stdout);
-        //printf("zzz %d: count=%zd\n", me, tn); fflush(stdout);
-#ifdef __INTEL_COMPILER
-        asm("rep movsq"
-            : "=D" (tb), "=S" (ta), "=c" (tn)
-            : "0" (tb), "1" (ta), "2" (tn)
-            : "memory");
-#else
-        tn *= sizeof(double);
-        memcpy(tb,ta,tn);
-#endif
-    }
-#else
-    {
-#if HAS_GNU_EXTENDED_ASM
-        asm("rep movsq"
-            : "=D" (b), "=S" (a), "=c" (n)
-            : "0" (b), "1" (a), "2" (n)
-            : "memory");
-#else
-        tn *= sizeof(double);
-        memcpy(b,a,n*sizeof(double));
-#endif
-    }
-#endif
-}
-
-#ifdef __SSE__
-
-#if 0 /* BROKEN */
-void triad_movntq(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i++) {
-        double t;
-        //t = a[i];
-        asm ("mov %1, %0" : "=r" (t) : "m" (a[i]));
-        //b[i] = t;
-        // movntq does not work here...
-        asm ("movntq %1, %0" : "=m" (b[i]) : "r" (t));
-    }
-    asm ("sfence" ::: "memory");
-}
-#endif
-
-#ifdef __INTEL_COMPILER
-void triad_movntq64(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    //_mm_empty();
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i++) {
-        __m64 t = _m_from_int64( *(__int64*)&(a[i]) );
-        _mm_stream_pi( (__m64*)&(b[i]), (__m64)t);
-    }
-    _mm_sfence();
-}
-#endif /* ICC */
-
-#endif /* SSE */
 
 #ifdef __SSE2__
-void triad_movnti(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i++) {
-        double t;
-        //t = a[i];
-        asm ("mov %1, %0" : "=r" (t) : "m" (a[i]));
-        //b[i] = t;
-        asm ("movnti %1, %0" : "=m" (b[i]) : "r" (t));
-    }
-    asm ("sfence" ::: "memory");
-}
-
-#ifdef __INTEL_COMPILER
-void triad_movnti64(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    //_mm_empty();
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i++) {
-        __m64 t = _m_from_int64( *(__int64*)&(a[i]) );
-        _mm_stream_si64( (__int64*)&(b[i]), *(__int64*)&t);
-    }
-    _mm_sfence();
-}
-#endif /* ICC */
 
 void triad_movapd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=2) {
-        __m128d t = _mm_load_pd( &(a[i]) );
-        _mm_store_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        //_mm_empty();
+        __m128d ts = _mm_load1_pd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=2) {
+            __m128d ta = _mm_load_pd(&(a[i]));
+            __m128d tb = _mm_load_pd(&(b[i]));
+                    ta = _mm_mul_pd(ts,ta);
+            __m128d tc = _mm_add_pd(ta,tb);
+            _mm_store_pd(&(c[i]), tc);
+        }
     }
 }
 
 void triad_movntpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=2) {
-        __m128d t = _mm_load_pd( &(a[i]) );
-        _mm_stream_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        //_mm_empty();
+        __m128d ts = _mm_load1_pd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=2) {
+            __m128d ta = _mm_load_pd(&(a[i]));
+            __m128d tb = _mm_load_pd(&(b[i]));
+                    ta = _mm_mul_pd(ts,ta);
+            __m128d tc = _mm_add_pd(ta,tb);
+            _mm_stream_pd(&(c[i]), tc);
+        }
+        _mm_sfence();
     }
-    _mm_sfence();
 }
+
 #endif /* SSE2 */
 
 #ifdef __SSE4_1__
-void triad_movntdqa128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
+void triad_movntdq128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=2) {
-        __m128i t = _mm_stream_load_si128( (__m128i*)&(a[i]) );
-        _mm_stream_si128 ( (__m128i*)&(b[i]), t);
+    OMP_PARALLEL
+    {
+        //_mm_empty();
+        __m128d ts = _mm_load1_pd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=2) {
+            __m128d ta = _mm_load_pd(&(a[i]));
+            __m128d tb = _mm_load_pd(&(b[i]));
+                    ta = _mm_mul_pd(ts,ta);
+            __m128d tc = _mm_add_pd(ta,tb);
+            _mm_stream_si128((__m128i*)&(c[i]),(__m128i)tc);
+        }
+        _mm_sfence();
     }
-    _mm_sfence();
 }
 #endif /* SSE4.1 */
 
 #ifdef __AVX__
 void triad_vmovapd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=4) {
-        __m256d t = _mm256_load_pd( &(a[i]) );
-        _mm256_store_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        __m256d ts = _mm256_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=4) {
+            __m256d ta = _mm256_load_pd(&(a[i]));
+            __m256d tb = _mm256_load_pd(&(b[i]));
+                    ta = _mm256_mul_pd(ts,ta);
+            __m256d tc = _mm256_add_pd(ta,tb);
+            _mm256_store_pd(&(c[i]), tc);
+        }
     }
 }
 
 void triad_vmovntpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=4) {
-        __m256d t = _mm256_load_pd( &(a[i]) );
-        _mm256_stream_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        __m256d ts = _mm256_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=4) {
+            __m256d ta = _mm256_load_pd(&(a[i]));
+            __m256d tb = _mm256_load_pd(&(b[i]));
+                    ta = _mm256_mul_pd(ts,ta);
+            __m256d tc = _mm256_add_pd(ta,tb);
+            _mm256_stream_pd(&(c[i]), tc);
+        }
+        _mm_sfence();
     }
-    _mm_sfence();
 }
 #endif /* AVX */
 
 #ifdef __AVX2__
 void triad_vmovntdqa256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=4) {
-        __m256i t = _mm256_stream_load_si256( (__m256i*)&(a[i]) );
-        _mm256_stream_si256 ( (__m256i*)&(b[i]), t);
-    }
-    _mm_sfence();
-}
-
-void triad_vgatherdpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    const __m128i vindex = _mm_set_epi32(-1,-1,1,0); // start from the right...
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=2) {
-        __m128d t = _mm_i32gather_pd( &(a[i]), vindex, 8 /* scale */ );
-        _mm_storel_pd( &(b[i  ]), t);
-        _mm_storeh_pd( &(b[i+1]), t);
-    }
-}
-
-void triad_vgatherqpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    const __m128i vindex = _mm_set_epi64x(1,0); // works
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=2) {
-        __m128d t = _mm_i64gather_pd( &(a[i]), vindex, 8 /* scale */ );
-        _mm_storel_pd( &(b[i  ]), t);
-        _mm_storeh_pd( &(b[i+1]), t);
-    }
-}
-
-void triad_vgatherdpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    const __m128i vindex = _mm_set_epi32(3,2,1,0); // start from the right...
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=4) {
-        __m256d t = _mm256_i32gather_pd( &(a[i]), vindex, 8 /* scale */ );
-        __m128d l = _mm256_extractf128_pd(t,0);
-        __m128d u = _mm256_extractf128_pd(t,1);
-        _mm_storel_pd( &(b[i  ]), l);
-        _mm_storeh_pd( &(b[i+1]), l);
-        _mm_storel_pd( &(b[i+2]), u);
-        _mm_storeh_pd( &(b[i+3]), u);
-    }
-}
-
-void triad_vgatherqpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    const __m256i vindex = _mm256_set_epi64x(3,2,1,0); // works
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=4) {
-        __m256d t = _mm256_i64gather_pd( &(a[i]), vindex, 8 /* scale */ );
-        __m128d l = _mm256_extractf128_pd(t,0);
-        __m128d u = _mm256_extractf128_pd(t,1);
-        _mm_storel_pd( &(b[i  ]), l);
-        _mm_storeh_pd( &(b[i+1]), l);
-        _mm_storel_pd( &(b[i+2]), u);
-        _mm_storeh_pd( &(b[i+3]), u);
-    }
-}
-
-void triad_mvgatherqpd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
-{
-    const __m256i vindex = _mm256_set_epi64x(3,2,1,0); // works
-    // O in OQ means ordered, i.e. AND.  unordered is OR.  Q means quiet i.e. non-signaling.
-    __m256d src = _mm256_cmp_pd(_mm256_setzero_pd(),_mm256_setzero_pd(),_CMP_EQ_OQ); // sets all bits to 1
-    __m256d mask = src;
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=4) {
-        __m256d t = _mm256_mask_i64gather_pd( src, &(a[i]), vindex, mask, 8 /* scale */ );
-        __m128d l = _mm256_extractf128_pd(t,0);
-        __m128d u = _mm256_extractf128_pd(t,1);
-        _mm_storel_pd( &(b[i  ]), l);
-        _mm_storeh_pd( &(b[i+1]), l);
-        _mm_storel_pd( &(b[i+2]), u);
-        _mm_storeh_pd( &(b[i+3]), u);
+    OMP_PARALLEL
+    {
+        __m256d ts = _mm256_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=4) {
+            __m256d ta = (__m256d) _mm256_stream_load_si256((__m256i*)&(a[i]));
+            __m256d tb = (__m256d) _mm256_stream_load_si256((__m256i*)&(b[i]));
+                    ta = _mm256_mul_pd(ts,ta);
+            __m256d tc = _mm256_add_pd(ta,tb);
+            _mm256_stream_pd(&(c[i]), tc);
+        }
+        _mm_sfence();
     }
 }
 #endif /* AVX2 */
@@ -265,105 +124,172 @@ OMP_PARALLEL_FOR
 #ifdef __AVX512F__
 void triad_vmovapd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_load_pd( &(a[i]) );
-        _mm512_store_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        __m512d ts = _mm512_broadcast_sd(&s);
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_load_pd( &(a[i]) );
+            __m512d tb = _mm512_load_pd( &(b[i]) );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_store_pd( &(c[i]), tc);
+        }
     }
 }
 
 void triad_vmovupd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_loadu_pd( &(a[i]) );
-        _mm512_storeu_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_loadu_pd( &(a[i]) );
+            __m512d tb = _mm512_loadu_pd( &(b[i]) );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_storeu_pd( &(c[i]), tc);
+        }
     }
 }
 
 void triad_mvmovapd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-    __m512d src = {0};
-    __mmask8 k = 255;
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_mask_load_pd( src, k, &(a[i]) );
-        _mm512_mask_store_pd( &(b[i]), k, t);
+    OMP_PARALLEL
+    {
+        __m512d src = {0};
+        __mmask8 k = 255;
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_mask_load_pd( src, k, &(ta[i]) );
+            __m512d tb = _mm512_mask_load_pd( src, k, &(tb[i]) );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_mask_store_pd( &(c[i]), k, tc);
+        }
     }
 }
 
 void triad_mvmovupd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-    __m512d src = {0};
-    __mmask8 k = 255;
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_mask_loadu_pd( src, k, &(a[i]) );
-        _mm512_mask_storeu_pd( &(b[i]), k, t);
+    OMP_PARALLEL
+    {
+        __m512d src = {0};
+        __mmask8 k = 255;
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_mask_loadu_pd( src, k, &(ta[i]) );
+            __m512d tb = _mm512_mask_loadu_pd( src, k, &(tb[i]) );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_mask_storeu_pd( &(c[i]), k, tc);
+        }
     }
 }
 
 void triad_vmovntpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_load_pd( &(a[i]) );
-        _mm512_stream_pd( &(b[i]), t);
+    OMP_PARALLEL
+    {
+        __m512d ts = _mm512_broadcast_sd(&s);
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_load_pd( &(a[i]) );
+            __m512d tb = _mm512_load_pd( &(b[i]) );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_stream_pd( &(c[i]), tc);
+        }
+        _mm_sfence();
     }
-    _mm_sfence();
 }
 
 void triad_vmovntdqa512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512i t = _mm512_stream_load_si512( (__m512i*)&(a[i]) );
-        _mm512_stream_si512 ( (__m512i*)&(b[i]), t);
+    OMP_PARALLEL
+    {
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512i ta = _mm512_stream_load_si512( (__m512i*)&(a[i]) );
+            __m512i tb = _mm512_stream_load_si512( (__m512i*)&(b[i]) );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_stream_si512 ( (__m512i*)&(c[i]), tc);
+        }
+        _mm_sfence();
     }
-    _mm_sfence();
 }
 
 void triad_vGSdpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-    const __m256i vindex = _mm256_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_i32gather_pd(vindex, &(a[i]), 8 /* scale */ );
-        _mm512_i32scatter_pd( &(b[i]), vindex, t, 8 /* scale */ );
+    OMP_PARALLEL
+    {
+        const __m512i vindex = _mm512_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_i32gather_pd(vindex, &(a[i]), 8 /* scale */ );
+            __m512d tb = _mm512_i32gather_pd(vindex, &(b[i]), 8 /* scale */ );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_i32scatter_pd( &(c[i]), vindex, tc, 8 /* scale */ );
+        }
     }
-}
 
 void triad_mvGSdpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-    __m512d src = {0};
-    __mmask8 k = 255;
-    const __m256i vindex = _mm256_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_mask_i32gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );
-        _mm512_mask_i32scatter_pd( &(b[i]), k, vindex, t, 8 /* scale */ );
+    OMP_PARALLEL
+    {
+        __m512d src = {0};
+        __mmask8 k = 255;
+        const __m512i vindex = _mm512_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_mask_i32gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );
+            __m512d tb = _mm512_mask_i32gather_pd(src, k, vindex, &(b[i]), 8 /* scale */ );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_mask_i32scatter_pd( &(c[i]), k, vindex, tc, 8 /* scale */ );
+        }
     }
 }
 
 void triad_vGSqpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-    const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_i64gather_pd(vindex, &(a[i]), 8 /* scale */ );
-        _mm512_i64scatter_pd( &(b[i]), vindex, t, 8 /* scale */ );
+    OMP_PARALLEL
+    {
+        const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_i64gather_pd(vindex, &(a[i]), 8 /* scale */ );
+            __m512d tb = _mm512_i64gather_pd(vindex, &(b[i]), 8 /* scale */ );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_i64scatter_pd( &(c[i]), vindex, tc, 8 /* scale */ );
+        }
     }
 }
 
 void triad_mvGSqpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
-    __m512d src = {0};
-    __mmask8 k = 255;
-    const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
-OMP_PARALLEL_FOR
-    for (size_t i=0; i<n; i+=8) {
-        __m512d t = _mm512_mask_i64gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );
-        _mm512_mask_i64scatter_pd( &(b[i]), k, vindex, t, 8 /* scale */ );
+    OMP_PARALLEL
+    {
+        __m512d src = {0};
+        __mmask8 k = 255;
+        const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
+        __m512d ts = _mm512_broadcast_sd(&s);
+        OMP_FOR
+        for (size_t i=0; i<n; i+=8) {
+            __m512d ta = _mm512_mask_i64gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );
+            __m512d tb = _mm512_mask_i64gather_pd(src, k, vindex, &(b[i]), 8 /* scale */ );
+                    ta = _mm512_mul_pd(ts,ta);
+            __m512d tc = _mm512_add_pd(ta,tb);
+            _mm512_mask_i64scatter_pd( &(c[i]), k, vindex, tc, 8 /* scale */ );
+        }
     }
 }
 #endif /* AVX-512F */

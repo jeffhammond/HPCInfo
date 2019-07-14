@@ -10,6 +10,7 @@
 const size_t nelem = 16777216;
 static double a[nelem];
 static double b[nelem];
+static double c[nelem];
 #endif
 
 int main(int argc, char* argv[])
@@ -49,13 +50,15 @@ int main(int argc, char* argv[])
 #ifndef STATIC_ALLOCATION
     double * a = (double*)mymalloc(alloc_bytes);
     double * b = (double*)mymalloc(alloc_bytes);
+    double * c = (double*)mymalloc(alloc_bytes);
     printf("allocation finished\n");
 #endif
 
-    //set_doubles(nelem, 7777.3333, a);
-    init_doubles(nelem, a);
+    printf("================== COPY =================\n");
 
     int numtest0 = setup();
+
+    init_doubles(nelem, a);
 
     for (int i=0; i<numtest0; i++) {
         if (testfns0[i] != NULL) {
@@ -85,12 +88,18 @@ int main(int argc, char* argv[])
         }
     }
 
+    printf("================== TRIAD =================\n");
+
     int numtest1 = setup_triad();
+
+    double s = 17.1;
+    init_doubles(nelem, a);
+    init_doubles(nelem, b);
 
     for (int i=0; i<numtest1; i++) {
         if (testfns1[i] != NULL) {
 
-            set_doubles(nelem, 1111.9999, b);
+            set_doubles(nelem, 1111.9999, c);
 
             double t0=0., t1=0.;
             for (size_t j = 0; j<niter; j++) {
@@ -101,7 +110,7 @@ int main(int argc, char* argv[])
             testtime1[i] = t1-t0;
             testtime1[i] /= (niter-nwarm);
 
-            size_t testerrs = compare_doubles(nelem, a, b);
+            size_t testerrs = compare_doubles(nelem, c, c);
 
             if (testerrs != 0 || getenv("JEFFDEBUG") ) {
                 printf("====== %s ======\n", testname1[i]);
@@ -115,7 +124,11 @@ int main(int argc, char* argv[])
         }
     }
 
+    printf("================== STRIDE =================\n");
+
     int numtest2 = setup_stride();
+
+    init_doubles(nelem, a);
 
     int strides[13] = {1,2,3,4,5,6,7,8,12,16,24,32,64};
     for (int j=0; j<(int)(sizeof(strides)/sizeof(strides[0])); j++) {

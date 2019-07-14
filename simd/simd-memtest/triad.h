@@ -4,16 +4,11 @@
 #include "compiler.h"
 
 void triad_ref(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
-void triad_mov(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
-void triad_rep_movsq(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
 
 /* SSE+ */
-void triad_movnti(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
-void triad_movnti64(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
-void triad_movntq64(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
 void triad_movapd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
 void triad_movntpd128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
-void triad_movntdqa128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
+void triad_movntdq128(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);
 
 /* AVX and AVX-2 */
 void triad_vmovapd256(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c);

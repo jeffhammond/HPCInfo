@@ -57,8 +57,12 @@ typedef int64_t __int64;
 #ifdef _OPENMP
 #include <omp.h>
 #define OMP_PARALLEL_FOR PRAGMA(omp parallel for)
+#define OMP_PARALLEL PRAGMA(omp parallel)
+#define OMP_FOR PRAGMA(omp for)
 #else
 #define OMP_PARALLEL_FOR
+#define OMP_PARALLEL
+#define OMP_FOR
 static inline int omp_get_thread_num() { return 0; }
 static inline int omp_get_num_threads() { return 1; }
 static inline int omp_get_max_threads() { return 1; }
