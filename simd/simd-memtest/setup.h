@@ -2,6 +2,7 @@
 #define SETUP_H
 
 #include "copy.h"
+#include "triad.h"
 #include "stride.h"
 
 #define MAXTEST 64
@@ -15,7 +16,7 @@ const char* testname0[MAXTEST] = {0};
 /* triad */
 double testtime1[MAXTEST] = {0};
 typedef void (*triadfn)(size_t, double, const double * RESTRICT, const double * RESTRICT, double * RESTRICT);
-copyfn testfns1[MAXTEST] = {0};
+triadfn testfns1[MAXTEST] = {0};
 const char* testname1[MAXTEST] = {0};
 
 /* strided */
@@ -29,139 +30,139 @@ int setup(void)
     int i = 0;
     {
         /* Reference */
-        testfns[i]  = copy_ref;
-        testname[i] = "Reference";
+        testfns0[i]  = copy_ref;
+        testname0[i] = "Reference";
         i++;
         /* MOV */
-        testfns[i]  = copy_mov;
-        testname[i] = "mov";
+        testfns0[i]  = copy_mov;
+        testname0[i] = "mov";
         i++;
         /* REP_MOVSQ */
-        testfns[i]  = copy_rep_movsq;
-        testname[i] = "rep_movsq";
+        testfns0[i]  = copy_rep_movsq;
+        testname0[i] = "rep_movsq";
         i++;
     }
 #ifdef __SSE2__
     {
         /* MOVNTI */
-        testfns[i]  = copy_movnti;
-        testname[i] = "movnti";
+        testfns0[i]  = copy_movnti;
+        testname0[i] = "movnti";
         i++;
 #if 0 /* BROKEN */
         /* MOVNTQ */
-        testfns[i]  = copy_movntq;
-        testname[i] = "movntq";
+        testfns0[i]  = copy_movntq;
+        testname0[i] = "movntq";
         i++;
 #endif
 #ifdef __INTEL_COMPILER
         /* MOVNTI64 */
-        testfns[i]  = copy_movnti64;
-        testname[i] = "movnti64";
+        testfns0[i]  = copy_movnti64;
+        testname0[i] = "movnti64";
         i++;
         /* MOVNTQ64 */
-        testfns[i]  = copy_movntq64;
-        testname[i] = "movntq64";
+        testfns0[i]  = copy_movntq64;
+        testname0[i] = "movntq64";
         i++;
 #endif
         /* MOVAPD128 */
-        testfns[i]  = copy_movapd128;
-        testname[i] = "movapd128";
+        testfns0[i]  = copy_movapd128;
+        testname0[i] = "movapd128";
         i++;
         /* MOVNTPD128 */
-        testfns[i]  = copy_movntpd128;
-        testname[i] = "movntpd128";
+        testfns0[i]  = copy_movntpd128;
+        testname0[i] = "movntpd128";
         i++;
     }
 #endif
 #ifdef __SSE4_1__
     {
         /* MOVNTDQA128 */
-        testfns[i]  = copy_movntdqa128;
-        testname[i] = "movntdqa128";
+        testfns0[i]  = copy_movntdqa128;
+        testname0[i] = "movntdqa128";
         i++;
     }
 #endif
 #ifdef __AVX__
     {
         /* VMOVAPD256 */
-        testfns[i]  = copy_vmovapd256;
-        testname[i] = "vmovapd256";
+        testfns0[i]  = copy_vmovapd256;
+        testname0[i] = "vmovapd256";
         i++;
         /* VMOVNTPD256 */
-        testfns[i]  = copy_vmovntpd256;
-        testname[i] = "vmovntpd256";
+        testfns0[i]  = copy_vmovntpd256;
+        testname0[i] = "vmovntpd256";
         i++;
     }
 #endif
 #ifdef __AVX2__
     {
         /* VMOVNTDQA256 */
-        testfns[i]  = copy_vmovntdqa256;
-        testname[i] = "vmovntdqa256";
+        testfns0[i]  = copy_vmovntdqa256;
+        testname0[i] = "vmovntdqa256";
         i++;
         /* VGATHERDPD128 */
-        testfns[i]  = copy_vgatherdpd128;
-        testname[i] = "vgatherdpd128";
+        testfns0[i]  = copy_vgatherdpd128;
+        testname0[i] = "vgatherdpd128";
         i++;
         /* VGATHERQPD128 */
-        testfns[i]  = copy_vgatherqpd128;
-        testname[i] = "vgatherqpd128";
+        testfns0[i]  = copy_vgatherqpd128;
+        testname0[i] = "vgatherqpd128";
         i++;
         /* VGATHERDPD256 */
-        testfns[i]  = copy_vgatherdpd256;
-        testname[i] = "vgatherdpd256";
+        testfns0[i]  = copy_vgatherdpd256;
+        testname0[i] = "vgatherdpd256";
         i++;
         /* VGATHERQPD256 */
-        testfns[i]  = copy_vgatherqpd256;
-        testname[i] = "vgatherqpd256";
+        testfns0[i]  = copy_vgatherqpd256;
+        testname0[i] = "vgatherqpd256";
         i++;
         /* MVGATHERQPD256 */
-        testfns[i]  = copy_mvgatherqpd256;
-        testname[i] = "mvgatherqpd256";
+        testfns0[i]  = copy_mvgatherqpd256;
+        testname0[i] = "mvgatherqpd256";
         i++;
     }
 #endif
 #ifdef __AVX512F__
     {
         /* VMOVAPD512 */
-        testfns[i]  = copy_vmovapd512;
-        testname[i] = "vmovapd512";
+        testfns0[i]  = copy_vmovapd512;
+        testname0[i] = "vmovapd512";
         i++;
         /* VMOVUPD512 */
-        testfns[i]  = copy_vmovupd512;
-        testname[i] = "vmovupd512";
+        testfns0[i]  = copy_vmovupd512;
+        testname0[i] = "vmovupd512";
         i++;
         /* MVMOVAPD512 */
-        testfns[i]  = copy_mvmovapd512;
-        testname[i] = "mvmovapd512";
+        testfns0[i]  = copy_mvmovapd512;
+        testname0[i] = "mvmovapd512";
         i++;
         /* MVMOVUPD512 */
-        testfns[i]  = copy_mvmovupd512;
-        testname[i] = "mvmovupd512";
+        testfns0[i]  = copy_mvmovupd512;
+        testname0[i] = "mvmovupd512";
         i++;
         /* VMOVNTPD512 */
-        testfns[i]  = copy_vmovntpd512;
-        testname[i] = "vmovntpd512";
+        testfns0[i]  = copy_vmovntpd512;
+        testname0[i] = "vmovntpd512";
         i++;
         /* VMOVNTDQA512 */
-        testfns[i]  = copy_vmovntdqa512;
-        testname[i] = "vmovntdqa512";
+        testfns0[i]  = copy_vmovntdqa512;
+        testname0[i] = "vmovntdqa512";
         i++;
         /* VGSDPD512 */
-        testfns[i]  = copy_vGSdpd512;
-        testname[i] = "vGSdpd512";
+        testfns0[i]  = copy_vGSdpd512;
+        testname0[i] = "vGSdpd512";
         i++;
         /* MVGSDPD512 */
-        testfns[i]  = copy_mvGSdpd512;
-        testname[i] = "mvGSdpd512";
+        testfns0[i]  = copy_mvGSdpd512;
+        testname0[i] = "mvGSdpd512";
         i++;
         /* VGSQPD512 */
-        testfns[i]  = copy_vGSqpd512;
-        testname[i] = "vGSqpd512";
+        testfns0[i]  = copy_vGSqpd512;
+        testname0[i] = "vGSqpd512";
         i++;
         /* MVGSQPD512 */
-        testfns[i]  = copy_mvGSqpd512;
-        testname[i] = "mvGSqpd512";
+        testfns0[i]  = copy_mvGSqpd512;
+        testname0[i] = "mvGSqpd512";
         i++;
     }
 #endif
@@ -173,139 +174,139 @@ int setup_triad(void)
     int i = 0;
     {
         /* Reference */
-        testfns[i]  = triad_ref;
-        testname[i] = "Reference";
+        testfns1[i]  = triad_ref;
+        testname1[i] = "Reference";
         i++;
+#if 0
         /* MOV */
-        testfns[i]  = triad_mov;
-        testname[i] = "mov";
+        testfns1[i]  = triad_mov;
+        testname1[i] = "mov";
         i++;
-        /* REP_MOVSQ */
-        testfns[i]  = triad_rep_movsq;
-        testname[i] = "rep_movsq";
-        i++;
+#endif
     }
 #ifdef __SSE2__
     {
-        /* MOVNTI */
-        testfns[i]  = triad_movnti;
-        testname[i] = "movnti";
-        i++;
 #if 0 /* BROKEN */
+        /* MOVNTI */
+        testfns1[i]  = triad_movnti;
+        testname1[i] = "movnti";
+        i++;
         /* MOVNTQ */
-        testfns[i]  = triad_movntq;
-        testname[i] = "movntq";
+        testfns1[i]  = triad_movntq;
+        testname1[i] = "movntq";
         i++;
 #endif
-#ifdef __INTEL_COMPILER
+#if 0
         /* MOVNTI64 */
-        testfns[i]  = triad_movnti64;
-        testname[i] = "movnti64";
+        testfns1[i]  = triad_movnti64;
+        testname1[i] = "movnti64";
         i++;
         /* MOVNTQ64 */
-        testfns[i]  = triad_movntq64;
-        testname[i] = "movntq64";
+        testfns1[i]  = triad_movntq64;
+        testname1[i] = "movntq64";
         i++;
 #endif
         /* MOVAPD128 */
-        testfns[i]  = triad_movapd128;
-        testname[i] = "movapd128";
+        testfns1[i]  = triad_movapd128;
+        testname1[i] = "movapd128";
         i++;
         /* MOVNTPD128 */
-        testfns[i]  = triad_movntpd128;
-        testname[i] = "movntpd128";
+        testfns1[i]  = triad_movntpd128;
+        testname1[i] = "movntpd128";
         i++;
     }
 #endif
 #ifdef __SSE4_1__
     {
-        /* MOVNTDQA128 */
-        testfns[i]  = triad_movntdqa128;
-        testname[i] = "movntdqa128";
+        /* MOVNTDQ128 */
+        testfns1[i]  = triad_movntdq128;
+        testname1[i] = "movntdqa128";
         i++;
     }
 #endif
 #ifdef __AVX__
     {
         /* VMOVAPD256 */
-        testfns[i]  = triad_vmovapd256;
-        testname[i] = "vmovapd256";
+        testfns1[i]  = triad_vmovapd256;
+        testname1[i] = "vmovapd256";
         i++;
         /* VMOVNTPD256 */
-        testfns[i]  = triad_vmovntpd256;
-        testname[i] = "vmovntpd256";
+        testfns1[i]  = triad_vmovntpd256;
+        testname1[i] = "vmovntpd256";
         i++;
     }
 #endif
 #ifdef __AVX2__
     {
         /* VMOVNTDQA256 */
-        testfns[i]  = triad_vmovntdqa256;
-        testname[i] = "vmovntdqa256";
+        testfns1[i]  = triad_vmovntdqa256;
+        testname1[i] = "vmovntdqa256";
         i++;
+#if 0
         /* VGATHERDPD128 */
-        testfns[i]  = triad_vgatherdpd128;
-        testname[i] = "vgatherdpd128";
+        testfns1[i]  = triad_vgatherdpd128;
+        testname1[i] = "vgatherdpd128";
         i++;
         /* VGATHERQPD128 */
-        testfns[i]  = triad_vgatherqpd128;
-        testname[i] = "vgatherqpd128";
+        testfns1[i]  = triad_vgatherqpd128;
+        testname1[i] = "vgatherqpd128";
         i++;
         /* VGATHERDPD256 */
-        testfns[i]  = triad_vgatherdpd256;
-        testname[i] = "vgatherdpd256";
+        testfns1[i]  = triad_vgatherdpd256;
+        testname1[i] = "vgatherdpd256";
         i++;
         /* VGATHERQPD256 */
-        testfns[i]  = triad_vgatherqpd256;
-        testname[i] = "vgatherqpd256";
+        testfns1[i]  = triad_vgatherqpd256;
+        testname1[i] = "vgatherqpd256";
         i++;
         /* MVGATHERQPD256 */
-        testfns[i]  = triad_mvgatherqpd256;
-        testname[i] = "mvgatherqpd256";
+        testfns1[i]  = triad_mvgatherqpd256;
+        testname1[i] = "mvgatherqpd256";
         i++;
+#endif
     }
 #endif
 #ifdef __AVX512F__
     {
         /* VMOVAPD512 */
-        testfns[i]  = triad_vmovapd512;
-        testname[i] = "vmovapd512";
+        testfns1[i]  = triad_vmovapd512;
+        testname1[i] = "vmovapd512";
         i++;
         /* VMOVUPD512 */
-        testfns[i]  = triad_vmovupd512;
-        testname[i] = "vmovupd512";
+        testfns1[i]  = triad_vmovupd512;
+        testname1[i] = "vmovupd512";
         i++;
         /* MVMOVAPD512 */
-        testfns[i]  = triad_mvmovapd512;
-        testname[i] = "mvmovapd512";
+        testfns1[i]  = triad_mvmovapd512;
+        testname1[i] = "mvmovapd512";
         i++;
         /* MVMOVUPD512 */
-        testfns[i]  = triad_mvmovupd512;
-        testname[i] = "mvmovupd512";
+        testfns1[i]  = triad_mvmovupd512;
+        testname1[i] = "mvmovupd512";
         i++;
         /* VMOVNTPD512 */
-        testfns[i]  = triad_vmovntpd512;
-        testname[i] = "vmovntpd512";
+        testfns1[i]  = triad_vmovntpd512;
+        testname1[i] = "vmovntpd512";
         i++;
         /* VMOVNTDQA512 */
-        testfns[i]  = triad_vmovntdqa512;
-        testname[i] = "vmovntdqa512";
+        testfns1[i]  = triad_vmovntdqa512;
+        testname1[i] = "vmovntdqa512";
         i++;
         /* VGSDPD512 */
-        testfns[i]  = triad_vGSdpd512;
-        testname[i] = "vGSdpd512";
+        testfns1[i]  = triad_vGSdpd512;
+        testname1[i] = "vGSdpd512";
         i++;
         /* MVGSDPD512 */
-        testfns[i]  = triad_mvGSdpd512;
-        testname[i] = "mvGSdpd512";
+        testfns1[i]  = triad_mvGSdpd512;
+        testname1[i] = "mvGSdpd512";
         i++;
         /* VGSQPD512 */
-        testfns[i]  = triad_vGSqpd512;
-        testname[i] = "vGSqpd512";
+        testfns1[i]  = triad_vGSqpd512;
+        testname1[i] = "vGSqpd512";
         i++;
         /* MVGSQPD512 */
-        testfns[i]  = triad_mvGSqpd512;
-        testname[i] = "mvGSqpd512";
+        testfns1[i]  = triad_mvGSqpd512;
+        testname1[i] = "mvGSqpd512";
         i++;
     }
 #endif
