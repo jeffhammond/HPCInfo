@@ -4,6 +4,7 @@ CFLAGS	+= -qopenmp
 CFLAGS += -xHOST
 #CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xMIC-AVX512
+#CFLAGS += -xCORE-AVX512
 
 #CC	 = g++-6
 #CC	 = clang++-4.0
