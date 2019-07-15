@@ -126,7 +126,9 @@ void triad_vmovapd512(size_t n, double s, const double * RESTRICT a, const doubl
 {
     OMP_PARALLEL
     {
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
+        OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_load_pd( &(a[i]) );
             __m512d tb = _mm512_load_pd( &(b[i]) );
@@ -141,7 +143,8 @@ void triad_vmovupd512(size_t n, double s, const double * RESTRICT a, const doubl
 {
     OMP_PARALLEL
     {
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_loadu_pd( &(a[i]) );
@@ -159,11 +162,12 @@ void triad_mvmovapd512(size_t n, double s, const double * RESTRICT a, const doub
     {
         __m512d src = {0};
         __mmask8 k = 255;
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
-            __m512d ta = _mm512_mask_load_pd( src, k, &(ta[i]) );
-            __m512d tb = _mm512_mask_load_pd( src, k, &(tb[i]) );
+            __m512d ta = _mm512_mask_load_pd( src, k, &(a[i]) );
+            __m512d tb = _mm512_mask_load_pd( src, k, &(b[i]) );
                     ta = _mm512_mul_pd(ts,ta);
             __m512d tc = _mm512_add_pd(ta,tb);
             _mm512_mask_store_pd( &(c[i]), k, tc);
@@ -177,11 +181,12 @@ void triad_mvmovupd512(size_t n, double s, const double * RESTRICT a, const doub
     {
         __m512d src = {0};
         __mmask8 k = 255;
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
-            __m512d ta = _mm512_mask_loadu_pd( src, k, &(ta[i]) );
-            __m512d tb = _mm512_mask_loadu_pd( src, k, &(tb[i]) );
+            __m512d ta = _mm512_mask_loadu_pd( src, k, &(a[i]) );
+            __m512d tb = _mm512_mask_loadu_pd( src, k, &(b[i]) );
                     ta = _mm512_mul_pd(ts,ta);
             __m512d tc = _mm512_add_pd(ta,tb);
             _mm512_mask_storeu_pd( &(c[i]), k, tc);
@@ -193,7 +198,9 @@ void triad_vmovntpd512(size_t n, double s, const double * RESTRICT a, const doub
 {
     OMP_PARALLEL
     {
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
+        OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_load_pd( &(a[i]) );
             __m512d tb = _mm512_load_pd( &(b[i]) );
@@ -209,14 +216,15 @@ void triad_vmovntdqa512(size_t n, double s, const double * RESTRICT a, const dou
 {
     OMP_PARALLEL
     {
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
-            __m512i ta = _mm512_stream_load_si512( (__m512i*)&(a[i]) );
-            __m512i tb = _mm512_stream_load_si512( (__m512i*)&(b[i]) );
+            __m512d ta = (__m512d)_mm512_stream_load_si512( (__m512i*)&(a[i]) );
+            __m512d tb = (__m512d)_mm512_stream_load_si512( (__m512i*)&(b[i]) );
                     ta = _mm512_mul_pd(ts,ta);
             __m512d tc = _mm512_add_pd(ta,tb);
-            _mm512_stream_si512 ( (__m512i*)&(c[i]), tc);
+            _mm512_stream_si512((__m512i*)&(c[i]),(__m512i)tc);
         }
         _mm_sfence();
     }
@@ -226,8 +234,9 @@ void triad_vGSdpd512(size_t n, double s, const double * RESTRICT a, const double
 {
     OMP_PARALLEL
     {
-        const __m512i vindex = _mm512_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
-        __m512d ts = _mm512_broadcast_sd(&s);
+        const __m256i vindex = _mm256_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_i32gather_pd(vindex, &(a[i]), 8 /* scale */ );
@@ -237,6 +246,7 @@ void triad_vGSdpd512(size_t n, double s, const double * RESTRICT a, const double
             _mm512_i32scatter_pd( &(c[i]), vindex, tc, 8 /* scale */ );
         }
     }
+}
 
 void triad_mvGSdpd512(size_t n, double s, const double * RESTRICT a, const double * RESTRICT b, double * RESTRICT c)
 {
@@ -244,8 +254,9 @@ void triad_mvGSdpd512(size_t n, double s, const double * RESTRICT a, const doubl
     {
         __m512d src = {0};
         __mmask8 k = 255;
-        const __m512i vindex = _mm512_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
-        __m512d ts = _mm512_broadcast_sd(&s);
+        const __m256i vindex = _mm256_set_epi32(7,6,5,4,3,2,1,0); // start from the right...
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_mask_i32gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );
@@ -262,7 +273,8 @@ void triad_vGSqpd512(size_t n, double s, const double * RESTRICT a, const double
     OMP_PARALLEL
     {
         const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_i64gather_pd(vindex, &(a[i]), 8 /* scale */ );
@@ -281,7 +293,8 @@ void triad_mvGSqpd512(size_t n, double s, const double * RESTRICT a, const doubl
         __m512d src = {0};
         __mmask8 k = 255;
         const __m512i vindex = _mm512_set_epi64(7,6,5,4,3,2,1,0);
-        __m512d ts = _mm512_broadcast_sd(&s);
+        __m256d xs = _mm256_broadcast_sd(&s);
+        __m512d ts = _mm512_broadcast_f64x4(xs);
         OMP_FOR
         for (size_t i=0; i<n; i+=8) {
             __m512d ta = _mm512_mask_i64gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );

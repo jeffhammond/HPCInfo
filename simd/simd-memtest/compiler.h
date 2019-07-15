@@ -58,7 +58,7 @@ typedef int64_t __int64;
 #include <omp.h>
 #define OMP_PARALLEL_FOR PRAGMA(omp parallel for)
 #define OMP_PARALLEL PRAGMA(omp parallel)
-#define OMP_FOR PRAGMA(omp for)
+#define OMP_FOR PRAGMA(omp for schedule(static))
 #else
 #define OMP_PARALLEL_FOR
 #define OMP_PARALLEL
