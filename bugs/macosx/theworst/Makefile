@@ -1,7 +1,9 @@
+CC = gcc-9
+
 all: sandbox1 sandbox2
 
-%.c.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+%: %.c
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	-rm -f sandbox1 sandbox2
