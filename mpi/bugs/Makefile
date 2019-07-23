@@ -1,7 +1,7 @@
 CC      = mpicc
 CFLAGS  = -g -O2 -Wall -std=c99
 
-all: iprobe-overflow.x sendrecv_replace.x
+all: iprobe-overflow.x sendrecv_replace.x max-irecv.x
 
 %.x: %.c
 	$(CC) $(CFLAGS) $< -o $@
