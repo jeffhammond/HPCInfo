@@ -44,3 +44,5 @@ linux/sysctl/cpu_model
 opencl/atomic/add
 lapack/test_dsygv
 lapack/test_dsyev
+driver
+

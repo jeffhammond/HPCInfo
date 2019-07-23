@@ -1,9 +1,9 @@
 #!/bin/bash -xe
 
-MAKE_JNUM="-j8"
+MAKE_JNUM="-j112"
 
 # Persistent location for source and binaries
-GCC_HOME=/opt/gcc
+GCC_HOME=$HOME/GCC
 mkdir -p $GCC_HOME
 
 # Download/update the source

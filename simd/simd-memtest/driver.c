@@ -7,10 +7,10 @@
 #include "setup.h"
 
 #ifdef STATIC_ALLOCATION
-const size_t nelem = 16777216;
-static double a[nelem];
-static double b[nelem];
-static double c[nelem];
+const size_t nelem = 128*1024*1024; //16777216;
+static double a[nelem] __attribute__((aligned(2097152)));
+static double b[nelem] __attribute__((aligned(2097152)));
+static double c[nelem] __attribute__((aligned(2097152)));
 #endif
 
 int main(int argc, char* argv[])
@@ -124,6 +124,7 @@ int main(int argc, char* argv[])
         }
     }
 
+#if 0
     printf("================== STRIDE =================\n");
 
     int numtest2 = setup_stride();
@@ -164,10 +165,12 @@ int main(int argc, char* argv[])
             }
         }
     }
+#endif
 
 #ifndef STATIC_ALLOCATION
     free(a);
     free(b);
+    free(c);
 #endif
 
     return 0;
