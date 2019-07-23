@@ -177,35 +177,13 @@ int setup_triad(void)
         testfns1[i]  = triad_ref;
         testname1[i] = "Reference";
         i++;
-#if 0
-        /* MOV */
-        testfns1[i]  = triad_mov;
-        testname1[i] = "mov";
+        /* Official */
+        testfns1[i]  = triad_official;
+        testname1[i] = "Official";
         i++;
-#endif
     }
 #ifdef __SSE2__
     {
-#if 0 /* BROKEN */
-        /* MOVNTI */
-        testfns1[i]  = triad_movnti;
-        testname1[i] = "movnti";
-        i++;
-        /* MOVNTQ */
-        testfns1[i]  = triad_movntq;
-        testname1[i] = "movntq";
-        i++;
-#endif
-#if 0
-        /* MOVNTI64 */
-        testfns1[i]  = triad_movnti64;
-        testname1[i] = "movnti64";
-        i++;
-        /* MOVNTQ64 */
-        testfns1[i]  = triad_movntq64;
-        testname1[i] = "movntq64";
-        i++;
-#endif
         /* MOVAPD128 */
         testfns1[i]  = triad_movapd128;
         testname1[i] = "movapd128";
@@ -221,6 +199,18 @@ int setup_triad(void)
         /* MOVNTDQ128 */
         testfns1[i]  = triad_movntdq128;
         testname1[i] = "movntdqa128";
+        i++;
+    }
+#endif
+#ifdef __FMA__
+    {
+        /* MOVAPD128+FMA */
+        testfns1[i]  = triad_movapd128fma;
+        testname1[i] = "movapd128fma";
+        i++;
+        /* MOVNTPD128+FMA */
+        testfns1[i]  = triad_movntpd128fma;
+        testname1[i] = "movntpd128fma";
         i++;
     }
 #endif
@@ -242,28 +232,22 @@ int setup_triad(void)
         testfns1[i]  = triad_vmovntdqa256;
         testname1[i] = "vmovntdqa256";
         i++;
-#if 0
-        /* VGATHERDPD128 */
-        testfns1[i]  = triad_vgatherdpd128;
-        testname1[i] = "vgatherdpd128";
-        i++;
-        /* VGATHERQPD128 */
-        testfns1[i]  = triad_vgatherqpd128;
-        testname1[i] = "vgatherqpd128";
-        i++;
-        /* VGATHERDPD256 */
-        testfns1[i]  = triad_vgatherdpd256;
-        testname1[i] = "vgatherdpd256";
-        i++;
-        /* VGATHERQPD256 */
-        testfns1[i]  = triad_vgatherqpd256;
-        testname1[i] = "vgatherqpd256";
-        i++;
-        /* MVGATHERQPD256 */
-        testfns1[i]  = triad_mvgatherqpd256;
-        testname1[i] = "mvgatherqpd256";
-        i++;
+    }
 #endif
+#ifdef __FMA__
+    {
+        /* VMOVAPD256+FMA */
+        testfns1[i]  = triad_vmovapd256fma;
+        testname1[i] = "vmovapd256fma";
+        i++;
+        /* VMOVNTPD256+FMA */
+        testfns1[i]  = triad_vmovntpd256fma;
+        testname1[i] = "vmovntpd256fma";
+        i++;
+        /* VMOVNTDQA256+FMA */
+        testfns1[i]  = triad_vmovntdqa256fma;
+        testname1[i] = "vmovntdqa256fma";
+        i++;
     }
 #endif
 #ifdef __AVX512F__
@@ -307,6 +291,48 @@ int setup_triad(void)
         /* MVGSQPD512 */
         testfns1[i]  = triad_mvGSqpd512;
         testname1[i] = "mvGSqpd512";
+        i++;
+    }
+    {
+        /* VMOVAPD512+FMA */
+        testfns1[i]  = triad_vmovapd512fma;
+        testname1[i] = "vmovapd512fma";
+        i++;
+        /* VMOVUPD512+FMA */
+        testfns1[i]  = triad_vmovupd512fma;
+        testname1[i] = "vmovupd512fma";
+        i++;
+        /* MVMOVAPD512+FMA */
+        testfns1[i]  = triad_mvmovapd512fma;
+        testname1[i] = "mvmovapd512fma";
+        i++;
+        /* MVMOVUPD512+FMA */
+        testfns1[i]  = triad_mvmovupd512fma;
+        testname1[i] = "mvmovupd512fma";
+        i++;
+        /* VMOVNTPD512+FMA */
+        testfns1[i]  = triad_vmovntpd512fma;
+        testname1[i] = "vmovntpd512fma";
+        i++;
+        /* VMOVNTDQA512+FMA */
+        testfns1[i]  = triad_vmovntdqa512fma;
+        testname1[i] = "vmovntdqa512fma";
+        i++;
+        /* VGSDPD512+FMA */
+        testfns1[i]  = triad_vGSdpd512fma;
+        testname1[i] = "vGSdpd512fma";
+        i++;
+        /* MVGSDPD512+FMA */
+        testfns1[i]  = triad_mvGSdpd512fma;
+        testname1[i] = "mvGSdpd512fma";
+        i++;
+        /* VGSQPD512+FMA */
+        testfns1[i]  = triad_vGSqpd512fma;
+        testname1[i] = "vGSqpd512fma";
+        i++;
+        /* MVGSQPD512+FMA */
+        testfns1[i]  = triad_mvGSqpd512fma;
+        testname1[i] = "mvGSqpd512fma";
         i++;
     }
 #endif

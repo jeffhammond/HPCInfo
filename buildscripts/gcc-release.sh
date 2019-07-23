@@ -1,9 +1,8 @@
 #!/bin/bash -xe
 
-GCC_BASE=/opt/gcc
-#GCC_BASE=$HOME/Work/GCC/
+GCC_BASE=$HOME/GCC/
 
-MAKE_JNUM="-j8"
+MAKE_JNUM="-j16"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 

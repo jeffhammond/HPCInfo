@@ -1,9 +1,9 @@
 CC	 = icc
 CFLAGS	 = -O3
 CFLAGS	+= -qopenmp
-CFLAGS += -xHOST
+#CFLAGS += -xHOST
 #CFLAGS += -xCOMMON-AVX512
-#CFLAGS += -xMIC-AVX512
+CFLAGS += -xMIC-AVX512
 #CFLAGS += -xCORE-AVX512
 
 #CC	 = g++-6
@@ -20,7 +20,7 @@ CFLAGS	+= -std=gnu11
 CFLAGS	+= -Wall
 CFLAGS	+= -g3
 
-#CFLAGS	+= -DSTATIC_ALLOCATION
+CFLAGS	+= -DSTATIC_ALLOCATION -mcmodel=medium
 
 AS 	 = $(CC)
 ASFLAGS	 = $(CFLAGS)
