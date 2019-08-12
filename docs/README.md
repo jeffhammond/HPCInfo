@@ -125,6 +125,6 @@ The [K computer](K-computer.mediawiki) was developed by Fujitsu.
 
 Recent [Cray](Cray.md) supercomputers include the XT, XE, XK, and XC series.
 
-[Allocations](Allocations.md) is my page on how to get access to supercomputers (for free).
+[Allocations](Allocations.mediawiki) is my page on how to get access to supercomputers (for free).
 
 [Mac](Mac.md) is not a supercomputer by any means but a lot of people use it for development.
