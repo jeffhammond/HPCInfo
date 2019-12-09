@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <execution>
+namespace exec = std::execution;
 
 //#include <ranges>
 #include "ranges.h"
@@ -18,7 +19,7 @@ int main(int argc, char* argv[])
     std::vector<float> A(n,2);
     std::vector<float> B(n,0);
 
-    std::for_each( std::execution::par_unseq, std::begin(range), std::end(range), [&] (auto i) {
+    std::for_each( exec::par_unseq, std::begin(range), std::end(range), [&] (auto i) {
         B[i] += A[i] * A[i];
     });
 
