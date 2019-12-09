@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 {
     if ((argc > 1) && ( 0==strncmp("-h",argv[1],2) ||
                         0==strncmp("--h",argv[1],3) ) ) {
-        printf("./driver.x <nelem> [<niter> [<nwarm>]]\n");
+        printf("./driver.x <nelem> [<niter> [<nwarm> [<max stride>]]]\n");
         exit(0);
     }
 
@@ -25,11 +25,13 @@ int main(int argc, char* argv[])
 #endif
     size_t niter = (argc > 2) ? atol(argv[2]) : 10;
     size_t nwarm = (argc > 3) ? atol(argv[3]) : niter/5;
+    size_t max_s = (argc > 4) ? atol(argv[4]) : nelem;
 
     printf("SIMD memtest\n");
-    printf("number of elements      = %zu\n", nelem);
-    printf("number of iterations    = %zu\n", niter);
-    printf("number of warmups       = %zu\n", nwarm);
+    printf("elements   = %zu\n", nelem);
+    printf("iterations = %zu\n", niter);
+    printf("warmups    = %zu\n", nwarm);
+    printf("max_stride = %zu\n", max_s);
 
     size_t bytes = nelem * sizeof(double);
     // the number of bytes actually allocated are padded out by 7 * max_stride
@@ -38,17 +40,23 @@ int main(int argc, char* argv[])
     size_t alloc_bytes = (nelem + 7 * 64) * sizeof(double);
 
     if (nelem >= 1024*1024) {
-        printf("number of bytes         = %zu MiB\n", bytes/(1024*1024));
+        printf("bytes      = %zu MiB\n", bytes/(1024*1024));
+    } else if (nelem >= 1024) {
+        printf("bytes      = %zu KiB\n", bytes/1024);
     } else {
-        printf("number of bytes         = %zu\n", bytes);
+        printf("bytes      = %zu B\n", bytes);
     }
 
-    printf("OpenMP threads = %d\n", omp_get_max_threads() );
+    printf("num_threads = %d\n", omp_get_max_threads() );
+
+    int debug = ( getenv("JEFFDEBUG") != NULL );
 
 #ifndef STATIC_ALLOCATION
     double * a = (double*)mymalloc(alloc_bytes);
     double * b = (double*)mymalloc(alloc_bytes);
-    printf("allocation finished\n");
+    if (debug) {
+        printf("allocation finished\n");
+    }
 #endif
 
     //set_doubles(nelem, 7777.3333, a);
@@ -72,7 +80,7 @@ int main(int argc, char* argv[])
 
             size_t testerrs = compare_doubles(nelem, a, b);
 
-            if (testerrs != 0 || getenv("JEFFDEBUG") ) {
+            if (testerrs != 0 || debug ) {
                 printf("====== %s ======\n", testname[i]);
                 printf("There were %zu errors!\n", testerrs);
                 print_doubles_2(nelem, a, b);
@@ -89,6 +97,7 @@ int main(int argc, char* argv[])
     int strides[13] = {1,2,3,4,5,6,7,8,12,16,24,32,64};
     for (int j=0; j<(int)(sizeof(strides)/sizeof(strides[0])); j++) {
         int s = strides[j];
+        if (s > max_s) break;
         for (int i=0; i<numtest2; i++) {
             if (testfns2[i] != NULL) {
 
@@ -106,7 +115,7 @@ int main(int argc, char* argv[])
 
                 size_t testerrs = compare_doubles_stride_holes(nelem, a, b, s, v);
 
-                if (testerrs != 0 || getenv("JEFFDEBUG") ) {
+                if (testerrs != 0 || debug ) {
                     printf("====== %s (stride=%d) ======\n", testname2[i], s);
                     printf("There were %zu errors!\n", testerrs);
                     //print_doubles_2(nelem, a, b);
