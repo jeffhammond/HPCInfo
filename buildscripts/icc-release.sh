@@ -9,6 +9,7 @@ mkdir -p $HOME/Downloads
 cd $HOME/Downloads
 BASE=http://registrationcenter-download.intel.com/akdlm/irc_nas/tec
 for x in \
+         15809/parallel_studio_xe_2019_update5_cluster_edition.tgz \
          15533/parallel_studio_xe_2019_update4_cluster_edition.tgz \
          15268/parallel_studio_xe_2019_update3_cluster_edition.tgz \
          15088/parallel_studio_xe_2019_update2_cluster_edition.tgz \
@@ -44,6 +45,7 @@ for x in \
 done
 
 for x in \
+         parallel_studio_xe_2019_update5_cluster_edition.tgz \
          parallel_studio_xe_2019_update4_cluster_edition.tgz \
          parallel_studio_xe_2019_update3_cluster_edition.tgz \
          parallel_studio_xe_2019_update2_cluster_edition.tgz \
@@ -79,6 +81,7 @@ for x in \
 done
 
 for x in \
+         parallel_studio_xe_2019_update5_cluster_edition \
          parallel_studio_xe_2019_update4_cluster_edition \
          parallel_studio_xe_2019_update3_cluster_edition \
          parallel_studio_xe_2019_update2_cluster_edition \
