@@ -1,113 +1,314 @@
-/* Guessing what compilers are sufficient here... */
-/* On Blue Gene/Q, we tried 4.7.2 and 4.4.7 only. */
-#if (defined(__GNUC__) && (__GNUC__ >= 5)) || \
-    (defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)) || \
-    (defined(__clang__) && defined(__clang_major__) && (__clang_major__ >= 3)) || \
-    (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 1400))
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
 
-#ifdef _OPENMP
-# include <omp.h>
-#else
-# error No OpenMP support!
-#endif
+#include <omp.h>
 
-#ifdef SEQUENTIAL_CONSISTENCY
-int load_model  = __ATOMIC_SEQ_CST;
-int store_model = __ATOMIC_SEQ_CST;
-#else
-int load_model  = __ATOMIC_ACQUIRE;
-int store_model = __ATOMIC_RELEASE;
-#endif
+#define ITERATIONS 10000
+#define ELEMENTS 1024
+
+#define OMP_MIN(x,y) (x<y)?x:y
+#define OMP_MAX(x,y) (x>y)?x:y
+
+static inline void atomic_min_i32(int32_t * target, int32_t value)
+{
+  int32_t desired;
+
+  int32_t old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+
+  // early exit when no update required
+  if (old < value) return;
+
+  do {
+    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    desired = OMP_MIN(old, value);
+  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+}
+
+static inline void atomic_max_i32(int32_t * target, int32_t value)
+{
+  int32_t desired;
+
+  int32_t old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+
+  // early exit when no update required
+  if (old > value) return;
+
+  do {
+    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    desired = OMP_MAX(old, value);
+  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+}
 
 int main(int argc, char * argv[])
 {
-    int nt = omp_get_max_threads();
-#if 1
-    if (nt != 2) omp_set_num_threads(2);
-#else
-    if (nt < 2)      omp_set_num_threads(2);
-    if (nt % 2 != 0) omp_set_num_threads(nt-1);
-#endif
+    int32_t i32[ELEMENTS];
+    int64_t i64[ELEMENTS];
+    float   r32[ELEMENTS];
+    double  r64[ELEMENTS];
 
-    int iterations = (argc>1) ? atoi(argv[1]) : 1000000;
+    int32_t i32_min =  100000;
+    int64_t i64_min =  100000;
+    float   r32_min =  100000;
+    double  r64_min =  100000;
 
-    printf("thread ping-pong benchmark\n");
-    printf("num threads  = %d\n", omp_get_max_threads());
-    printf("iterations   = %d\n", iterations);
-#ifdef SEQUENTIAL_CONSISTENCY
-    printf("memory model = %s\n", "seq_cst");
-#else
-    printf("memory model = %s\n", "acq-rel");
-#endif
-    fflush(stdout);
+    int32_t i32_max = -100000;
+    int64_t i64_max = -100000;
+    float   r32_max = -100000;
+    double  r64_max = -100000;
 
-    int left_ready  = -1;
-    int right_ready = -1;
+    double  t0, t1, dt;
 
-    int left_payload  = 0;
-    int right_payload = 0;
+    for (int j=0; j<ELEMENTS; j++) {
+      i32[j] = j+1;
+      i64[j] = j+1LL;
+      r32[j] = j+1.0f;
+      r64[j] = j+1.0;
+    }
 
     #pragma omp parallel
     {
-        int me      = omp_get_thread_num();
-        /// 0=left 1=right
-        bool parity = (me % 2 == 0);
+        // MIN
 
-        int junk = 0;
-
-        /// START TIME
-        #pragma omp barrier
-        double t0 = omp_get_wtime();
-
-        for (int i=0; i<iterations; ++i) {
-
-            if (parity) {
-
-                /// send to left
-                left_payload = i;
-                __atomic_store_n( &left_ready, i, store_model);
-
-                /// recv from right
-                while (i != __atomic_load_n( &right_ready, load_model));
-                //printf("%d: left received %d\n", i, right_payload);
-                junk += right_payload;
-
-            } else {
-
-                /// recv from left
-                while (i != __atomic_load_n( &left_ready, load_model));
-                //printf("%d: right received %d\n", i, left_payload);
-                junk += left_payload;
-
-                ///send to right
-                right_payload = i;
-                __atomic_store_n( &right_ready, i, store_model);
-
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { atomic_min_i32(&i32_min,i32[j]); }
             }
-
         }
 
-        /// STOP TIME
         #pragma omp barrier
-        double t1 = omp_get_wtime();
-
-        /// PRINT TIME
-        double dt = t1-t0;
-        #pragma omp critical
+        #pragma omp master
         {
-            printf("total time elapsed = %lf\n", dt);
-            printf("time per iteration = %e\n", dt/iterations);
-            printf("%d\n", junk);
+            t0 = omp_get_wtime();
         }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { i32_min = OMP_MIN(i32_min,i32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10d took %12.7f seconds\n","i32","min",i32_min,dt);
+        }
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { i64_min = OMP_MIN(i64_min,i64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { i64_min = OMP_MIN(i64_min,i64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10lld took %12.7f seconds\n","i64","min",i64_min,dt);
+        }
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r32_min = OMP_MIN(r32_min,r32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r32_min = OMP_MIN(r32_min,r32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10.3f took %12.7f seconds\n","r32","min",r32_min,dt);
+        }
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r64_min = OMP_MIN(r64_min,r64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r64_min = OMP_MIN(r64_min,r64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10.3f took %12.7f seconds\n","r64","min",r64_min,dt);
+        }
+
+
+        // MAX
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { atomic_max_i32(&i32_max,i32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { i32_max = OMP_MAX(i32_max,i32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10d took %12.7f seconds\n","i32","max",i32_max,dt);
+        }
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { i64_max = OMP_MAX(i64_max,i64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { i64_max = OMP_MAX(i64_max,i64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10lld took %12.7f seconds\n","i64","max",i64_max,dt);
+        }
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r32_max = OMP_MAX(r32_max,r32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r32_max = OMP_MAX(r32_max,r32[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10.3f took %12.7f seconds\n","r32","max",r32_max,dt);
+        }
+
+        // warmup
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r64_max = OMP_MAX(r64_max,r64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t0 = omp_get_wtime();
+        }
+
+        for (int i=0; i<ITERATIONS; i++) {
+            for (int j=0; j<ELEMENTS; j++) {
+                #pragma omp critical
+                { r64_max = OMP_MAX(r64_max,r64[j]); }
+            }
+        }
+
+        #pragma omp barrier
+        #pragma omp master
+        {
+            t1 = omp_get_wtime();
+            dt = t1 - t0;
+            printf("%3s: %3s=%10.3f took %12.7f seconds\n","r64","max",r64_max,dt);
+        }
+
+
+
     }
 
     return 0;
 }
-
-#else  // GCC 5+
-#error Your compiler probably does not support __atomic functions.
-#endif // GCC 5+
