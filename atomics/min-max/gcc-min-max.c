@@ -87,52 +87,53 @@ static inline void atomic_min_r32(float * target, float value)
   } while (!__atomic_compare_exchange((int32_t*)target, (int32_t*)&old, (int32_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
 
-#if 0
 static inline void atomic_max_r32(float * target, float value)
 {
   float desired;
 
-  float old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+  float old;
+  __atomic_load((int32_t*)target,(int32_t*)&old,__ATOMIC_SEQ_CST);
 
   // early exit when no update required
   if (old > value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    __atomic_load((int32_t*)target,(int32_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MAX(old, value);
-  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+  } while (!__atomic_compare_exchange((int32_t*)target, (int32_t*)&old, (int32_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
 
 static inline void atomic_min_r64(double * target, double value)
 {
   double desired;
 
-  double old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+  double old;
+  __atomic_load((int64_t*)target,(int64_t*)&old,__ATOMIC_SEQ_CST);
 
   // early exit when no update required
   if (old < value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    __atomic_load((int64_t*)target,(int64_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MIN(old, value);
-  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+  } while (!__atomic_compare_exchange((int64_t*)target, (int64_t*)&old, (int64_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
 
 static inline void atomic_max_r64(double * target, double value)
 {
   double desired;
 
-  double old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+  double old;
+  __atomic_load((int64_t*)target,(int64_t*)&old,__ATOMIC_SEQ_CST);
 
   // early exit when no update required
   if (old > value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    __atomic_load((int64_t*)target,(int64_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MAX(old, value);
-  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+  } while (!__atomic_compare_exchange((int64_t*)target, (int64_t*)&old, (int64_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
-#endif
 
 int main(int argc, char * argv[])
 {
@@ -262,8 +263,7 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r64_min = OMP_MIN(r64_min,r64[j]); }
+                { atomic_min_r64(&r64_min,r64[j]); }
             }
         }
 
@@ -275,8 +275,7 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r64_min = OMP_MIN(r64_min,r64[j]); }
+                { atomic_min_r64(&r64_min,r64[j]); }
             }
         }
 
@@ -348,8 +347,7 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r32_max = OMP_MAX(r32_max,r32[j]); }
+                { atomic_max_r32(&r32_max,r32[j]); }
             }
         }
 
@@ -361,8 +359,7 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r32_max = OMP_MAX(r32_max,r32[j]); }
+                { atomic_max_r32(&r32_max,r32[j]); }
             }
         }
 
@@ -377,8 +374,7 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r64_max = OMP_MAX(r64_max,r64[j]); }
+                { atomic_max_r64(&r64_max,r64[j]); }
             }
         }
 
@@ -390,8 +386,7 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r64_max = OMP_MAX(r64_max,r64[j]); }
+                { atomic_max_r64(&r64_max,r64[j]); }
             }
         }
 
