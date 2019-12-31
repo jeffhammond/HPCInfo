@@ -21,15 +21,19 @@ program main
   real(kind=REAL32)   :: r32_max
   real(kind=REAL64)   :: r64_max
 
-  integer :: i,j
+  integer :: i,j,k
+
+  integer :: me, nt
+  integer :: start, stop, chunk
 
   real(kind=REAL64)   :: t0, t1, dt
 
   do j=1,elements
-    i32(j) = j
-    i64(j) = j
-    r32(j) = real(j,REAL32)
-    r64(j) = real(j,REAL64)
+    k = MOD(j,37)
+    i32(j) = k
+    i64(j) = k
+    r32(j) = real(k,REAL32)
+    r64(j) = real(k,REAL64)
   enddo
 
   i32_min =  100000
@@ -42,7 +46,19 @@ program main
   r32_max = -100000
   r64_max = -100000
 
-  !$omp parallel
+  !$omp parallel private(me,nt,chunk,start,stop)
+
+  me    = omp_get_thread_num()
+  nt    = omp_get_num_threads()
+  chunk = elements/nt
+  if (MOD(elements,nt).ne.0) chunk = chunk + 1
+  start = chunk*me
+  stop  = chunk*(me+1)
+  if (stop .gt. elements) stop = elements
+
+  !$omp critical
+  print*,'me,nt,chunk,start,stop=',me,nt,chunk,start,stop
+  !$omp end critical
 
   ! MIN
 

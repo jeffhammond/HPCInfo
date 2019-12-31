@@ -61,19 +61,33 @@ int main(int argc, char * argv[])
     double  t0, t1, dt;
 
     for (int j=0; j<ELEMENTS; j++) {
-      i32[j] = j+1;
-      i64[j] = j+1LL;
-      r32[j] = j+1.0f;
-      r64[j] = j+1.0;
+      int k  = (j+1)%37;
+      i32[j] = k;
+      i64[j] = k;
+      r32[j] = k;
+      r64[j] = k;
     }
 
     #pragma omp parallel
     {
+        int me    = omp_get_thread_num();
+        int nt    = omp_get_num_threads();
+        int chunk = ELEMENTS/nt;
+        if (ELEMENTS % nt !=0) chunk++;
+        int start = chunk*me;
+        int stop  = chunk*(me+1);
+        if (stop>ELEMENTS) stop = ELEMENTS;
+
+        #pragma omp critical
+        {
+            printf("me,nt,chunk,start,stop=%3d %3d %4d %4d %4d\n",me,nt,chunk,start,stop);
+        }
+
         // MIN
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { atomic_min_i32(&i32_min,i32[j]); }
             }
@@ -86,7 +100,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { i32_min = OMP_MIN(i32_min,i32[j]); }
             }
@@ -102,7 +116,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { i64_min = OMP_MIN(i64_min,i64[j]); }
             }
@@ -115,7 +129,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { i64_min = OMP_MIN(i64_min,i64[j]); }
             }
@@ -131,7 +145,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r32_min = OMP_MIN(r32_min,r32[j]); }
             }
@@ -144,7 +158,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r32_min = OMP_MIN(r32_min,r32[j]); }
             }
@@ -160,7 +174,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r64_min = OMP_MIN(r64_min,r64[j]); }
             }
@@ -173,7 +187,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r64_min = OMP_MIN(r64_min,r64[j]); }
             }
@@ -192,7 +206,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { atomic_max_i32(&i32_max,i32[j]); }
             }
@@ -205,7 +219,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { i32_max = OMP_MAX(i32_max,i32[j]); }
             }
@@ -221,7 +235,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { i64_max = OMP_MAX(i64_max,i64[j]); }
             }
@@ -234,7 +248,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { i64_max = OMP_MAX(i64_max,i64[j]); }
             }
@@ -250,7 +264,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r32_max = OMP_MAX(r32_max,r32[j]); }
             }
@@ -263,7 +277,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r32_max = OMP_MAX(r32_max,r32[j]); }
             }
@@ -279,7 +293,7 @@ int main(int argc, char * argv[])
 
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r64_max = OMP_MAX(r64_max,r64[j]); }
             }
@@ -292,7 +306,7 @@ int main(int argc, char * argv[])
         }
 
         for (int i=0; i<ITERATIONS; i++) {
-            for (int j=0; j<ELEMENTS; j++) {
+            for (int j=start; j<stop; j++) {
                 #pragma omp critical
                 { r64_max = OMP_MAX(r64_max,r64[j]); }
             }
