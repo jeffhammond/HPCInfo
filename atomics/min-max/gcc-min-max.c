@@ -26,11 +26,11 @@ static inline void atomic_min_i32(int32_t * target, int32_t value)
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
 
-static inline void atomic_max_i64(int64_t * target, int64_t value)
+static inline void atomic_max_i32(int32_t * target, int32_t value)
 {
-  int64_t desired;
+  int32_t desired;
 
-  int64_t old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+  int32_t old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
 
   // early exit when no update required
   if (old > value) return;
@@ -56,11 +56,11 @@ static inline void atomic_min_i64(int64_t * target, int64_t value)
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
 
-static inline void atomic_max_i32(int32_t * target, int32_t value)
+static inline void atomic_max_i64(int64_t * target, int64_t value)
 {
-  int32_t desired;
+  int64_t desired;
 
-  int32_t old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+  int64_t old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
 
   // early exit when no update required
   if (old > value) return;
@@ -70,6 +70,69 @@ static inline void atomic_max_i32(int32_t * target, int32_t value)
     desired = OMP_MAX(old, value);
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
+
+static inline void atomic_min_r32(float * target, float value)
+{
+  float desired;
+
+  float old;
+  __atomic_load((int32_t*)target,(int32_t*)&old,__ATOMIC_SEQ_CST);
+
+  // early exit when no update required
+  if (old < value) return;
+
+  do {
+    __atomic_load((int32_t*)target,(int32_t*)&old,__ATOMIC_SEQ_CST);
+    desired = OMP_MIN(old, value);
+  } while (!__atomic_compare_exchange((int32_t*)target, (int32_t*)&old, (int32_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+}
+
+#if 0
+static inline void atomic_max_r32(float * target, float value)
+{
+  float desired;
+
+  float old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+
+  // early exit when no update required
+  if (old > value) return;
+
+  do {
+    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    desired = OMP_MAX(old, value);
+  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+}
+
+static inline void atomic_min_r64(double * target, double value)
+{
+  double desired;
+
+  double old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+
+  // early exit when no update required
+  if (old < value) return;
+
+  do {
+    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    desired = OMP_MIN(old, value);
+  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+}
+
+static inline void atomic_max_r64(double * target, double value)
+{
+  double desired;
+
+  double old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+
+  // early exit when no update required
+  if (old > value) return;
+
+  do {
+    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
+    desired = OMP_MAX(old, value);
+  } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
+}
+#endif
 
 int main(int argc, char * argv[])
 {
@@ -118,7 +181,6 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_min_i32(&i32_min,i32[j]); }
             }
         }
@@ -131,7 +193,6 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_min_i32(&i32_min,i32[j]); }
             }
         }
@@ -147,7 +208,6 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_min_i64(&i64_min,i64[j]); }
             }
         }
@@ -160,7 +220,6 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_min_i64(&i64_min,i64[j]); }
             }
         }
@@ -176,8 +235,7 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r32_min = OMP_MIN(r32_min,r32[j]); }
+                { atomic_min_r32(&r32_min,r32[j]); }
             }
         }
 
@@ -189,8 +247,7 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
-                { r32_min = OMP_MIN(r32_min,r32[j]); }
+                { atomic_min_r32(&r32_min,r32[j]); }
             }
         }
 
@@ -237,7 +294,6 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_max_i32(&i32_max,i32[j]); }
             }
         }
@@ -250,7 +306,6 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_max_i32(&i32_max,i32[j]); }
             }
         }
@@ -266,7 +321,6 @@ int main(int argc, char * argv[])
         // warmup
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_max_i64(&i64_max,i64[j]); }
             }
         }
@@ -279,7 +333,6 @@ int main(int argc, char * argv[])
 
         for (int i=0; i<ITERATIONS; i++) {
             for (int j=start; j<stop; j++) {
-                #pragma omp critical
                 { atomic_max_i64(&i64_max,i64[j]); }
             }
         }
