@@ -42,11 +42,11 @@ else
         OFLAGS   := -O3 -qopenmp
         CFLAGS   := $(OFLAGS) -Wall -fPIC -std=gnu11
         CXXFLAGS := $(OFLAGS) -Wall -fPIC -std=gnu++11
-        FCFLAGS	 := $(OFLAGS) -warn=all   -std08 -fpp
+        FCFLAGS	 := $(OFLAGS) -warn all -free -std08 -fpp
     else
         OFLAGS   := -O3 -fopenmp -Wall -fPIC
-        CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
-        CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
+        CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11 -fno-strict-aliasing
+        CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++17 -fno-strict-aliasing
         FCFLAGS	 := $(OFLAGS) -ffree-form -std=f2008
     endif
 endif
