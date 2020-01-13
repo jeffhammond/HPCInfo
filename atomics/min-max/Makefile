@@ -58,15 +58,11 @@ endif
 
 LIBS     = $(OMPLIBS)
 
-TESTS = cxx11-min-max.$(COMPILER) \
-	c99-omp-min-max.$(COMPILER) \
-	c11-min-max.$(COMPILER) \
+TESTS = c99-omp-min-max.$(COMPILER) \
 	gcc-min-max.$(COMPILER) \
 	f90-min-max.$(COMPILER)
 
-ASM =   cxx11-min-max.$(COMPILER).s \
-	c99-omp-min-max.$(COMPILER).s \
-	c11-min-max.$(COMPILER).s \
+ASM =   c99-omp-min-max.$(COMPILER).s \
 	gcc-min-max.$(COMPILER).s \
 	f90-min-max.$(COMPILER).s
 
