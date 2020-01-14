@@ -155,7 +155,7 @@ int main(int argc, char * argv[])
     double  t0, t1, dt;
 
     for (int j=0; j<ELEMENTS; j++) {
-      int k  = (j+1)%37;
+      int k  = (j+1);
       i32[j] = k;
       i64[j] = k;
       r32[j] = k;

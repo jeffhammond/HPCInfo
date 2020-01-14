@@ -29,7 +29,8 @@ program main
   real(kind=REAL64)   :: t0, t1, dt
 
   do j=1,elements
-    k = MOD(j,37)
+    !k = MOD(j,37)
+    k = j
     i32(j) = k
     i64(j) = k
     r32(j) = real(k,REAL32)
