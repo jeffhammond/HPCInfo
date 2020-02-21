@@ -43,12 +43,10 @@ int main(int argc, char * argv[])
 
     if (rank==0) {
         MPI_Irecv(buf, count, MPI_CHAR, src, data, MPI_COMM_WORLD, &req);
-        MPI_Send(NULL, 0, MPI_CHAR, src, sync, MPI_COMM_WORLD);
     }
 
     if (rank==1) {
-        MPI_Recv(NULL, 0, MPI_CHAR, dst, sync, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Rsend(buf, count, MPI_CHAR, dst, data, MPI_COMM_WORLD);
+        MPI_Send(buf, count, MPI_CHAR, dst, data, MPI_COMM_WORLD);
     }
 
     if (rank==0) {

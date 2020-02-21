@@ -11,7 +11,7 @@ CFLAGS  = $(COPT) -DCHECK_ERRORS
 LDFLAGS = $(COPT)
 LIBS    = -lm
 
-all: hello.x reduce.x bcast.x montecarlo.x rsend.x
+all: hello.x reduce.x bcast.x montecarlo.x rsend.x send.x
 
 extra: mpi-omp.x
 
