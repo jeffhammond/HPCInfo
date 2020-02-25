@@ -1,19 +1,13 @@
-CC       = gcc
+CC       = mpicc
 CFLAGS   = -g -O2
 LIBS     =
 
-LD       = $(CC)
-LDFLAGS  = $(CFLAGS)
-
-TESTS = interprocess_mutex
+TESTS = interprocess_mutex interprocess_mutex_mpi
 
 all: $(TESTS)
 
-%: %.o
-	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+%: %.c
+	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
