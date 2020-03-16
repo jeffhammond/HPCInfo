@@ -66,7 +66,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i32_min = MIN(i32_min,i32(j))
       !$omp end atomic
     enddo
@@ -80,7 +80,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i32_min = MIN(i32_min,i32(j))
       !$omp end atomic
     enddo
@@ -96,7 +96,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i64_min = MIN(i64_min,i64(j))
       !$omp end atomic
     enddo
@@ -110,7 +110,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i64_min = MIN(i64_min,i64(j))
       !$omp end atomic
     enddo
@@ -126,7 +126,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r32_min = MIN(r32_min,r32(j))
       !$omp end atomic
     enddo
@@ -140,7 +140,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r32_min = MIN(r32_min,r32(j))
       !$omp end atomic
     enddo
@@ -156,7 +156,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r64_min = MIN(r64_min,r64(j))
       !$omp end atomic
     enddo
@@ -170,7 +170,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r64_min = MIN(r64_min,r64(j))
       !$omp end atomic
     enddo
@@ -188,7 +188,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i32_max = MAX(i32_max,i32(j))
       !$omp end atomic
     enddo
@@ -202,7 +202,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i32_max = MAX(i32_max,i32(j))
       !$omp end atomic
     enddo
@@ -218,7 +218,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i64_max = MAX(i64_max,i64(j))
       !$omp end atomic
     enddo
@@ -232,7 +232,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       i64_max = MAX(i64_max,i64(j))
       !$omp end atomic
     enddo
@@ -248,7 +248,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r32_max = MAX(r32_max,r32(j))
       !$omp end atomic
     enddo
@@ -262,7 +262,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r32_max = MAX(r32_max,r32(j))
       !$omp end atomic
     enddo
@@ -278,7 +278,7 @@ program main
   ! warmup
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r64_max = MAX(r64_max,r64(j))
       !$omp end atomic
     enddo
@@ -292,7 +292,7 @@ program main
   ! timed
   do i=1,iterations
     do j=1,elements
-      !$omp atomic update
+      !$omp atomic
       r64_max = MAX(r64_max,r64(j))
       !$omp end atomic
     enddo
