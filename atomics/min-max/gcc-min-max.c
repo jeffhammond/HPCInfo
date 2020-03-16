@@ -6,7 +6,7 @@
 #include <omp.h>
 
 #define ITERATIONS 10000
-#define ELEMENTS 1024
+#define ELEMENTS 10240
 
 #define OMP_MIN(x,y) (x<y)?x:y
 #define OMP_MAX(x,y) (x>y)?x:y
@@ -21,7 +21,6 @@ static inline void atomic_min_i32(int32_t * target, int32_t value)
   if (old < value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
     desired = OMP_MIN(old, value);
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -36,7 +35,6 @@ static inline void atomic_max_i32(int32_t * target, int32_t value)
   if (old > value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
     desired = OMP_MAX(old, value);
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -51,7 +49,6 @@ static inline void atomic_min_i64(int64_t * target, int64_t value)
   if (old < value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
     desired = OMP_MIN(old, value);
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -66,7 +63,6 @@ static inline void atomic_max_i64(int64_t * target, int64_t value)
   if (old > value) return;
 
   do {
-    old = __atomic_load_n(target,__ATOMIC_SEQ_CST);
     desired = OMP_MAX(old, value);
   } while (!__atomic_compare_exchange_n(target, &old, desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -82,7 +78,6 @@ static inline void atomic_min_r32(float * target, float value)
   if (old < value) return;
 
   do {
-    __atomic_load((int32_t*)target,(int32_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MIN(old, value);
   } while (!__atomic_compare_exchange((int32_t*)target, (int32_t*)&old, (int32_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -98,7 +93,6 @@ static inline void atomic_max_r32(float * target, float value)
   if (old > value) return;
 
   do {
-    __atomic_load((int32_t*)target,(int32_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MAX(old, value);
   } while (!__atomic_compare_exchange((int32_t*)target, (int32_t*)&old, (int32_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -114,7 +108,6 @@ static inline void atomic_min_r64(double * target, double value)
   if (old < value) return;
 
   do {
-    __atomic_load((int64_t*)target,(int64_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MIN(old, value);
   } while (!__atomic_compare_exchange((int64_t*)target, (int64_t*)&old, (int64_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
@@ -130,7 +123,6 @@ static inline void atomic_max_r64(double * target, double value)
   if (old > value) return;
 
   do {
-    __atomic_load((int64_t*)target,(int64_t*)&old,__ATOMIC_SEQ_CST);
     desired = OMP_MAX(old, value);
   } while (!__atomic_compare_exchange((int64_t*)target, (int64_t*)&old, (int64_t*)&desired, false /* strong */, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST) );
 }
