@@ -10,10 +10,11 @@ FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 CPU=native
 
 # See below.  All of these versions are installed.
-#GCC_VERSION=4.9.4
-#GCC_VERSION=5.4.0
-#GCC_VERSION=6.3.0
-#GCC_VERSION=7.1.0
+#GCC_VERSION=5.5.0
+#GCC_VERSION=6.5.0
+#GCC_VERSION=7.5.0
+#GCC_VERSION=8.4.0
+#GCC_VERSION=9.3.0
 
 # process_lib: download, configure, build, install one of the gcc prerequisite
 # libraries
@@ -55,8 +56,7 @@ process_lib() {
     fi
 }
 
-#for v in 8.1.0 7.3.0 6.4.0 5.5.0 ; do
-for v in 9.1.0 8.3.0 7.4.0 6.5.0 5.5.0 ; do
+for v in 9.3.0 8.4.0 7.5.0 6.5.0 5.5.0 ; do
     GCC_VERSION=$v
     process_lib gcc $GCC_VERSION gz releases/gcc-$GCC_VERSION /bin/gcc "
       --program-suffix=-${GCC_VERSION:0:1} \
