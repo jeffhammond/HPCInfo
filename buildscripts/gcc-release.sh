@@ -1,4 +1,17 @@
-#!/bin/bash -xe
+#!/bin/bash
+
+for arg in "$@" ; do
+    if [ "$arg" == "--help" ] || [ "$arg" == "-h" ] ; then
+        HELP=1
+    fi
+done
+
+if [ "$#" = "0" ] || [ "$HELP" = "1" ] ; then
+    echo "Provide the versions you would like to build."
+    echo "Valid versions are X.Y and X.Y.Z where"
+    echo "X > 4, Y > 0, and Z = 0"
+    echo "This script can support X = 4 but chooses not to."
+fi
 
 GCC_BASE=/opt/gcc
 #GCC_BASE=$HOME/Work/GCC/
@@ -9,12 +22,52 @@ FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
 CPU=native
 
-# See below.  All of these versions are installed.
-#GCC_VERSION=5.5.0
-#GCC_VERSION=6.5.0
-#GCC_VERSION=7.5.0
-#GCC_VERSION=8.4.0
-#GCC_VERSION=9.3.0
+# determine if the version is valid
+check_version() {
+    V=$1
+
+    IFS='.'
+    read -ra S <<< "${V}"
+
+    MAJOR=${S[0]}
+    MINOR=${S[1]}
+    PATCH=${S[2]}
+
+    # patchlevel is optional
+    if [ -z "$PATCH" ] ; then
+        PATCH=0
+    fi
+
+    if ! [[ "$MAJOR" =~ ^[0-9]+$ ]] ; then
+        echo "Nonsensical choice of $MAJOR"
+        exit 1
+    fi
+    if ! [[ "$MINOR" =~ ^[0-9]+$ ]] ; then
+        echo "Nonsensical choice of $MINOR"
+        exit 2
+    fi
+    if ! [[ "$PATCH" =~ ^[0-9]+$ ]] ; then
+        echo "Nonsensical choice of $PATCH"
+        exit 2
+    fi
+
+    if [ $MAJOR -le 4 ] ; then
+        echo "Sorry, dinosaur, I don't care about GCC ${MAJOR} anymore."
+        exit 4
+    fi
+
+    if [ $MINOR -lt 1 ] ; then
+        echo "No supported releases are minor version $MINOR"
+        exit 3
+    fi
+
+    if [ $PATCH != 0 ] ; then
+        echo "All supported releases are patchlevel 0 (not $PATCH)"
+        exit $PATCH
+    fi
+
+    echo "GCC $MAJOR.$MINOR.$PATCH is probably a valid choice..."
+}
 
 # process_lib: download, configure, build, install one of the gcc prerequisite
 # libraries
@@ -56,8 +109,10 @@ process_lib() {
     fi
 }
 
-for v in 9.3.0 8.4.0 7.5.0 6.5.0 5.5.0 ; do
+for v in "$@" ; do
     GCC_VERSION=$v
+    #echo "GCC_VERSION=$v"
+    check_version $GCC_VERSION
     process_lib gcc $GCC_VERSION gz releases/gcc-$GCC_VERSION /bin/gcc "
       --program-suffix=-${GCC_VERSION:0:1} \
       --enable-shared --enable-static \
