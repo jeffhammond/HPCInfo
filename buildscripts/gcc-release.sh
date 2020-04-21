@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -x
+
 for arg in "$@" ; do
     if [ "$arg" == "--help" ] || [ "$arg" == "-h" ] ; then
         HELP=1
@@ -28,6 +30,8 @@ check_version() {
 
     IFS='.'
     read -ra S <<< "${V}"
+    # very important - leaving this set breaks things
+    unset IFS
 
     MAJOR=${S[0]}
     MINOR=${S[1]}
@@ -73,22 +77,22 @@ check_version() {
 # libraries
 # usage: process_lib <library> <version> <suffix> <path> <doodad> <configure_args>
 process_lib() {
-    GCC_DIR=$GCC_BASE/$GCC_VERSION
-    GCC_BUILD=/tmp/gcc-$GCC_VERSION
+    GCC_DIR=$GCC_BASE/${2}
+    GCC_BUILD=/tmp/gcc-${2}
     mkdir -p ${GCC_BUILD}
     cd ${GCC_BUILD}
     TOOL=$1
     TDIR=${TOOL}-${2}
     FILE=${TDIR}.tar.${3}
-    INSTALLED=${GCC_DIR}/$5
+    INSTALLED=${GCC_DIR}/${5}
     if [ -d ${TDIR} ] ; then
         echo ${TDIR} already exists! Using existing copy.
     else
         if [ -f ${FILE} ] ; then
             echo ${FILE} already exists! Using existing copy.
         else
-            #wget ${FTP_HOST}/$4/${FILE}
-            curl ${FTP_HOST}/$4/${FILE} -o  ${FILE}
+            #wget ${FTP_HOST}/${4}/${FILE}
+            curl ${FTP_HOST}/${4}/${FILE} -o  ${FILE}
         fi
         echo Unpacking ${FILE}
         tar -xaf ${FILE}
@@ -101,7 +105,7 @@ process_lib() {
             ./contrib/download_prerequisites
         fi
         mkdir -p build ; cd build
-        ../configure --prefix=${GCC_DIR} $6 && make ${MAKE_JNUM} && make install
+        ../configure --prefix=${GCC_DIR} ${6} && make ${MAKE_JNUM} && make install
         if [ "x$?" != "x0" ] ; then
             echo FAILURE 1
             exit
@@ -111,9 +115,8 @@ process_lib() {
 
 for v in "$@" ; do
     GCC_VERSION=$v
-    #echo "GCC_VERSION=$v"
     check_version $GCC_VERSION
-    process_lib gcc $GCC_VERSION gz releases/gcc-$GCC_VERSION /bin/gcc "
+    process_lib gcc ${GCC_VERSION} gz releases/gcc-${GCC_VERSION} /bin/gcc "
       --program-suffix=-${GCC_VERSION:0:1} \
       --enable-shared --enable-static \
       --enable-threads=posix \
