@@ -1,9 +1,11 @@
-#!/bin/bash -ex
+#!/bin/bash
 
-export MAKE_JNUM="make -j1"
+set -e
+
+export MAKE_JNUM="make -j8"
 
 # where LLVM source and install will live
-export LLVM_TOP=/opt/llvm/pgi-flang
+export LLVM_TOP=/opt/llvm/flang
 
 mkdir -p $LLVM_TOP
 
@@ -20,12 +22,7 @@ fi
 cd $WHAT
 mkdir -p build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
-         -DLLVM_CONFIG=$INSTALL_PREFIX/bin/llvm-config \
-         -DCMAKE_CXX_COMPILER=$INSTALL_PREFIX/bin/clang++ \
-         -DCMAKE_C_COMPILER=$INSTALL_PREFIX/bin/clang \
-         -DCMAKE_Fortran_COMPILER=$INSTALL_PREFIX/bin/flang \
          -DLLVM_TARGETS_TO_BUILD=X86 \
-         -DFLANG_OPENMP_GPU_NVIDIA=ON \
       && $MAKE_JNUM install
 
 
@@ -42,12 +39,9 @@ fi
 cd $WHAT
 mkdir -p build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
-         -DLLVM_CONFIG=$INSTALL_PREFIX/bin/llvm-config \                              |  -------------------------------------------------------------------------------------
-         -DCMAKE_CXX_COMPILER=$INSTALL_PREFIX/bin/clang++ \                           |  -------------------------------------------------------------------------------------
-         -DCMAKE_C_COMPILER=$INSTALL_PREFIX/bin/clang \                               |  -------------------------------------------------------------------------------------
-         -DCMAKE_Fortran_COMPILER=$INSTALL_PREFIX/bin/flang \                         |  -------------------------------------------------------------------------------------
-         -DLLVM_TARGETS_TO_BUILD=X86 \                                                |  -------------------------------------------------------------------------------------
-         -DFLANG_OPENMP_GPU_NVIDIA=ON \                                               |  -------------------------------------------------------------------------------------
+         -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang \
+         -DLLVM_TARGETS_TO_BUILD=X86 \
       && $MAKE_JNUM install
 
 WHAT=$LLVM_TOP/openmp-git
@@ -63,12 +57,11 @@ fi
 cd $WHAT
 mkdir -p build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
-         -DLLVM_CONFIG=$INSTALL_PREFIX/bin/llvm-config \                              |  -------------------------------------------------------------------------------------
-         -DCMAKE_CXX_COMPILER=$INSTALL_PREFIX/bin/clang++ \                           |  -------------------------------------------------------------------------------------
-         -DCMAKE_C_COMPILER=$INSTALL_PREFIX/bin/clang \                               |  -------------------------------------------------------------------------------------
-         -DCMAKE_Fortran_COMPILER=$INSTALL_PREFIX/bin/flang \                         |  -------------------------------------------------------------------------------------
-         -DLLVM_TARGETS_TO_BUILD=X86 \                                                |  -------------------------------------------------------------------------------------
-         -DFLANG_OPENMP_GPU_NVIDIA=ON \                                               |  -------------------------------------------------------------------------------------
+         -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
+         -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang \
+         -DLLVM_TARGETS_TO_BUILD=X86 \
       && $MAKE_JNUM install
 
 WHAT=$LLVM_TOP/flang-git
@@ -83,22 +76,20 @@ fi
 cd $WHAT
 mkdir -p build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
-         -DLLVM_CONFIG=$INSTALL_PREFIX/bin/llvm-config \                              |  -------------------------------------------------------------------------------------
-         -DCMAKE_CXX_COMPILER=$INSTALL_PREFIX/bin/clang++ \                           |  -------------------------------------------------------------------------------------
-         -DCMAKE_C_COMPILER=$INSTALL_PREFIX/bin/clang \                               |  -------------------------------------------------------------------------------------
-         -DCMAKE_Fortran_COMPILER=$INSTALL_PREFIX/bin/flang \                         |  -------------------------------------------------------------------------------------
-         -DLLVM_TARGETS_TO_BUILD=X86 \                                                |  -------------------------------------------------------------------------------------
-         -DFLANG_OPENMP_GPU_NVIDIA=ON \                                               |  -------------------------------------------------------------------------------------
+         -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
+         -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang \
+         -DLLVM_TARGETS_TO_BUILD=X86 \
       && $MAKE_JNUM install
 
 cd $WHAT/runtime/libpgmath
 mkdir -p build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$LLVM_TOP \
-         -DLLVM_CONFIG=$INSTALL_PREFIX/bin/llvm-config \                              |  -------------------------------------------------------------------------------------
-         -DCMAKE_CXX_COMPILER=$INSTALL_PREFIX/bin/clang++ \                           |  -------------------------------------------------------------------------------------
-         -DCMAKE_C_COMPILER=$INSTALL_PREFIX/bin/clang \                               |  -------------------------------------------------------------------------------------
-         -DCMAKE_Fortran_COMPILER=$INSTALL_PREFIX/bin/flang \                         |  -------------------------------------------------------------------------------------
-         -DLLVM_TARGETS_TO_BUILD=X86 \                                                |  -------------------------------------------------------------------------------------
-         -DFLANG_OPENMP_GPU_NVIDIA=ON \                                               |  -------------------------------------------------------------------------------------
+         -DLLVM_CONFIG=$LLVM_TOP/bin/llvm-config \
+         -DCMAKE_CXX_COMPILER=$LLVM_TOP/bin/clang++ \
+         -DCMAKE_C_COMPILER=$LLVM_TOP/bin/clang \
+         -DCMAKE_Fortran_COMPILER=$LLVM_TOP/bin/flang \
+         -DLLVM_TARGETS_TO_BUILD=X86 \
       && $MAKE_JNUM install
 

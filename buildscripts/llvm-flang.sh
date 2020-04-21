@@ -11,11 +11,11 @@ WHAT=$LLVM_TOP/llvm-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git fetch --all
-    git checkout release_60
+    git checkout release_70
     git pull
 else
     cd $LLVM_TOP
-    git clone -b release_60 https://github.com/llvm-mirror/llvm.git llvm-git
+    git clone -b release_70 https://github.com/llvm-mirror/llvm.git llvm-git
 fi
 cd $WHAT
 mkdir -p build && cd build
@@ -25,11 +25,11 @@ WHAT=$LLVM_TOP/flang-driver-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git fetch --all
-    git checkout release_60
+    git checkout release_70
     git pull
 else
     cd $LLVM_TOP
-    git clone -b release_60 https://github.com/flang-compiler/flang-driver.git flang-driver-git
+    git clone -b release_70 https://github.com/flang-compiler/flang-driver.git flang-driver-git
 fi
 cd $WHAT
 mkdir -p build && cd build
@@ -40,11 +40,11 @@ WHAT=$LLVM_TOP/openmp-git
 if [ -d $WHAT ] ; then
     cd $WHAT
     git fetch --all
-    git checkout release_60
+    git checkout release_70
     git pull
 else
     cd $LLVM_TOP
-    git clone -b release_60 https://github.com/llvm-mirror/openmp.git openmp-git
+    git clone -b release_70 https://github.com/llvm-mirror/openmp.git openmp-git
 fi
 cd $WHAT
 mkdir -p build && cd build
