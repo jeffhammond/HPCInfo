@@ -10,3 +10,4 @@ all: join.x
 clean:
 	-rm -f *.o
 	-rm -f *.x
+	-rm -fr *.x.dSYM
