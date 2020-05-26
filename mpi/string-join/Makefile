@@ -2,7 +2,7 @@ CXX       = mpicxx
 CXXFLAGS  = -g -O2 -Wall -std=c++14
 LIBS      =
 
-all: join.x
+all: join.x join2.x
 
 %.x: %.cc
 	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
