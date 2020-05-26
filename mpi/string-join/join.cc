@@ -32,15 +32,6 @@ int main(int argc, char ** argv)
     std::vector<int> counts(np,-1);
     MPI_Gather(&mysizeint, 1, MPI_INT, &(counts[0]), 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    if (me == 0) {
-        std::cout << me << ": COUNTS=";
-        for (int j=0; j<np; ++j) {
-            std::cout << counts[j] << ",";
-        }
-        std::cout << std::endl;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-
     std::vector<int> displs(np,0);
     for (int j=0; j<np; ++j) {
         for (int i=0; i<j; ++i) {
@@ -48,17 +39,8 @@ int main(int argc, char ** argv)
         }
     }
 
-    if (me == 0) {
-        std::cout << me << ": DISPLS=";
-        for (int j=0; j<np; ++j) {
-            std::cout << displs[j] << ",";
-        }
-        std::cout << std::endl;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    std::cout << me << ": count=" << mysizeint << std::endl;
     MPI_Gatherv(in.c_str(), mysizeint, MPI_CHAR, &(out[0]), &(counts[0]), &(displs[0]), MPI_CHAR, 0, MPI_COMM_WORLD);
+
     if (me == 0) {
         std::cout << me << ": OUT=" <<  out << " (" << out.size() << ")" << std::endl;
     }
