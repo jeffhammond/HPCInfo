@@ -3,7 +3,7 @@ COPT    = -g -O2 -Wall #-std=gnu99
 
 # OpenMP
 # modify this as appropriate if you're compiler is not GCC
-COPT += -fopenmp
+#COPT += -fopenmp
 
 LD      = $(CC)
 CFLAGS  = $(COPT) -DCHECK_ERRORS
@@ -11,7 +11,7 @@ CFLAGS  = $(COPT) -DCHECK_ERRORS
 LDFLAGS = $(COPT)
 LIBS    = -lm
 
-all: hello.x reduce.x bcast.x montecarlo.x
+all: hello.x reduce.x bcast.x montecarlo.x rsend.x send.x
 
 extra: mpi-omp.x
 
@@ -23,6 +23,4 @@ extra: mpi-omp.x
 
 clean:
 	-rm -f *.o
-
-realclean: clean
 	-rm -f *.x

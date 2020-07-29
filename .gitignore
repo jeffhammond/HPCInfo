@@ -4,6 +4,7 @@
 # objects
 *.o
 *.a
+*.mod
 
 # binaries
 *.x
@@ -44,3 +45,18 @@ linux/sysctl/cpu_model
 opencl/atomic/add
 lapack/test_dsygv
 lapack/test_dsyev
+atomics/min-max/c99-omp-min-max.clang
+atomics/min-max/c99-omp-min-max.gcc
+atomics/min-max/c99-omp-min-max.intel
+atomics/min-max/f90-min-max.gcc
+atomics/min-max/f90-min-max.intel
+atomics/min-max/gcc-min-max.clang
+atomics/min-max/gcc-min-max.gcc
+atomics/min-max/gcc-min-max.intel
+atomics/ping-pong/c11-ping-pong.intel
+posix/threads/interprocess_mutex
+posix/threads/interprocess_mutex_mpi
+simd/simd-memtest/driver
+c++/scan/scan
+c++/ranges/ranges
+c++/scan/tbb

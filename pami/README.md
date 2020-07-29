@@ -35,7 +35,7 @@ PAMI is part of the driver that you can download by following the directions [he
 
 # Examples
 
-I put all of my code online here: http://code.google.com/p/pami-examples/.  I do not intend to maintain the code listed below.
+I put all of my code online here: https://github.com/jeffhammond/pami-examples/.  I do not intend to maintain the code listed below.
 
 ## Using multiple clients
 

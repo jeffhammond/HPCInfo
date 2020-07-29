@@ -13,7 +13,7 @@ LD       = $(FC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = ieee interop_f
+TESTS = ieee interop_f array
 
 all: $(TESTS)
 
@@ -24,6 +24,9 @@ interop_f: interop_f.o interop_c.o
 	$(CC) $(CFLAGS) $< -o $@
 
 %: %.f90
+	$(FC) $(FFLAGS) $< -o $@
+
+%: %.F90
 	$(FC) $(FFLAGS) $< -o $@
 
 %: %.o

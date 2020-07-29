@@ -8,12 +8,12 @@ CXX      := g++-9
 FC	 := gfortran-9
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
-LLVM_VERSION=9.0.0_1
-KMP_VERSION=9.0.0
+LLVM_VERSION=9.0.1
+KMP_VERSION=9.0.1
 CC       := /usr/local/Cellar/llvm/$(LLVM_VERSION)/bin/clang
 CXX      := /usr/local/Cellar/llvm/$(LLVM_VERSION)/bin/clang++
-OMPFLAGS  = -I/usr/local/Cellar/libiomp/$(KMP_VERSION)/include/libiomp
-OMPLIBS   = -L/usr/local/Cellar/libiomp/$(KMP_VERSION)/lib -liomp5
+OMPFLAGS  = -I/usr/local/Cellar/llvm/$(LLVM_VERSION)/include
+OMPLIBS   = -L/usr/local/Cellar/llvm/$(LLVM_VERSION)/lib -lomp
 ASMFLAGS  = -S -fverbose-asm
 # Clang tries to link libomp, so we symlink this to libiomp5
 else ifeq ($(COMPILER),intel)

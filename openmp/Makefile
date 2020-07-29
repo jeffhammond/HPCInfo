@@ -1,5 +1,5 @@
-OPT	 := -O3 -fopenmp
-CC       := clang
+OPT	 := -O3 -qopenmp
+CC       := icc
 CFLAGS   := $(OPT) -std=c11
 FC	 := ifort
 FFLAGS   := $(OPT)
@@ -7,7 +7,7 @@ LD       := $(CC)
 LDFLAGS  := $(OPT)
 LIBS     :=
 
-TESTS = redcrit matrix fusion nesting tls gems gems2 flush # distribute
+TESTS = redcrit matrix fusion nesting tls gems gems2 flush minloc # distribute
 
 all: $(TESTS)
 
