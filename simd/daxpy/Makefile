@@ -1,5 +1,7 @@
-FC		=	ifort
-FCFLAGS		=	-g -O3 -qopenmp -xCORE-AVX2 -mkl
+#FC		=	ifort
+#FCFLAGS		=	-g -O3 -qopenmp -xCORE-AVX2 -mkl -free -heap-arrays
+FC		=	gfortran
+FCFLAGS		=	-g -O3 -fopenmp -ffree-form  -ffree-line-length-none -Wall -std=f2008 -framework Accelerate -mavx
 
 all: test.x
 
