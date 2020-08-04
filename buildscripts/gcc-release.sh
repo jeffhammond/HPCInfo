@@ -1,27 +1,23 @@
 #!/bin/bash -xe
 
-GCC_BASE=/opt/gcc
-#GCC_BASE=$HOME/Work/GCC/
+#GCC_BASE=/opt/gcc
+GCC_BASE=$HOME/GCC/
+#GCC_TEMP=/tmp
+GCC_TEMP=/localdisk/${USER}
 
+#MAKE_JNUM="-j40"
 MAKE_JNUM="-j8"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
 CPU=native
 
-# See below.  All of these versions are installed.
-#GCC_VERSION=5.5.0
-#GCC_VERSION=6.5.0
-#GCC_VERSION=7.5.0
-#GCC_VERSION=8.4.0
-#GCC_VERSION=9.3.0
-
 # process_lib: download, configure, build, install one of the gcc prerequisite
 # libraries
 # usage: process_lib <library> <version> <suffix> <path> <doodad> <configure_args>
 process_lib() {
-    GCC_DIR=$GCC_BASE/$GCC_VERSION
-    GCC_BUILD=/tmp/gcc-$GCC_VERSION
+    GCC_DIR=${GCC_BASE}/${GCC_VERSION}
+    GCC_BUILD=${GCC_TEMP}/gcc-${GCC_VERSION}
     mkdir -p ${GCC_BUILD}
     cd ${GCC_BUILD}
     TOOL=$1
@@ -34,8 +30,8 @@ process_lib() {
         if [ -f ${FILE} ] ; then
             echo ${FILE} already exists! Using existing copy.
         else
-            #wget ${FTP_HOST}/$4/${FILE}
-            curl ${FTP_HOST}/$4/${FILE} -o  ${FILE}
+            wget ${FTP_HOST}/$4/${FILE}
+            #curl ${FTP_HOST}/$4/${FILE} -o  ${FILE}
         fi
         echo Unpacking ${FILE}
         tar -xaf ${FILE}
@@ -56,10 +52,16 @@ process_lib() {
     fi
 }
 
-for v in 9.3.0 8.4.0 7.5.0 6.5.0 5.5.0 ; do
+for v in 10.2.0 9.3.0 8.4.0 7.5.0 ; do
     GCC_VERSION=$v
-    process_lib gcc $GCC_VERSION gz releases/gcc-$GCC_VERSION /bin/gcc "
-      --program-suffix=-${GCC_VERSION:0:1} \
+    # There is a better way to do this...
+    if [ ${GCC_VERSION:0:1} -eq 1 ] ; then
+        GCC_SUFFIX=-${GCC_VERSION:0:2}
+    else
+        GCC_SUFFIX=-${GCC_VERSION:0:1}
+    fi
+    process_lib gcc ${GCC_VERSION} gz releases/gcc-${GCC_VERSION} /bin/gcc "
+      --program-suffix=${GCC_SUFFIX} \
       --enable-shared --enable-static \
       --enable-threads=posix \
       --enable-checking=release \
