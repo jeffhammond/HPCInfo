@@ -98,7 +98,8 @@ program test
   enddo
 
   dt = (t1 - t0) / iterations
-  bytes = ( size(x) + 2 * size(y) )  * storage_size(x)/8
+  ! load X, load Y, store Y => 3
+  bytes = 3 * length  * storage_size(x)/8
   !$omp critical
   write(*,'(a7,i3)')         'thread=',me
   write(*,'(a5,f30.15)')     'time=',dt
