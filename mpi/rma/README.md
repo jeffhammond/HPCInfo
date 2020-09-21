@@ -160,7 +160,7 @@ MPI_Aint translate_remote_address_to_sheap_disp(int pe, void * address)
 }
 ```
 
-=== Symmetric Heap Allocation ===
+### Symmetric Heap Allocation
 
 Implementing a proper memory allocator is not trivial.  Instead, for illustrative purposes we use a stack allocator that only moves one way and abort when the memory is exhausted.
 
