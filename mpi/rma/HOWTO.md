@@ -2,6 +2,23 @@ The purpose of this document is to explain the right way to use MPI-3 RMA (hence
 RMA is rather complicated and provides multiple window types and
 multiple synchronization motifs.
 
+Short version:
+  1. Use `MPI_Win_allocate` whenever possible.
+  2. Seriously, change your application memory management to satisfy (1).
+  3. Use passive target shared synchronization.
+  4. Lock (unlock) your windows immediately after constructing (before destructing) them.
+  
+This document is organized as follows:
+  1. Window selection
+  2. Synchronization motifs
+  3. RMA operations
+  4. Shared memory windows
+  5. Library design (maybe)
+  
+Section 2 assumes that you know what RMA operations are, but if you have somehow
+discovered this page without first learning about RMA operations, you may wish
+to skim Section 3 before reading Section 2.
+
 # Window Types
 
 There are four types of windows in RMA:
@@ -135,6 +152,53 @@ for the entire lifetime of your window.
 
 Once your window is ready passive target shared lock synchronization,
 you will use ``MPI_Win_flush(_local)(_all)`` to synchronize operations.
+The flush operations act on all of the outstanding operations on a window.
+The local flushes only cause local completion, which means you can reuse
+the buffers associated with the arguments.
+Flushes that are not local are remote, and cause remote completion,
+which means that data will be accessible at the target.
+
+If you find that flush is too heavy a hammer for your use case, you can
+use request-based RMA operations and bring about local completion
+by testing on the request.
+Whether this is more efficient than flushes is not obvious and likely
+both implementation and network dependent.
+
+It is natural to wonder why you can only do local completion with requests --
+it was [discussed](https://lists.mpi-forum.org/pipermail/mpiwg-rma/2013-October/003124.html)
+but the MPI Forum couldn't find compelling use cases.
+Feel free to communicate with the MPI Forum via
+GitHub [issues](https://github.com/mpi-forum/mpi-issues/issues)
+if you believe this needs revisiting.
+
+```c
+int buffer = 42;
+MPI_Put(&buffer, 1, MPI_INT, 0 /* target rank */, 0 /* disp */, 1, MPI_INT, win);
+// Put has been initiated
+
+MPI_Win_flush_local(win);
+// buffer is now safe to modify
+buffer = 0;
+
+MPI_Win_flush(win);
+// 42 is now present in the (Private*) window at the target
+// * more on this private window business in Section 4
+
+MPI_Get(&buffer, 1, MPI_INT, 0 /* target rank */, 0 /* disp */, 1, MPI_INT, win);
+// for Get, local and remote completion are the same
+// whether it matters which one you use depends on what else is happening (see Section 5)
+#ifdef LOCAL
+MPI_Win_flush_local(win);
+#else
+MPI_Win_flush(win);
+#endif
+// buffer now contains the value 42 obtained from the window at the target
+```
+# Operations
+
+# Shared memory windows
+
+Public vs private.  `MPI_Win_sync`
 
 # Library Design
 
