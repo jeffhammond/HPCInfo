@@ -1,12 +1,18 @@
+# Purpose 
+
 The purpose of this document is to explain the right way to use MPI-3 RMA (henceforth, RMA).
 RMA is rather complicated and provides multiple window types and
 multiple synchronization motifs.
+
+# Summary
 
 Short version:
   1. Use `MPI_Win_allocate` whenever possible.
   2. Seriously, change your application memory management to satisfy (1).
   3. Use passive target shared synchronization.
   4. Lock (unlock) your windows immediately after constructing (before destructing) them.
+  
+# Outline
   
 This document is organized as follows:
   1. Window selection
@@ -48,28 +54,36 @@ Allocated windows can use interprocess shared memory, network-registered memory,
 
 All MPI window constructors and destructors are collective.
 If you need non-collective RMA allocation, there are two methods:
-  1. Allocate a dynamic window and use `MPI_Win_{attach,detach}`, which are non-collective, 
-     to associate buffers with that window object.
+  1. Allocate a dynamic window (collectively, ideally during application/library initialization) 
+     and use `MPI_Win_{attach,detach}`, which are non-collective, to associate buffers with that window object.
   2. Create a slab of memory with an allocated window and suballocate that to the application.
-     An example of this can be found in OSHMPI [here](https://github.com/jeffhammond/oshmpi/blob/master/src/shmem-internals.c#L338).  If you are using C++, both placement new and [`std::pmr`](https://en.cppreference.com/w/cpp/memory/memory_resource) are handy here.
+     An example of this can be found in OSHMPI
+     [here](https://github.com/jeffhammond/oshmpi/blob/master/src/shmem-internals.c#L338).
+     If you are using C++, both placement new and
+     [`std::pmr`](https://en.cppreference.com/w/cpp/memory/memory_resource) are handy here.
      
 Whenever possible, use allocated windows, as these provide the best performance.
-If you use RMA for interprocess shared memory, you need to use shared windows.
+If you use RMA for interprocess shared memory, you need to use shared windows
+to get support for direct access to memory associated with other processes.
 It should be possible to use an allocated window for this but the MPI Forum
 didn't standardize that
 -- see [this](https://github.com/mpi-forum/mpi-forum-historic/issues/397)
 and [this](https://github.com/mpi-forum/mpi-issues/issues/23) for details --
 so you can't get access to the shared memory associated with an allocated window
-if it's there.
+even if it's there.
 
 If you absolute cannot use allocated or shared windows, created windows 
-are the next best option, because this allow for the network registration
+are the next best option, because this allows for the network registration
 associated with RDMA (e.g. Mellanox and Cray networks often support this).
 
 Finally, and only if absolutely necessary, you can use dynamic windows.
 Dynamics windows make it very hard on the MPI library to use RDMA features
 unless the network supports virtual address translation
-(the IBM PERCS network supported this, as one example).
+(the IBM PERCS network supported this, as one example)
+and even then the usual issues with TLBs likely apply
+(only on systems like Blue Gene/Q that have a trivial
+implementation of virtual memory will RDMA perform the
+same with dynamic windows as the other window types).
 
 If dynamic windows are so terrible, why are they there?
 Dynamic windows are required for some use cases, including the one
@@ -108,12 +122,12 @@ BSP|``MPI_Win_fence``
 PSCW|``MPI_Win_{post,start,complete,wait}``
 Passive target|``MPI_Win_(un)lock(_all)``, ``MPI_Win_flush(_local)(_all)``
 
-Side note: bulk synchronous programming is not the same as the
+_Side note: bulk synchronous programming is not the same as the
 [Bulk Synchronous Parallel (BSP)](https://en.wikipedia.org/wiki/Bulk_synchronous_parallel)
 programming model of Valiant, and anyone who uses the term BSP to describe
 MPI applications that call collectives too often is not serious about computer science terminology.
 If you are reviewing papers that make this error, please correct the authors, no matter
-how famous they are or how large their egos may be.  They are wrong.
+how famous they are or how large their egos may be.  They are wrong._
 
 The only synchronization model worth using is passive target.
 The use cases where BSP makes sense can use passive target.
