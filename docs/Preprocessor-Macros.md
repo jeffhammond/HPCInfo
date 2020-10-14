@@ -16,14 +16,18 @@ Language|Macro|Details
 ---|---|---
 C89|``__STDC__``|ANSI X3.159-1989
 C90|``__STDC_VERSION__``| ISO/IEC 9899:1990
-C94|``__STDC_VERSION__ = 199409L ``| ISO/IEC 9899-1:1994
-C99|``__STDC_VERSION__ = 199901L ``| ISO/IEC 9899:1999
-C11|``__STDC_VERSION__ = 201112L ``| ISO/IEC 9899:2011
+C94|``__STDC_VERSION__ = 199409L``|ISO/IEC 9899-1:1994
+C99|``__STDC_VERSION__ = 199901L``|ISO/IEC 9899:1999
+C11|``__STDC_VERSION__ = 201112L``|ISO/IEC 9899:2011
+C20|``__STDC_VERSION__ > 201710L``|
 C++|``__cplusplus``|
 C++98|``__cplusplus = 199711L``|ISO/IEC 14882:1998
 C++11|``__cplusplus = 201103L``|ISO/IEC 14882:2011
 C++14|``__cplusplus = 201402L``|ISO/IEC 14882:2014
 C++17|``__cplusplus = 201703L``|ISO/IEC 14882:2017
+C++20|``__cplusplus > 201703L``|
+
+See https://en.cppreference.com/w/cpp/feature_test for fine-grain feature testing in C++.
 
 # Language Extensions for Parallelism
 
@@ -38,6 +42,7 @@ OpenMP|``_OPENMP = 200805``|OpenMP 3.0
 OpenMP|``_OPENMP = 201107``|OpenMP 3.1
 OpenMP|``_OPENMP = 201307``|OpenMP 4.0
 OpenMP|``_OPENMP = 201511``|OpenMP 4.5
+OpenMP|``_OPENMP = 201811``|OpenMP 5.0
 Cilk|`__cilk = 200`|Cilk++
 
 # Compilers
@@ -152,7 +157,6 @@ Macro|Meaning
 `__CRAYXC`|Defined on the Cray XC architecture.
 `__CRAYXT_COMPUTE_LINUX_TARGET`|Defined when Cray is using Linux, as opposed to Catamount.
 
-
 From [Cray documentation](http://docs.cray.com/books/S-2179-52/html-S-2179-52/zfixeddt715h8f.html) (i.e. reputable):
 
 Macro|Meaning
@@ -207,9 +211,14 @@ BW|``__AVX512BW__``|Byte and Word Instructions (BW)
 VL|``__AVX512VL__``|Vector Length Extensions (VL)
 IFMA|``__AVX512IFMA__``|Integer Fused Multiply Add (IFMA)
 VBMI|``__AVX512VBMI__``|Vector Byte Manipulation Instructions (VBMI)
+VBMI2|``__AVX512VBMI2__``|Vector Byte Manipulation Instructions 2 (VBMI2)
+BITALG|``__AVX512BITALG__``|Vector Bit Algorithms
+VNNI|``__AVX512VNNI__ ``|Vector Neural Network Instructions
 VNNIW|``__AVX5124VNNIW__ ``|Vector instructions for deep learning enhanced word variable precision
 FMAPS|``__AVX5124FMAPS__ ``|Vector instructions for deep learning floating-point single precision
-VPOPCNT|``__AVX512VPOPCNTDQ__ ``|
+VPOPCNT|``__AVX512VPOPCNTDQ__ ``|Vectorized Hamming weight
+VP2INTERSECT|``__AVX512VP2INTERSECT__``|Compute intersection between doublewords/quadwords to a pair of mask registers
+
 
 The primary source for these is the [Intel® Architecture Instruction Set Extensions Programming Reference](https://software.intel.com/en-us/isa-extensions).
 
