@@ -122,7 +122,6 @@ for v in "$@" ; do
       --with-system-zlib \
       --enable-__cxa_atexit \
       --enable-languages=c,c++,fortran \
-      --with-tune=$CPU \
       --enable-bootstrap \
       --enable-lto \
       --enable-gold=yes \
