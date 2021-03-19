@@ -1,10 +1,10 @@
 OPT	 = -O3 -qopenmp
-FC	 = ifort -std15 -free
+FC	 = ifort -std18 -free
 CC	 = icc -std=c11
 
-#OPT	 = -O3 -fopenmp
-#FC	 = gfortran -std=f2015 -ffree-form
-#CC	 = gcc -std=c11
+OPT	 = -O3 -fopenmp
+FC	 = gfortran -std=f2018 -ffree-form
+CC	 = gcc -std=c11
 
 CFLAGS   = $(OPT)
 FFLAGS   = $(OPT)
@@ -13,7 +13,7 @@ LD       = $(FC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = ieee interop_f array
+TESTS = ieee interop_f array reshape
 
 all: $(TESTS)
 
