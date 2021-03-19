@@ -13,7 +13,7 @@ LD       = $(FC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = ieee interop_f array reshape
+TESTS = ieee interop_f array reshape reshape3 reshape4 reshape6
 
 all: $(TESTS)
 
