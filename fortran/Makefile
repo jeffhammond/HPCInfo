@@ -2,7 +2,7 @@ OPT	 = -O3 -qopenmp
 FC	 = ifort -std18 -free
 CC	 = icc -std=c11
 
-OPT	 = -O3 -fopenmp
+OPT	 = -O3 # -fopenmp
 FC	 = gfortran -std=f2018 -ffree-form
 CC	 = gcc -std=c11
 
@@ -13,7 +13,7 @@ LD       = $(FC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = ieee interop_f array reshape reshape3 reshape4 reshape6
+TESTS = ieee array reshape reshape3 reshape4 reshape6 matmul # interop_f
 
 all: $(TESTS)
 
