@@ -15,7 +15,9 @@
          enddo
         enddo
         Y = 0
+        ! the shape argument matches the output array
         Y = reshape(X, (/5,7,11,13/), order=(/4,3,2,1/))
+        !Y = reshape(X, (/13,11,7,5/), order=(/4,3,2,1/)) ! WRONG
         errors = 0
         do a=1,13
          do b=1,11
