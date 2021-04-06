@@ -23,14 +23,16 @@ typedef struct
 {
     short fp64;
     short fp32;
+    short tf32;
     short fp16;
     short bf16;
 } cuda_flops_per_sm_s;
 
 cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
 {
-    cuda_flops_per_sm_s r = {0,0,0,0};
+    cuda_flops_per_sm_s r = {0,0,0,0,0};
 
+    // https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
     switch (major) {
         // Fermi
         // https://www.nvidia.com/content/PDF/fermi_white_papers/NVIDIA_Fermi_Compute_Architecture_Whitepaper.pdf
@@ -44,9 +46,19 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
         // https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/tesla-product-literature/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf
         // "Each of the Kepler GK110/210 SMX units feature 192 single-precision CUDA cores,
         //  and each core has fully pipelined floating-point and integer arithmetic logic units."
+        //  "the GK110 and GK210 Kepler-based GPUs are capable of performing double precision calculations at a rate of up to 1/3 of single precision compute performance."
         case 3:
-            r.fp64 =  64;
-            r.fp32 = 192;
+            switch (minor) {
+                // K20
+                case 0:
+                // K40
+                case 5:
+                // K80
+                case 7:
+                    r.fp64 =  64;
+                    r.fp32 = 192;
+                    break;
+            }
             break;
         // Maxwell
         // https://developer.nvidia.com/blog/5-things-you-should-know-about-new-maxwell-gpu-architecture/
@@ -54,8 +66,17 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
         // https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/tesla-product-literature/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf
         // "While the Maxwell architecture performs double precision calculations at rate of 1/32 that of single precision calculations..."
         case 5:
-            r.fp64 =   4;
-            r.fp32 = 128;
+            switch (minor) {
+                // Quadro M
+                case 0:
+                // Quadro etc
+                case 1:
+                // Jetson Nano
+                case 2:
+                    r.fp64 =   4;
+                    r.fp32 = 128;
+                    break;
+            }
             break;
         // Pascal
         // GP100 = 6.0 https://images.nvidia.com/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf Table 1
@@ -71,6 +92,7 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
                     break;
                 // GP102, GP104
                 case 1:
+                // Jetson TX2
                 case 2:
                     r.fp64 =   4;
                     r.fp32 = 128;
@@ -82,13 +104,15 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
         // "The TU102 GPU also features 144 FP64 units (two per SM)... The FP64 TFLOP rate is 1/32nd the TFLOP rate of FP32 operation"
         case 7:
             switch (minor) {
-                // Volta
+                // GV100
                 case 0:
-                case 2:
                     r.fp64 =  32;
                     r.fp32 =  64;
                     break;
-                // Turing
+                // Xavier AGX (Volta)
+                // I cannot find docs but I can measure...
+                case 2:
+                // TU102
                 case 5:
                     r.fp64 =   2;
                     r.fp32 =  64;
@@ -96,15 +120,20 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
             }
             break;
         // Ampere
+        // https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ampere/pdf/NVIDIA-ampere-GA102-GPU-Architecture-Whitepaper-V1.pdf
+        // "The GA102 GPU also features 168 FP64 units (two per SM), which are not depicted in this diagram.
+        //  The FP64 TFLOP rate is 1/64th the TFLOP rate of FP32 operations."
         case 8:
             switch (minor) {
+                // GA100
                 case 0:
                     r.fp64 =  32;
                     r.fp32 =  64;
                     break;
+                // GA102
                 case 6:
-                    r.fp64 =  32;
-                    r.fp32 =  64;
+                    r.fp64 =   2;
+                    r.fp32 = 128;
                     break;
             }
             break;
@@ -133,17 +162,25 @@ void find_nvgpu(void)
 
         // memory bandwidth
         printf("memoryClockRate                         = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
-        printf("memoryBusWidth                          = %d bits\n",    dp.memoryBusWidth );
+        printf("memoryBusWidth                          = %d bits\n",   dp.memoryBusWidth );
         printf("peak bandwidth                          = %.1f GB/s\n", dp.memoryClockRate*1.e-6 * dp.memoryBusWidth * 0.125);
 
         // memory capacity
         printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
-        printf("totalGlobalMem                          = %zu GiB\n", dp.totalGlobalMem/(1<<30));
+        printf("totalGlobalMem                          = %zu GiB\n",   dp.totalGlobalMem/(1<<30));
 
         // compute throughput
-        printf("multiProcessorCount                     = %d\n",        dp.multiProcessorCount);
-        printf("warpSize                                = %d\n",        dp.warpSize);
+        printf("multiProcessorCount                     = %d\n",       dp.multiProcessorCount);
+        printf("warpSize                                = %d\n",       dp.warpSize);
         printf("clockRate                               = %.3f GHz\n", dp.clockRate*1.e-6);
+
+        cuda_flops_per_sm_s r = cuda_flops_per_sm(dp.major,dp.minor);
+        printf("FP64 FMA/clock per SM                   = %d\n", r.fp64);
+        printf("FP32 FMA/clock per SM                   = %d\n", r.fp32);
+                                                                 // FMA=2 * ops/clock/SM * SMs * GHz
+        printf("GigaFP64/second per GPU                 = %f\n", 2 * r.fp64 * dp.multiProcessorCount * 1.e-6*dp.clockRate);
+        printf("GigaFP32/second per GPU                 = %f\n", 2 * r.fp32 * dp.multiProcessorCount * 1.e-6*dp.clockRate);
+
 
         // memory sharing characteristics
         printf("unifiedAddressing                       = %d\n", dp.unifiedAddressing);
