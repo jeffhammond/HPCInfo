@@ -1,0 +1,163 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifndef __NVCC__
+#warning Please compile CUDA code with CC=nvcc.
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
+#include <cuda_device_runtime_api.h>
+#endif
+
+static const int print_errors = 1;
+
+static inline int cuda_check(cudaError_t rc)
+{
+    if (rc!=cudaSuccess && print_errors) {
+        printf("CUDA error: %s\n", cudaGetErrorString(rc));
+    }
+    return rc;
+}
+
+typedef struct
+{
+    short fp64;
+    short fp32;
+    short fp16;
+    short bf16;
+} cuda_flops_per_sm_s;
+
+cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
+{
+    cuda_flops_per_sm_s r = {0,0,0,0};
+
+    switch (major) {
+        // Fermi
+        // https://www.nvidia.com/content/PDF/fermi_white_papers/NVIDIA_Fermi_Compute_Architecture_Whitepaper.pdf
+        // "The Fermi architecture has been specifically designed to offer unprecedented performance in double precision;
+        //  up to 16 double precision fused multiply-add operations can be performed per SM, per clock..."
+        case 2:
+            r.fp64 =  16;
+            r.fp32 =  32;
+            break;
+        // Kepler
+        // https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/tesla-product-literature/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf
+        // "Each of the Kepler GK110/210 SMX units feature 192 single-precision CUDA cores,
+        //  and each core has fully pipelined floating-point and integer arithmetic logic units."
+        case 3:
+            r.fp64 =  64;
+            r.fp32 = 192;
+            break;
+        // Maxwell
+        // https://developer.nvidia.com/blog/5-things-you-should-know-about-new-maxwell-gpu-architecture/
+        // 128 comes from 640 "cuda cores" for 5 SMs
+        // https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/tesla-product-literature/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf
+        // "While the Maxwell architecture performs double precision calculations at rate of 1/32 that of single precision calculations..."
+        case 5:
+            r.fp64 =   4;
+            r.fp32 = 128;
+            break;
+        // Pascal
+        // GP100 = 6.0 https://images.nvidia.com/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf Table 1
+        // GP102 = 6.1 https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf Table 1
+        // https://docs.nvidia.com/cuda/pascal-tuning-guide/index.html
+        // "Like Maxwell, each GP104 SM provides four warp schedulers managing a total of 128 single-precision (FP32) and four double-precision (FP64) cores."
+        case 6:
+            switch (minor) {
+                // GP100
+                case 0:
+                    r.fp64 =  32;
+                    r.fp32 =  64;
+                    break;
+                // GP102, GP104
+                case 1:
+                case 2:
+                    r.fp64 =   4;
+                    r.fp32 = 128;
+                    break;
+            }
+            break;
+        // Volta and Turing
+        // https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf
+        // "The TU102 GPU also features 144 FP64 units (two per SM)... The FP64 TFLOP rate is 1/32nd the TFLOP rate of FP32 operation"
+        case 7:
+            switch (minor) {
+                // Volta
+                case 0:
+                case 2:
+                    r.fp64 =  32;
+                    r.fp32 =  64;
+                    break;
+                // Turing
+                case 5:
+                    r.fp64 =   2;
+                    r.fp32 =  64;
+                    break;
+            }
+            break;
+        // Ampere
+        case 8:
+            switch (minor) {
+                case 0:
+                    r.fp64 =  32;
+                    r.fp32 =  64;
+                    break;
+                case 6:
+                    r.fp64 =  32;
+                    r.fp32 =  64;
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+    return r;
+}
+
+
+void find_nvgpu(void)
+{
+    int nd;
+    cuda_check( cudaGetDeviceCount(&nd) );
+
+    for (int i=0; i<nd; ++i) {
+
+        printf("============= GPU number %d =============\n", i);
+
+        cudaDeviceProp dp;
+        cudaGetDeviceProperties(&dp, i);
+
+        printf("GPU name                                = %s\n", dp.name);
+
+        printf("Compute Capability (CC)                 = %d.%d\n", dp.major, dp.minor);
+
+        // memory bandwidth
+        printf("memoryClockRate                         = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
+        printf("memoryBusWidth                          = %d bits\n",    dp.memoryBusWidth );
+        printf("peak bandwidth                          = %.1f GB/s\n", dp.memoryClockRate*1.e-6 * dp.memoryBusWidth * 0.125);
+
+        // memory capacity
+        printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
+        printf("totalGlobalMem                          = %zu GiB\n", dp.totalGlobalMem/(1<<30));
+
+        // compute throughput
+        printf("multiProcessorCount                     = %d\n",        dp.multiProcessorCount);
+        printf("warpSize                                = %d\n",        dp.warpSize);
+        printf("clockRate                               = %.3f GHz\n", dp.clockRate*1.e-6);
+
+        // memory sharing characteristics
+        printf("unifiedAddressing                       = %d\n", dp.unifiedAddressing);
+        printf("managedMemory                           = %d\n", dp.managedMemory);
+        printf("pageableMemoryAccess                    = %d\n", dp.pageableMemoryAccess);
+        printf("pageableMemoryAccessUsesHostPageTables  = %d\n", dp.pageableMemoryAccessUsesHostPageTables);
+        printf("concurrentManagedAccess                 = %d\n", dp.concurrentManagedAccess);
+        printf("canMapHostMemory                        = %d\n", dp.canMapHostMemory);
+    }
+}
+
+int main(void)
+{
+    find_nvgpu();
+    return 0;
+}
+
