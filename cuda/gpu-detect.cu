@@ -163,7 +163,7 @@ void find_nvgpu(void)
         // memory bandwidth
         printf("memoryClockRate                         = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
         printf("memoryBusWidth                          = %d bits\n",   dp.memoryBusWidth );
-        printf("peak bandwidth                          = %.1f GB/s\n", dp.memoryClockRate*1.e-6 * dp.memoryBusWidth * 0.125);
+        printf("peak bandwidth (may be wrong)           = %.1f GB/s\n", dp.memoryClockRate*1.e-6 * dp.memoryBusWidth * 0.125);
 
         // memory capacity
         printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
