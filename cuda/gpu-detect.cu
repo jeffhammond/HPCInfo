@@ -156,14 +156,23 @@ void find_nvgpu(void)
         cudaDeviceProp dp;
         cudaGetDeviceProperties(&dp, i);
 
-        printf("GPU name                                = %s\n", dp.name);
+        printf("GPU name                                = %s.\n", dp.name);
 
-        printf("Compute Capability (CC)                 = %d.%d\n", dp.major, dp.minor);
+        int major = dp.major;
+        int minor = dp.minor;
+        printf("Compute Capability (CC)                 = %d.%d\n", major, minor);
 
         // memory bandwidth
+        int memoryClock = dp.memoryClockRate;
+        // Xavier AGX override
+        if (major==7 && minor==2) {
+            memoryClock = 2133000; // 2.133 GHz in Khz
+        }
         printf("memoryClockRate                         = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
         printf("memoryBusWidth                          = %d bits\n",   dp.memoryBusWidth );
-        printf("peak bandwidth (may be wrong)           = %.1f GB/s\n", dp.memoryClockRate*1.e-6 * dp.memoryBusWidth * 0.125);
+        // 2 for Dual Data Rate ?
+        // 0.125 for bit to byte
+        printf("peak bandwidth (may be wrong)           = %.1f GB/s\n", 2 * memoryClock*1.e-6 * dp.memoryBusWidth * 0.125);
 
         // memory capacity
         printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
@@ -174,7 +183,7 @@ void find_nvgpu(void)
         printf("warpSize                                = %d\n",       dp.warpSize);
         printf("clockRate                               = %.3f GHz\n", dp.clockRate*1.e-6);
 
-        cuda_flops_per_sm_s r = cuda_flops_per_sm(dp.major,dp.minor);
+        cuda_flops_per_sm_s r = cuda_flops_per_sm(major,minor);
         printf("FP64 FMA/clock per SM                   = %d\n", r.fp64);
         printf("FP32 FMA/clock per SM                   = %d\n", r.fp32);
                                                                  // FMA=2 * ops/clock/SM * SMs * GHz
