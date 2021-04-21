@@ -1,46 +1,30 @@
-subroutine a(x,y)
-    implicit none
-    real(8), intent(inout) :: x(:)
-    real(8), intent(out) :: y
-    integer :: n, i
-    n = size(x)
-    y = 0
-    do concurrent (i=0:n)
-      !$acc atomic
-      y = y + x(i)
-    end do
-end subroutine a
-
-subroutine o(x,y)
-    implicit none
-    real(8), intent(inout) :: x(:)
-    real(8), intent(out) :: y
-    integer :: n, i
-    n = size(x)
-    y = 0
-    do concurrent (i=0:n)
-      !$acc atomic
-      y = y + x(i)
-    end do
-end subroutine o
-
-subroutine c(x,y)
-    use cudadevice
-    implicit none
-    real(8), intent(inout) :: x(:)
-    real(8), intent(out) :: y
-    real(8) :: z
-    integer :: n, i
-    n = size(x)
-    y = 0
-    do concurrent (i=0:n)
-      z = atomicadd(y, x(i))
-    end do
-end subroutine c
-
-
 program bomb
     implicit none
-     
-
+    real(8), allocatable, managed :: x(:)
+    real(8) :: y1, y2
+    integer :: n, i
+    n = 1000*1000
+    print*,'allocate'
+    allocate( x(n) )
+    print*,'initialize'
+    do concurrent (i=1:n)
+      x(i) = i
+    end do
+    print*,'OpenMP'
+    y1 = 0
+    do concurrent (i=1:n)
+      !$omp atomic update
+      y1 = y1 + x(i)
+      !$omp end atomic
+    end do
+    print*,y1
+    print*,'OpenACC'
+    y2 = 0
+    do concurrent (i=1:n)
+      !$acc atomic update
+      y2 = y2 + x(i)
+      !$acc end atomic
+    end do
+    print*,y2
+    print*,'Done'
 end program bomb

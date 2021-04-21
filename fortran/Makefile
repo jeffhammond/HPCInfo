@@ -6,12 +6,12 @@ OPT	 = -O3 # -fopenmp
 FC	 = gfortran -std=f2018 -ffree-form
 CC	 = gcc -std=c11
 
-OPT	 = -O3
+OPT	 = -O3 -target=gpu
 FC	 = nvfortran
 CC	 = nvc
 
 CFLAGS   = $(OPT) -acc -mp
-FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar
+FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
 
 #LD       = $(FC)
 #LDFLAGS  = $(OPT)
