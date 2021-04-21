@@ -167,16 +167,18 @@ void find_nvgpu(void)
         // Xavier AGX override
         if (major==7 && minor==2) {
             memoryClock = 2133000; // 2.133 GHz in Khz
+            printf("memoryClockRate (Xavier AGX LPDDR4x)    = %.3f GHz\n",  memoryClock*1.e-6);
         }
-        printf("memoryClockRate                         = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
+        printf("memoryClockRate (CUDA device query)     = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
         printf("memoryBusWidth                          = %d bits\n",   dp.memoryBusWidth );
-        // 2 for Dual Data Rate ?
-        // 0.125 for bit to byte
-        printf("peak bandwidth (may be wrong)           = %.1f GB/s\n", 2 * memoryClock*1.e-6 * dp.memoryBusWidth * 0.125);
+        // 2 for Dual Data Rate (https://en.wikipedia.org/wiki/Double_data_rate)
+        // 1/8 = 0.125 for bit to byte
+        printf("peak bandwidth                          = %.1f GB/s\n", 2 * memoryClock*1.e-6 * dp.memoryBusWidth * 0.125);
 
         // memory capacity
-        printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
-        printf("totalGlobalMem                          = %zu GiB\n",   dp.totalGlobalMem/(1<<30));
+        //printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
+        printf("totalGlobalMem                          = %zu MiB\n",   dp.totalGlobalMem/(1<<20));
+        //printf("totalGlobalMem                          = %zu GiB\n",   dp.totalGlobalMem/(1<<30));
 
         // compute throughput
         printf("multiProcessorCount                     = %d\n",       dp.multiProcessorCount);
@@ -187,8 +189,8 @@ void find_nvgpu(void)
         printf("FP64 FMA/clock per SM                   = %d\n", r.fp64);
         printf("FP32 FMA/clock per SM                   = %d\n", r.fp32);
                                                                  // FMA=2 * ops/clock/SM * SMs * GHz
-        printf("GigaFP64/second per GPU                 = %f\n", 2 * r.fp64 * dp.multiProcessorCount * 1.e-6*dp.clockRate);
-        printf("GigaFP32/second per GPU                 = %f\n", 2 * r.fp32 * dp.multiProcessorCount * 1.e-6*dp.clockRate);
+        printf("GigaFP64/second per GPU                 = %.1f\n", 2 * r.fp64 * dp.multiProcessorCount * 1.e-6*dp.clockRate);
+        printf("GigaFP32/second per GPU                 = %.1f\n", 2 * r.fp32 * dp.multiProcessorCount * 1.e-6*dp.clockRate);
 
 
         // memory sharing characteristics

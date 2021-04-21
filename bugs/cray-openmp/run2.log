@@ -1,0 +1,124 @@
+ACC: Initialize CUDA
+ACC: Get Device 0
+ACC: Create Context
+ACC: Set Thread Context
+ACC: Start transfer 4 items from nstream-openmp-target2.F90:50
+ACC:       allocate, copy to acc 'a' (1073741824 bytes)
+ACC:       allocate, copy to acc 'b' (1073741824 bytes)
+ACC:       allocate, copy to acc 'c' (1073741824 bytes)
+ACC:       allocate, copy to acc 'length' (8 bytes)
+ACC: End transfer (to acc 3221225480 bytes, to host 0 bytes)
+ACC: Execute kernel main_$ck_L52_1 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:52
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Execute kernel main_$ck_L64_3 blocks:1280 threads:128 async(auto) from nstream-openmp-target2.F90:64
+ACC: Wait async(auto) from nstream-openmp-target2.F90:74
+ACC: Start transfer 4 items from nstream-openmp-target2.F90:74
+ACC:       copy to host, free 'a' (1073741824 bytes)
+ACC:       free 'b' (1073741824 bytes)
+ACC:       free 'c' (1073741824 bytes)
+ACC:       free 'length' (8 bytes)
+ACC: End transfer (to acc 0 bytes, to host 1073741824 bytes)
+OpenMP default device =            0
+Number of iterations  =          100
+Matrix length         =    134217728
+Solution validate
+Rate (MB/s):  604886644.031 Avg time (s)   0.710045E-05

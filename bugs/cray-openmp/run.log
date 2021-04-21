@@ -1,0 +1,328 @@
+ACC: Initialize CUDA
+ACC: Get Device 0
+ACC: Create Context
+ACC: Set Thread Context
+ACC: Start transfer 4 items from nstream-openmp-target.F90:50
+ACC:       allocate, copy to acc 'a' (1073741824 bytes)
+ACC:       allocate, copy to acc 'b' (1073741824 bytes)
+ACC:       allocate, copy to acc 'c' (1073741824 bytes)
+ACC:       allocate, copy to acc 'length' (8 bytes)
+ACC: End transfer (to acc 3221225480 bytes, to host 0 bytes)
+ACC: Join async(auto) to async(64) from nstream-openmp-target.F90:52
+ACC: Execute kernel main_$ck_L52_1 blocks:1280 threads:128 async(64) from nstream-openmp-target.F90:52
+ACC: Synchronize
+ACC: Join async(auto) to async(65) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(65) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(66) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(66) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(67) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(67) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(68) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(68) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(69) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(69) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(70) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(70) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(71) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(71) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(72) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(72) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(73) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(73) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(74) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(74) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(75) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(75) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(76) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(76) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(77) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(77) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(78) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(78) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(79) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(79) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(80) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(80) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(81) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(81) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(82) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(82) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(83) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(83) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(84) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(84) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(85) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(85) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(86) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(86) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(87) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(87) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(88) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(88) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(89) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(89) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(90) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(90) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(91) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(91) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(92) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(92) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(93) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(93) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(94) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(94) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(95) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(95) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(96) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(96) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(97) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(97) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(98) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(98) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(99) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(99) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(100) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(100) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(101) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(101) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(102) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(102) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(103) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(103) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(104) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(104) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(105) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(105) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(106) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(106) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(107) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(107) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(108) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(108) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(109) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(109) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(110) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(110) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(111) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(111) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(112) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(112) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(113) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(113) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(114) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(114) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(115) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(115) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(116) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(116) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(117) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(117) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(118) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(118) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(119) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(119) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(120) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(120) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(121) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(121) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(122) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(122) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(123) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(123) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(124) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(124) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(125) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(125) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(126) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(126) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(127) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(127) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(64) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(64) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(65) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(65) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(66) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(66) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(67) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(67) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(68) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(68) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(69) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(69) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(70) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(70) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(71) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(71) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(72) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(72) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(73) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(73) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(74) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(74) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(75) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(75) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(76) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(76) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(77) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(77) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(78) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(78) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(79) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(79) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(80) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(80) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(81) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(81) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(82) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(82) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(83) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(83) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(84) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(84) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(85) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(85) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(86) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(86) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(87) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(87) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(88) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(88) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(89) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(89) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(90) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(90) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(91) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(91) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(92) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(92) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(93) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(93) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(94) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(94) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(95) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(95) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(96) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(96) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(97) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(97) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(98) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(98) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(99) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(99) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(100) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(100) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Join async(auto) to async(101) from nstream-openmp-target.F90:65
+ACC: Execute kernel main_$ck_L65_3 blocks:1280 threads:128 async(101) from nstream-openmp-target.F90:65
+ACC: Synchronize
+ACC: Wait async(auto) from nstream-openmp-target.F90:76
+ACC: Start transfer 4 items from nstream-openmp-target.F90:76
+ACC:       copy to host, free 'a' (1073741824 bytes)
+ACC:       free 'b' (1073741824 bytes)
+ACC:       free 'c' (1073741824 bytes)
+ACC:       free 'length' (8 bytes)
+ACC: End transfer (to acc 0 bytes, to host 1073741824 bytes)
+OpenMP default device =            0
+Number of iterations  =          100
+Matrix length         =    134217728
+Solution validate
+Rate (MB/s):     836236.632 Avg time (s)   0.513607E-02

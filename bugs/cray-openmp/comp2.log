@@ -1,0 +1,42 @@
+
+  !$omp target data map(tofrom: A) map(to: B,C) map(to:length)
+ftn-6413 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 50 
+  A data region was created at line 50 and ending at line 74.
+ftn-6416 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 50 
+  If not already present: allocate memory and copy whole array "a" to accelerator, copy back at line 74 (acc_copy).
+ftn-6418 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 50 
+  If not already present: allocate memory and copy variable "length" to accelerator, free at line 74 (acc_copyin).
+ftn-6418 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 50 
+  If not already present: allocate memory and copy whole array "c" to accelerator, free at line 74 (acc_copyin).
+ftn-6418 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 50 
+  If not already present: allocate memory and copy whole array "b" to accelerator, free at line 74 (acc_copyin).
+
+  !$omp target teams distribute simd
+ftn-6405 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 52 
+  A region starting at line 52 and ending at line 58 was placed on the accelerator.
+
+  do i=1,length
+ftn-6430 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 53 
+  A loop starting at line 53 was partitioned across the threadblocks and the 128 threads within a threadblock.
+
+    !$omp target teams distribute simd
+ftn-6405 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 64 
+  A region starting at line 64 and ending at line 68 was placed on the accelerator.
+
+    do i=1,length
+ftn-6430 crayftn: ACCEL MAIN, File = nstream-openmp-target2.F90, Line = 65 
+  A loop starting at line 65 was partitioned across the threadblocks and the 128 threads within a threadblock.
+
+  !$omp parallel do reduction(+:asum)
+ftn-6823 crayftn: THREAD MAIN, File = nstream-openmp-target2.F90, Line = 90 
+  A region starting at line 90 and ending at line 94 was multi-threaded.
+
+  do i=1,length
+ftn-6817 crayftn: THREAD MAIN, File = nstream-openmp-target2.F90, Line = 91 
+  A loop starting at line 91 was partitioned.
+
+Cray Fortran : Version 9.1.0 (20191016203550_ead188cfa2ec260732a812302b9f99cc778ac7a3)
+Cray Fortran : Fri Apr 09, 2021  08:45:55
+Cray Fortran : Compile time:  0.0681 seconds
+Cray Fortran : 116 source lines
+Cray Fortran : 0 errors, 0 warnings, 11 other messages, 0 ansi
