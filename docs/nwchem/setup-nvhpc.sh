@@ -17,7 +17,8 @@ export CXX=g++
 export USE_MPI=T
 export MPI_INCLUDE=${MPI_PATH}/include
 export MPI_LIB=${MPI_PATH}/lib
-export LIBMPI="-lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -lpthread"
+export LIBMPI="-lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -L/opt/amazon/openmpi/lib64 -Wl,-rpath=/opt/amazon/openmpi/lib64 -lmpi -lpthread"
+#export LIBMPI="-lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -lpthread"
 #export LIBMPI="-lmpi -lpthread"
 
 #export ARMCI_NETWORK=MPI-PR
