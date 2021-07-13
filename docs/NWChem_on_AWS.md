@@ -39,26 +39,45 @@ cp -r gcc nvhpc &
 wait
 ```
 
+```
+cd ~/NWCHEM
+wget https://github.com/jeffhammond/HPCInfo/blob/master/docs/nwchem/setup-nvhpc.sh
+wget https://github.com/jeffhammond/HPCInfo/blob/master/docs/nwchem/setup-gcc.sh
+wget https://github.com/jeffhammond/HPCInfo/blob/master/docs/nwchem/setup-arm.sh
+```
+
 ### NVHPC
 
 ```
-cd ~/NWCHEM/nvhpc/src
+cd ~/NWCHEM/nvhpc/src/tools
 ./get-tools-github
 MPICC=~/MPI/arm-ompi-4.1.1 ./install-armci-mpi
+source ~/NWCHEM/setup-nvhpc.sh
+cd $NWCHEM_TOP/src
+make nwchem_config
+make -j32
 ```
 
 ### GCC
 
 ```
-cd ~/NWCHEM/gcc/src
+cd ~/NWCHEM/gcc/src/tools
 ./get-tools-github
 MPICC=/opt/amazon/openmpi/bin/mpicc ./install-armci-mpi
+source ~/NWCHEM/setup-gcc.sh
+cd $NWCHEM_TOP/src
+make nwchem_config
+make -j32
 ```
 
 ### ARM
 
 ```
-cd ~/NWCHEM/arm/src
+cd ~/NWCHEM/arm/src/tools
 ./get-tools-github
 MPICC=~/MPI/arm-ompi-4.1.1 ./install-armci-mpi
+source ~/NWCHEM/setup-arm.sh
+cd $NWCHEM_TOP/src
+make nwchem_config
+make -j32
 ```
