@@ -48,6 +48,8 @@ wget https://github.com/jeffhammond/HPCInfo/blob/master/docs/nwchem/setup-arm.sh
 
 ### NVHPC
 
+The Open-MPI that I built does not seem to work, but I need NVFortran MPI headers.
+I compile as shown below but link and run with AWS MPI.
 ```
 cd ~/NWCHEM/nvhpc/src/tools
 ./get-tools-github
@@ -56,6 +58,11 @@ source ~/NWCHEM/setup-nvhpc.sh
 cd $NWCHEM_TOP/src
 make nwchem_config
 make -j32
+```
+
+Running jobs:
+```
+/opt/amazon/openmpi/bin/mpirun ../bin/LINUX64/nwchem ~/NWCHEM/jobs/w15_b3lyp_cc-pvtz_energy.nw 
 ```
 
 ### GCC
