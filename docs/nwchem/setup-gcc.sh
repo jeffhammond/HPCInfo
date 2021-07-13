@@ -13,8 +13,8 @@ export CXX=g++
 export USE_MPI=T
 export MPI_INCLUDE=${MPI_PATH}/include
 export MPI_LIB=${MPI_PATH}/lib64
-#export LIBMPI="-lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
-export LIBMPI="-lmpi -lpthread"
+export LIBMPI="-lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -lpthread"
+#export LIBMPI="-lmpi -lpthread"
 
 #export ARMCI_NETWORK=MPI-PR
 export ARMCI_NETWORK=ARMCI
@@ -32,8 +32,6 @@ export BLAS_LIB=${BLASOPT}
 export LAPACK_LIB=${BLASOPT}
 
 #export BUILD_OPENBLAS=y
-
-# ../ga-5.7.2/configure --prefix=/home/jrhammon/NWCHEM/nvhpc/src/tools/install --with-tcgmsg --with-mpi --enable-peigs --enable-underscoring --disable-mpi-tests --without-scalapack --without-lapack --without-blas --with-mpi-ts CC=mpiicc CXX=mpiicpc F77=mpiifort CFLAGS=-fPIC ARMCI_DEFAULT_SHMMAX_UBOUND=131072
 
 export USE_OPENMP=y
 export USE_F90_ALLOCATABLE=y
