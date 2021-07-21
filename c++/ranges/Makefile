@@ -1,10 +1,7 @@
-CXX      = clang++
-CXXFLAGS = -g -O2 -std=c++11 -Wall -Wextra
+CXX      = g++-11
+CXXFLAGS = -g -O2 -std=c++20 -Wall -Wextra
 
-CXXFLAGS += -I$(HOME)/Work/Languages/range-v3/include
-CXXFLAGS += -I/usr/local/Cellar/boost/1.71.0/include
-
-TESTS = ranges
+TESTS = stride
 
 all: $(TESTS)
 
