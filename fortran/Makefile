@@ -6,14 +6,18 @@ OPT	 = -O3 # -fopenmp
 FC	 = gfortran -std=f2018 -ffree-form
 CC	 = gcc -std=c11
 
-CFLAGS   = $(OPT)
-FFLAGS   = $(OPT)
+OPT	 = -O3 -target=gpu
+FC	 = nvfortran
+CC	 = nvc
 
-LD       = $(FC)
-LDFLAGS  = $(OPT)
-LIBS     =
+CFLAGS   = $(OPT) -acc -mp
+FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
 
-TESTS = ieee array reshape reshape3 reshape4 reshape6 matmul # interop_f
+#LD       = $(FC)
+#LDFLAGS  = $(OPT)
+#LIBS     =
+
+TESTS = ieee array reshape reshape3 reshape4 reshape6 matmul atomic # interop_f
 
 all: $(TESTS)
 
@@ -29,8 +33,8 @@ interop_f: interop_f.o interop_c.o
 %: %.F90
 	$(FC) $(FFLAGS) $< -o $@
 
-%: %.o
-	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+#%: %.o
+#	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
