@@ -1,5 +1,5 @@
 FC = gfortran
-FFLAGS = -O3
+FFLAGS = -O1 -std=f2008
 LDFLAGS = -framework Accelerate
 
 all: ccsd_aosig.x
