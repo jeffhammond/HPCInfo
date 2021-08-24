@@ -34,11 +34,10 @@
       integer p,q,a,b
       !call dfill(nbf*nbf,0.0d00,scra,1)
       scra = 0.0d0
-       do q=1,nbf
-        do a=1,nvir
-         do b=1,nvir
-      do p=1,nbf
-          !print*,'off=',a,b,nvir,a+(b-1)*nvir
+      do q=1,nbf
+       do a=1,nvir
+        do b=1,nvir
+         do p=1,nbf
           scra(p,q) = scra(p,q) + scrb(a,b) * cmo(p,nocc+a)
      &              * cmo(q,nocc+b)
          enddo
