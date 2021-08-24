@@ -81,22 +81,13 @@
       double precision :: x,y
       integer p,q,a,b
       cmo2 = cmo(:,nocc+1:nbf)
-      cmo2t = transpose(cmo2)
       scra = 0.0d0
       !z = 0.0d0
       do q=1,nbf
        do a=1,nvir
         do b=1,nvir
-         y = scrb(a,b)
          do p=1,nbf
-          !scra(p,q) = scra(p,q) + cmo2(p,a) * (scrb(a,b) * cmo2(q,b)) ! 1e-11 error
-          !scra(p,q) = scra(p,q) + (cmo2(p,a) * scrb(a,b)) * cmo2(q,b)
-          !scra(p,q) = scra(p,q) + (cmo2(p,a) * scrb(a,b)) * x
-          !scra(p,q) = scra(p,q) + (cmo2(p,a) * y) * x ! OK
-          !scra(p,q) = scra(p,q) + (cmo2(p,a) * y) * cmo2(q,b) ! fast w/ qabp order
-          scra(p,q) = scra(p,q) + (cmo2(p,a) * y) * cmo2t(b,q)
-          !sab = scrb(a,b)
-          !scra(p,q) = scra(p,q) + sab * cmo2(p,a) * cmo2(q,b)
+          scra(p,q) = scra(p,q) + (cmo2(p,a) * scrb(a,b)) * cmo2(q,b)
          enddo
         enddo
        enddo
