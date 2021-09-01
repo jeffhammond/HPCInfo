@@ -76,19 +76,22 @@
       double precision cmo2t(nvir,nbf)
       double precision scra(nbf,nbf)
       double precision scrb(nvir,nvir)
-      !double precision z(nvir,nvir)
-      !double precision :: sab
-      double precision :: x,y
+      double precision z(nbf,nbf)
       integer p,q,a,b
       cmo2 = cmo(:,nocc+1:nbf)
       scra = 0.0d0
-      !z = 0.0d0
+      z = 0.0d0
+      do b=1,nvir
+       do p=1,nbf
+        do a=1,nvir
+         z(p,b) = z(p,b) + cmo2(p,a) * scrb(a,b)
+        enddo
+       enddo
+      enddo
       do q=1,nbf
-       do a=1,nvir
-        do b=1,nvir
-         do p=1,nbf
-          scra(p,q) = scra(p,q) + (cmo2(p,a) * scrb(a,b)) * cmo2(q,b)
-         enddo
+       do b=1,nvir
+        do p=1,nbf
+         scra(p,q) = scra(p,q) + z(p,b) * cmo2(q,b)
         enddo
        enddo
       enddo
@@ -150,10 +153,13 @@
 
       print*,'new  correct:',all((out1-out2).lt.1e-11)
       print*,'err  = ',norm2(out1-out2)
+      print*,'relerr  = ',norm2(out1-out2)/norm2(out1)
       print*,'new2 correct:',all((out1-out3).lt.1e-11)
       print*,'err2 = ',norm2(out1-out3)
+      print*,'relerr2 = ',norm2(out1-out3)/norm2(out1)
       print*,'new3 correct:',all((out1-out4).lt.1e-11)
       print*,'err3 = ',norm2(out1-out4)
+      print*,'relerr3 = ',norm2(out1-out4)/norm2(out1)
 
       if (nbf.lt.8) then
         print*,out1
@@ -161,5 +167,15 @@
         print*,out3
         print*,out4
       endif
+
+      block
+        integer i,j
+        do i=1,nbf
+         do j=1,nbf
+          write(6,'(2i6,4f21.15,1x,e10.3)') j,i,out1(j,i),out2(j,i),
+     &           out3(j,i),out4(j,i),out4(j,i)-out1(j,i)
+         enddo
+        enddo
+      end block
 
       end program main
