@@ -1,14 +1,14 @@
-CC	 = icc
-CFLAGS	 = -O3
-CFLAGS	+= -qopenmp
-CFLAGS += -xHOST
+#CC	 = icc
+#CFLAGS	 = -O3
+#CFLAGS	+= -qopenmp
+#CFLAGS += -xHOST
 #CFLAGS += -xCOMMON-AVX512
 #CFLAGS += -xMIC-AVX512
 
-#CC	 = g++-6
-#CC	 = clang++-4.0
-#CFLAGS	 = -O3
-#CFLAGS	+= -fopenmp
+CC	 = gcc-11
+#CC	 = clang#++
+CFLAGS	 = -O3
+CFLAGS	+= -fopenmp
 #CFLAGS	+= -march=core-avx2
 
 # Mac laptop

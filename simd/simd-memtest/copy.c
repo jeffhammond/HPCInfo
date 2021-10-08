@@ -12,14 +12,21 @@ void copy_mov(size_t n, const double * RESTRICT a, double * RESTRICT b)
 {
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
+#if __x86_64__
         double t;
         //t = a[i];
         asm ("mov %1, %0" : "=r" (t) : "m" (a[i]));
         //b[i] = t;
         asm ("mov %1, %0" : "=m" (b[i]) : "r" (t));
+#elif __aarch64__
+#warning unimplemented
+#else
+#error unsupported ISA
+#endif
     }
 }
 
+#if __x86_64__
 void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b)
 {
     /* It might make more sense to do rep-movsq a page at a time
@@ -66,6 +73,7 @@ void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b)
     }
 #endif
 }
+#endif // __x86_64__
 
 #ifdef __SSE__
 

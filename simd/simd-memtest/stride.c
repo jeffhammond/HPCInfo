@@ -14,11 +14,17 @@ void stride_mov(size_t n, const double * RESTRICT a, double * RESTRICT b, unsign
     ASSUME(s>0);
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=s) {
+#if __x86_64__
         double t;
         //t = a[i];
         asm ("mov %1, %0" : "=r" (t) : "m" (a[i]));
         //b[i] = t;
         asm ("mov %1, %0" : "=m" (b[i]) : "r" (t));
+#elif __aarch64__
+#warning unimplemented
+#else
+#error unsupported ISA
+#endif
     }
 }
 

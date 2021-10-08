@@ -26,6 +26,9 @@ int setup(void)
         testfns[i]  = copy_ref;
         testname[i] = "Reference";
         i++;
+    }
+#ifdef __x86_64__
+    {
         /* MOV */
         testfns[i]  = copy_mov;
         testname[i] = "mov";
@@ -35,6 +38,7 @@ int setup(void)
         testname[i] = "rep_movsq";
         i++;
     }
+#endif
 #ifdef __SSE2__
     {
         /* MOVNTI */
@@ -170,11 +174,15 @@ int setup_stride(void)
         testfns2[i]  = stride_ref;
         testname2[i] = "Reference";
         i++;
+    }
+#ifdef __x86_64__
+    {
         /* MOV */
         testfns2[i]  = stride_mov;
         testname2[i] = "mov";
         i++;
     }
+#endif
 #ifdef __SSE2__
     {
         /* MOVNTI */
