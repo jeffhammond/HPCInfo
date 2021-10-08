@@ -52,8 +52,12 @@ typedef int64_t __int64;
 #ifndef _MM_HINT_NONE
 #define _MM_HINT_NONE 0
 #endif
-#endif
-#endif
+#endif // ICC
+#endif // __x86_64__
+
+#ifdef __aarch64__
+#include <arm_neon.h>
+#endif // __aarch64__
 
 #ifdef _OPENMP
 #include <omp.h>

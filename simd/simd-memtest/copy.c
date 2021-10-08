@@ -26,6 +26,17 @@ OMP_PARALLEL_FOR
     }
 }
 
+#if __aarch64__
+void copy_vld1q(size_t n, const double * RESTRICT a, double * RESTRICT b)
+{
+OMP_PARALLEL_FOR
+    for (size_t i=0; i<n; i+=2) {
+        float64x2_t t = vld1q_f64(&a[i]);
+        vst1q_f64(&b[i], t);
+    }
+}
+#endif
+
 #if __x86_64__
 void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b)
 {

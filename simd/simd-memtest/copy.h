@@ -4,6 +4,11 @@
 #include "compiler.h"
 
 void copy_ref(size_t n, const double * RESTRICT a, double * RESTRICT b);
+
+/* aarch64 */
+void copy_vld1q(size_t n, const double * RESTRICT a, double * RESTRICT b);
+
+/* x86_64 */
 void copy_mov(size_t n, const double * RESTRICT a, double * RESTRICT b);
 void copy_rep_movsq(size_t n, const double * RESTRICT a, double * RESTRICT b);
 

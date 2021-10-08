@@ -27,6 +27,14 @@ int setup(void)
         testname[i] = "Reference";
         i++;
     }
+#ifdef __aarch64__
+    {
+        /* vld1q_f64 */
+        testfns[i]  = copy_vld1q;
+        testname[i] = "vld1q";
+        i++;
+    }
+#endif
 #ifdef __x86_64__
     {
         /* MOV */
