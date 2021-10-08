@@ -30,7 +30,7 @@
 #define UNROLL_AND_JAM(n)
 #endif
 
-#if defined(__GNUC__) && !defined(__INTEL_COMPILER)
+#if defined(__x86_64__) && defined(__GNUC__) && !defined(__INTEL_COMPILER)
 typedef int64_t __int64;
 #endif
 
@@ -40,8 +40,8 @@ typedef int64_t __int64;
 #define HAS_GNU_EXTENDED_ASM 0
 #endif
 
+#ifdef __x86_64__
 #include "immintrin.h"
-
 #if !(defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 1700))
 #ifndef _MM_UPCONV_PD_NONE
 #define _MM_UPCONV_PD_NONE 0
@@ -51,6 +51,7 @@ typedef int64_t __int64;
 #endif
 #ifndef _MM_HINT_NONE
 #define _MM_HINT_NONE 0
+#endif
 #endif
 #endif
 
