@@ -1,23 +1,23 @@
-OPT	 = -O3 -qopenmp
-FC	 = ifort -std18 -free
-CC	 = icc -std=c11
+#OPT	 = -O3 -qopenmp
+#FC	 = ifort -std18 -free
+#CC	 = icc -std=c11
 
 OPT	 = -O3 # -fopenmp
 FC	 = gfortran -std=f2018 -ffree-form
 CC	 = gcc -std=c11
 
-OPT	 = -O3 -target=gpu
-FC	 = nvfortran
-CC	 = nvc
+#OPT	 = -O3 -target=gpu
+#FC	 = nvfortran
+#CC	 = nvc
 
-CFLAGS   = $(OPT) -acc -mp
-FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
+#CFLAGS   = $(OPT) -acc -mp
+#FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
 
 #LD       = $(FC)
 #LDFLAGS  = $(OPT)
 #LIBS     =
 
-TESTS = ieee array reshape reshape3 reshape4 reshape6 matmul atomic # interop_f
+TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic # interop_f
 
 all: $(TESTS)
 
