@@ -49,12 +49,13 @@ int main(int argc, char* argv[])
         size_t i{0};
         double t0 = wtime();
         while ( !std::is_sorted(v.begin(), v.end()) ) {
-            std::cout << "Iteration " << i << "\n";
+            if (i % 1000000 == 0) std::cout << "Iteration " << i << "\n";
             std::shuffle(v.begin(), v.end(), g);
             i++;
         }
         double t1 = wtime();
         std::cout << "Time: " << t1-t0 << std::endl;
+        std::cout << "Iterations: " << i << std::endl;
     }
 
     return 0;
