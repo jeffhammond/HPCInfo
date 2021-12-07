@@ -26,7 +26,7 @@ static inline double wtime(void)
 
 int main(int argc, char* argv[])
 {
-    size_t n = (argc > 1) ? std::atol(argv[1]) : 100;
+    size_t n = (argc > 1) ? std::atol(argv[1]) : 10;
     std::cout << "bogosort of " << n << " elements" << std::endl;
 
     std::vector<size_t> v(n,0);
