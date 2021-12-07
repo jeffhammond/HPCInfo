@@ -3,7 +3,7 @@
 #CC	 = icc -std=c11
 
 OPT	 = -O3 # -fopenmp
-FC	 = gfortran -std=f2018 -ffree-form
+FC	 = gfortran -std=f2018 -ffree-form -fcheck=all
 CC	 = gcc -std=c11
 
 #OPT	 = -O3 -target=gpu
