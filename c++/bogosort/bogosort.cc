@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
 {
     size_t n = (argc > 1) ? std::atol(argv[1]) : 10;
     std::cout << "bogosort of " << n << " elements" << std::endl;
+    std::cout << "n! estimate: " << (size_t)std::ceil(std::tgamma((double)(n+1))) << std::endl;
 
     std::vector<size_t> v(n,0);
     std::iota(v.begin(), v.end(),0);
@@ -57,7 +58,6 @@ int main(int argc, char* argv[])
         double t1 = wtime();
         std::cout << "Time:        " << t1-t0 << std::endl;
         std::cout << "Iterations:  " << i << std::endl;
-        std::cout << "n! estimate: " << (size_t)std::ceil(std::tgamma((double)(n+1))) << std::endl;
     }
 
     return 0;
