@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <cmath>
  
 template <typename T>
 void print(std::vector<T> v)
@@ -54,8 +55,9 @@ int main(int argc, char* argv[])
             i++;
         }
         double t1 = wtime();
-        std::cout << "Time: " << t1-t0 << std::endl;
-        std::cout << "Iterations: " << i << std::endl;
+        std::cout << "Time:        " << t1-t0 << std::endl;
+        std::cout << "Iterations:  " << i << std::endl;
+        std::cout << "n! estimate: " << (size_t)std::ceil(std::tgamma((double)(n+1))) << std::endl;
     }
 
     return 0;
