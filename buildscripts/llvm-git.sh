@@ -1,34 +1,37 @@
 #!/bin/bash -xe
 
 MAKE_JNUM="-j`nproc`"
+CC=gcc-11
+CXX=g++-11
 
 LLVM_HOME=/opt/llvm
 mkdir -p $LLVM_HOME
 
 LLVM_TEMP=/tmp/llvm-build
-mkdir -p $LLVM_TEMP
 
 # Download/update the source
 cd $LLVM_HOME
 if [ -d $LLVM_HOME/git ] ; then
   cd $LLVM_HOME/git
   git pull
+  git submodule update --init --recursive
 else
-  git clone https://github.com/llvm/llvm-project.git git
+  git clone --recursive https://github.com/llvm/llvm-project.git git
 fi
 
+rm -rf $LLVM_TEMP
+mkdir -p $LLVM_TEMP
 cd $LLVM_TEMP
 
 cmake \
       -G "Unix Makefiles" \
       -DCMAKE_BUILD_TYPE=Release \
-      -DLLVM_ENABLE_RUNTIMES="all" \
-      -DLLVM_ENABLE_PROJECTS="lld;lldb;polly;mlir;clang;clang-tools-extra;compiler-rt;libc;libclc;openmp;flang;pstl" \
+      -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang" \
       -DPYTHON_EXECUTABLE=`which python` \
-      -DCMAKE_C_COMPILER=`which gcc` \
-      -DCMAKE_CXX_COMPILER=`which g++` \
+      -DCMAKE_C_COMPILER=$CC \
+      -DCMAKE_CXX_COMPILER=$CXX \
       -DLLVM_USE_LINKER=gold \
-      $LLVM_HOME
+      $LLVM_HOME/git/llvm
 
 make $MAKE_JNUM
 
