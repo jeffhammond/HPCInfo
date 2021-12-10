@@ -4,7 +4,7 @@ MAKE_JNUM="-j`nproc`"
 CC=gcc-11
 CXX=g++-11
 
-LLVM_HOME=/opt/llvm
+LLVM_HOME=/local/home/jehammond/LLVM
 mkdir -p $LLVM_HOME
 
 LLVM_TEMP=/tmp/llvm-build
@@ -31,6 +31,7 @@ cmake \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
       -DLLVM_USE_LINKER=gold \
+      -DCMAKE_INSTALL_PREFIX=$LLVM_HOME/latest \
       $LLVM_HOME/git/llvm
 
 make $MAKE_JNUM
