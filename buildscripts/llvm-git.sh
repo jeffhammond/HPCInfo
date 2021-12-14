@@ -13,8 +13,15 @@ if [ `uname -s` == Darwin ] ; then
     NUM_LINK=$MEMORY_LINK_LIMIT
 else
     NUM_HWTHREADS=`nproc`
-    NUM_COMPILE=$NUM_HWTHREADS
-    NUM_LINK=$NUM_HWTHREADS
+
+    MEMORY_KILOS=`grep MemTotal /proc/meminfo | awk '{print $2}'`
+    MEMORY_GIGS=$(( $MEMORY_KILOS / 1000000 ))
+
+    MEMORY_COMPILE_LIMIT=$(( $MEMORY_GIGS / 4 ))
+    MEMORY_LINK_LIMIT=$(( $MEMORY_GIGS / 12 ))
+
+    NUM_COMPILE=$MEMORY_COMPILE_LIMIT
+    NUM_LINK=$MEMORY_LINK_LIMIT
 fi
 
 if [ `uname -m` == arm64 ] || [ `uname -m` == aarch64 ] ; then
