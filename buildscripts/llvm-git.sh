@@ -1,6 +1,11 @@
 #!/bin/bash -xe
 
-MAKE_JNUM="-j`nproc`"
+if [ `uname -s` == Darwin ] ; then
+    MAKE_JNUM="-j`sysctl -n hw.ncpu`"
+else
+    MAKE_JNUM="-j`nproc`"
+fi
+
 CC=gcc-11
 CXX=g++-11
 
@@ -26,7 +31,7 @@ cd $LLVM_TEMP
 cmake \
       -G "Unix Makefiles" \
       -DCMAKE_BUILD_TYPE=Release \
-      -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang" \
+      -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;lldb;polly" \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
