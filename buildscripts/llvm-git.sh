@@ -35,12 +35,13 @@ mkdir -p $LLVM_TEMP
 cd $LLVM_TEMP
 
 # lldb busted on MacOS
+# libcxx requires libcxxabi
 cmake \
       -G "Unix Makefiles" \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLVM_TARGETS_TO_BUILD=$MYARCH \
-      -DLLVM_ENABLE_RUNTIMES=libcxx \
-      -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
+      -DLLVM_ENABLE_RUNTIMES="libcxx" \
+      -DLLVM_ENABLE_PROJECTS="libcxxabi;lld;mlir;clang;flang;openmp;pstl;polly" \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
