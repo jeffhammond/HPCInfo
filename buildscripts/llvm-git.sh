@@ -6,6 +6,12 @@ else
     MAKE_JNUM="-j`nproc`"
 fi
 
+if [ `uname -m` == arm64 ] || [ `uname -m` == aarch64 ] ; then
+    MYARCH=AArch64
+else
+    MYARCH=X86
+fi
+
 CC=gcc-11
 CXX=g++-11
 
@@ -28,10 +34,13 @@ rm -rf $LLVM_TEMP
 mkdir -p $LLVM_TEMP
 cd $LLVM_TEMP
 
+# lldb busted on MacOS
 cmake \
       -G "Unix Makefiles" \
       -DCMAKE_BUILD_TYPE=Release \
-      -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;lldb;polly" \
+      -DLLVM_TARGETS_TO_BUILD=$MYARCH \
+      -DLLVM_ENABLE_RUNTIMES=libcxx \
+      -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
