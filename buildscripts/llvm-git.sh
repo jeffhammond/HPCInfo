@@ -30,6 +30,12 @@ else
   git clone --recursive https://github.com/llvm/llvm-project.git git
 fi
 
+if [ `which ninja` ] ; then
+    BUILDTOOL="Ninja"
+else
+    BUILDTOOL="Unix Makefiles"
+fi
+
 rm -rf $LLVM_TEMP
 mkdir -p $LLVM_TEMP
 cd $LLVM_TEMP
@@ -37,8 +43,9 @@ cd $LLVM_TEMP
 # lldb busted on MacOS
 # libcxx requires libcxxabi
 cmake \
-      -G "Unix Makefiles" \
+      -G $BUILDTOOL \
       -DCMAKE_BUILD_TYPE=Release \
+      -DLLVM_PARALLEL_LINK_JOBS=1 \
       -DLLVM_TARGETS_TO_BUILD=$MYARCH \
       -DLLVM_ENABLE_RUNTIMES="libcxxabi;libcxx" \
       -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
@@ -48,5 +55,6 @@ cmake \
       -DLLVM_USE_LINKER=gold \
       $LLVM_HOME/git/llvm
 
-make $MAKE_JNUM
+#make $MAKE_JNUM
+cmake --build . 
 
