@@ -1,9 +1,20 @@
 #!/bin/bash -xe
 
 if [ `uname -s` == Darwin ] ; then
-    MAKE_JNUM="-j`sysctl -n hw.ncpu`"
+    NUM_HWTHREADS=`sysctl -n hw.ncpu`
+
+    MEMORY_BYTES=`sysctl -n hw.memsize`
+    MEMORY_GIGS=$(( $MEMORY_BYTES / 1000000000 ))
+
+    MEMORY_COMPILE_LIMIT=$(( $MEMORY_GIGS / 4 ))
+    MEMORY_LINK_LIMIT=$(( $MEMORY_GIGS / 12 ))
+
+    NUM_COMPILE=$MEMORY_COMPILE_LIMIT
+    NUM_LINK=$MEMORY_LINK_LIMIT
 else
-    MAKE_JNUM="-j`nproc`"
+    NUM_HWTHREADS=`nproc`
+    NUM_COMPILE=$NUM_HWTHREADS
+    NUM_LINK=$NUM_HWTHREADS
 fi
 
 if [ `uname -m` == arm64 ] || [ `uname -m` == aarch64 ] ; then
@@ -36,8 +47,8 @@ else
     BUILDTOOL="Unix Makefiles"
 fi
 
-rm -rf $LLVM_TEMP
-mkdir -p $LLVM_TEMP
+#rm -rf $LLVM_TEMP
+#mkdir -p $LLVM_TEMP
 cd $LLVM_TEMP
 
 # lldb busted on MacOS
@@ -45,7 +56,8 @@ cd $LLVM_TEMP
 cmake \
       -G $BUILDTOOL \
       -DCMAKE_BUILD_TYPE=Release \
-      -DLLVM_PARALLEL_LINK_JOBS=1 \
+      -DLLVM_PARALLEL_LINK_JOBS=$NUM_LINK \
+      -DLLVM_PARALLEL_COMPILE_JOBS=$NUM_COMPILE \
       -DLLVM_TARGETS_TO_BUILD=$MYARCH \
       -DLLVM_ENABLE_RUNTIMES="libcxxabi;libcxx" \
       -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
@@ -55,6 +67,5 @@ cmake \
       -DLLVM_USE_LINKER=gold \
       $LLVM_HOME/git/llvm
 
-#make $MAKE_JNUM
 cmake --build . 
 
