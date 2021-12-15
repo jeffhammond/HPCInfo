@@ -45,7 +45,8 @@ if [ -d $LLVM_HOME/git ] ; then
   git pull
   git submodule update --init --recursive
 else
-  git clone --recursive https://github.com/llvm/llvm-project.git git
+  #git clone --recursive https://github.com/llvm/llvm-project.git git
+  git clone --recursive https://github.com/flang-compiler/f18-llvm-project.git
 fi
 
 if [ `which ninja` ] ; then
