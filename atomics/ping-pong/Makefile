@@ -40,6 +40,8 @@ endif
 #OFLAGS += -g3 -Wl,-pie
 
 OFLAGS   += -DSEQUENTIAL_CONSISTENCY
+BINARY    = sc.$(COMPILER)
+#BINARY    = ar.$(COMPILER)
 CFLAGS   += $(OFLAGS)
 CXXFLAGS += $(OFLAGS)
 
@@ -48,21 +50,21 @@ LIBS     = $(OMPLIBS)
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = cxx11-ping-pong.$(COMPILER) \
-	c99-omp-ping-pong.$(COMPILER) \
-	c11-ping-pong.$(COMPILER) \
-	gcc-ping-pong.$(COMPILER) \
-	cxx11-dekker.$(COMPILER) \
-	cxx11-dekker2.$(COMPILER) \
-	c99-omp-dekker.$(COMPILER)
+TESTS = cxx11-ping-pong.$(BINARY) \
+	c99-omp-ping-pong.$(BINARY) \
+	c11-ping-pong.$(BINARY) \
+	gcc-ping-pong.$(BINARY) \
+	cxx11-dekker.$(BINARY) \
+	cxx11-dekker2.$(BINARY) \
+	c99-omp-dekker.$(BINARY)
 
-ASM =   cxx11-ping-pong.$(COMPILER).s \
-	c99-omp-ping-pong.$(COMPILER).s \
-	c11-ping-pong.$(COMPILER).s \
-	gcc-ping-pong.$(COMPILER).s \
-	cxx11-dekker.$(COMPILER).s \
-	cxx11-dekker2.$(COMPILER).s \
-	c99-omp-dekker.$(COMPILER).s
+ASM =   cxx11-ping-pong.$(BINARY).s \
+	c99-omp-ping-pong.$(BINARY).s \
+	c11-ping-pong.$(BINARY).s \
+	gcc-ping-pong.$(BINARY).s \
+	cxx11-dekker.$(BINARY).s \
+	cxx11-dekker2.$(BINARY).s \
+	c99-omp-dekker.$(BINARY).s
 
 all: $(TESTS)
 
@@ -70,18 +72,18 @@ asm: $(ASM)
 
 # binaries
 
-%.$(COMPILER): %.c
+%.$(BINARY): %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
-%.$(COMPILER): %.cc
+%.$(BINARY): %.cc
 	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
 
 # assembly
 
-%.$(COMPILER).s: %.c
+%.$(BINARY).s: %.c
 	$(CC) $(CFLAGS) $(ASMFLAGS) $< -o $@
 
-%.$(COMPILER).s: %.cc
+%.$(BINARY).s: %.cc
 	$(CXX) $(CXXFLAGS) $(ASMFLAGS) $< -o $@
 
 clean:
