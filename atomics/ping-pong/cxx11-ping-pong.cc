@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 
         /// START TIME
         #pragma omp barrier
-        std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
+        double t0 = omp_get_wtime();
 
         for (int i=0; i<iterations; ++i) {
 
@@ -91,14 +91,14 @@ int main(int argc, char * argv[])
 
         /// STOP TIME
         #pragma omp barrier
-        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        double t1 = omp_get_wtime();
 
         /// PRINT TIME
-        std::chrono::duration<double> dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1-t0);
+        double dt = t1-t0;
         #pragma omp critical
         {
-            std::cout << "total time elapsed = " << dt.count() << "\n";
-            std::cout << "time per iteration = " << dt.count()/iterations  << "\n";
+            std::cout << "total time elapsed = " << dt << "\n";
+            std::cout << "time per iteration = " << dt/iterations  << "\n";
             std::cout << junk << std::endl;
         }
     }
