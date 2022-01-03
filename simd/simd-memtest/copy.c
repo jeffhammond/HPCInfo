@@ -35,6 +35,33 @@ OMP_PARALLEL_FOR
         vst1q_f64(&b[i], t);
     }
 }
+
+void copy_vld1q_x2(size_t n, const double * RESTRICT a, double * RESTRICT b)
+{
+OMP_PARALLEL_FOR
+    for (size_t i=0; i<n; i+=4) {
+        float64x2x2_t t = vld1q_f64_x2(&a[i]);
+        vst1q_f64_x2(&b[i], t);
+    }
+}
+
+void copy_vld1q_x3(size_t n, const double * RESTRICT a, double * RESTRICT b)
+{
+OMP_PARALLEL_FOR
+    for (size_t i=0; i<n; i+=6) {
+        float64x2x3_t t = vld1q_f64_x3(&a[i]);
+        vst1q_f64_x3(&b[i], t);
+    }
+}
+
+void copy_vld1q_x4(size_t n, const double * RESTRICT a, double * RESTRICT b)
+{
+OMP_PARALLEL_FOR
+    for (size_t i=0; i<n; i+=8) {
+        float64x2x4_t t = vld1q_f64_x4(&a[i]);
+        vst1q_f64_x4(&b[i], t);
+    }
+}
 #endif
 
 #if __x86_64__

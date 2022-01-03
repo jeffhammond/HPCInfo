@@ -7,6 +7,9 @@ void copy_ref(size_t n, const double * RESTRICT a, double * RESTRICT b);
 
 /* aarch64 */
 void copy_vld1q(size_t n, const double * RESTRICT a, double * RESTRICT b);
+void copy_vld1q_x2(size_t n, const double * RESTRICT a, double * RESTRICT b);
+void copy_vld1q_x3(size_t n, const double * RESTRICT a, double * RESTRICT b);
+void copy_vld1q_x4(size_t n, const double * RESTRICT a, double * RESTRICT b);
 
 /* x86_64 */
 void copy_mov(size_t n, const double * RESTRICT a, double * RESTRICT b);

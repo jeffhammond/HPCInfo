@@ -33,6 +33,18 @@ int setup(void)
         testfns[i]  = copy_vld1q;
         testname[i] = "vld1q";
         i++;
+        /* vld1q_f64_x2 */
+        testfns[i]  = copy_vld1q_x2;
+        testname[i] = "vld1q_x2";
+        i++;
+        /* vld1q_f64_x3 */
+        testfns[i]  = copy_vld1q_x3;
+        testname[i] = "vld1q_x3";
+        i++;
+        /* vld1q_f64_x4 */
+        testfns[i]  = copy_vld1q_x4;
+        testname[i] = "vld1q_x4";
+        i++;
     }
 #endif
 #ifdef __x86_64__
