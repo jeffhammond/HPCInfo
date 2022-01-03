@@ -14,8 +14,6 @@
 # error No OpenMP support!
 #endif
 
-#define SEQUENTIAL_CONSISTENCY 0
-
 #if SEQUENTIAL_CONSISTENCY
 auto load_model  = std::memory_order_seq_cst;
 auto store_model = std::memory_order_seq_cst;
