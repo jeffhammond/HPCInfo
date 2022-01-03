@@ -3,14 +3,14 @@ ifndef COMPILER
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       := gcc
-CXX      := g++
+CC       := gcc-11
+CXX      := g++-11
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
-CC       := /usr/local/Cellar/llvm/5.0.0/bin/clang
-CXX      := /usr/local/Cellar/llvm/5.0.0/bin/clang++
-OMPFLAGS  = -I/usr/local/Cellar/libiomp/20150701/include/libiomp
-OMPLIBS   = -L/usr/local/Cellar/libiomp/20150701/lib -liomp5
+CC       := clang-12
+CXX      := clang++-12 -stdlib=libc++
+OMPFLAGS  = 
+OMPLIBS   = 
 ASMFLAGS  = -S -fverbose-asm
 # Clang tries to link libomp, so we symlink this to libiomp5
 else ifeq ($(COMPILER),intel)
@@ -39,9 +39,11 @@ endif
 # Apple debug 
 #OFLAGS += -g3 -Wl,-pie
 
-#OFLAGS   += -DSEQUENTIAL_CONSISTENCY
-#BINARY    = sc.$(COMPILER)
-BINARY    = ar.$(COMPILER)
+OFLAGS   += -mcpu=neoverse-n1 #-mno-outline-atomics
+
+OFLAGS   += -DSEQUENTIAL_CONSISTENCY
+BINARY    = sc.$(COMPILER)
+#BINARY    = ar.$(COMPILER)
 CFLAGS   += $(OFLAGS)
 CXXFLAGS += $(OFLAGS)
 
