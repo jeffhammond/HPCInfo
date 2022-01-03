@@ -38,15 +38,22 @@ mkdir -p $LLVM_HOME
 
 LLVM_TEMP=/tmp/llvm-build
 
+#REPO=https://github.com/llvm/llvm-project.git
+REPO=https://github.com/flang-compiler/f18-llvm-project.git
+#REPO=https://github.com/Sezoir/f18-llvm-project.git # SPECIAL
+
 # Download/update the source
 cd $LLVM_HOME
 if [ -d $LLVM_HOME/git ] ; then
   cd $LLVM_HOME/git
+  git remote remove origin
+  git remote add origin $REPO
+  git fetch origin
+  git checkout fir-dev
   git pull
   git submodule update --init --recursive
 else
-  #git clone --recursive https://github.com/llvm/llvm-project.git git
-  git clone --recursive https://github.com/flang-compiler/f18-llvm-project.git
+  git clone --recursive $REPO $LLVM_HOME/git
 fi
 
 if [ `which ninja` ] ; then
