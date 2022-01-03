@@ -36,19 +36,23 @@ CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
 CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
 endif
 
-# Apple debug
-OFLAGS += -g3 -Wl,-pie
+# Apple debug 
+#OFLAGS += -g3 -Wl,-pie
 
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
+#BINARY    = sc.$(COMPILER)
+BINARY    = ar.$(COMPILER)
+CFLAGS   += $(OFLAGS)
+CXXFLAGS += $(OFLAGS)
 
 LIBS     = $(OMPLIBS)
 
 LD       = $(CXX)
 LDFLAGS  = $(OFLAGS)
 
-TESTS = cxx11-baton.$(COMPILER)
+TESTS = cxx11-baton.$(BINARY)
 
-ASM =   cxx11-baton.$(COMPILER).s
+ASM =   cxx11-baton.$(BINARY).s
 
 all: $(TESTS)
 
@@ -56,18 +60,18 @@ asm: $(ASM)
 
 # binaries
 
-%.$(COMPILER): %.c
+%.$(BINARY): %.c
 	$(CC) $(CFLAGS) $< $(LIBS) -o $@
 
-%.$(COMPILER): %.cc
+%.$(BINARY): %.cc
 	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
 
 # assembly
 
-%.$(COMPILER).s: %.c
+%.$(BINARY).s: %.c
 	$(CC) $(CFLAGS) $(ASMFLAGS) $< -o $@
 
-%.$(COMPILER).s: %.cc
+%.$(BINARY).s: %.cc
 	$(CXX) $(CXXFLAGS) $(ASMFLAGS) $< -o $@
 
 clean:
