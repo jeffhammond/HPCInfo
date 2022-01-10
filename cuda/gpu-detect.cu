@@ -186,6 +186,7 @@ void find_nvgpu(void)
         printf("clockRate                               = %.3f GHz\n", dp.clockRate*1.e-6);
 
         cuda_flops_per_sm_s r = cuda_flops_per_sm(major,minor);
+
         printf("FP64 FMA/clock per SM                   = %d\n", r.fp64);
         printf("FP32 FMA/clock per SM                   = %d\n", r.fp32);
                                                                  // FMA=2 * ops/clock/SM * SMs * GHz
