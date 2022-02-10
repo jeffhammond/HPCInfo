@@ -1,18 +1,22 @@
 #!/bin/bash -v
 
-TOP=$HOME/TOOLS
+TEMP=/tmp/temp
+PREFIX=/tmp/usr/local
 
-MAKE_JNUM=1
-M4_VERSION=1.4.17
-LIBTOOL_VERSION=2.4.4
-AUTOCONF_VERSION=2.69
-AUTOMAKE_VERSION=1.15
+MAKE_JNUM="-j8"
 
-cd ${TOP}
+M4_VERSION=1.4.19
+LIBTOOL_VERSION=2.4.6
+AUTOCONF_VERSION=2.71
+AUTOMAKE_VERSION=1.16.5
+
+mkdir -p ${TEMP}
+mkdir -p ${PREFIX}
+
+cd ${TEMP}
 TOOL=m4
 TDIR=${TOOL}-${M4_VERSION}
 FILE=${TDIR}.tar.gz
-BIN=${TOP}/bin/${TOOL}
 if [ -f ${FILE} ] ; then
   echo ${FILE} already exists! Using existing copy.
 else
@@ -22,24 +26,19 @@ if [ -d ${TDIR} ] ; then
   echo ${TDIR} already exists! Using existing copy.
 else
   echo Unpacking ${FILE}
-  tar -xzf ${FILE}
+  tar -xaf ${FILE}
 fi
-if [ -f ${BIN} ] ; then
-  echo ${BIN} already exists! Skipping build.
-else
-  cd ${TOP}/${TDIR}                                                                                                                                                   
-  ./configure --prefix=${TOP} && make -j ${MAKE_JNUM} && make install
-  if [ "x$?" != "x0" ] ; then
-    echo FAILURE 1
-    exit
-  fi
+cd ${TEMP}/${TDIR}
+./configure --prefix=${PREFIX} && make ${MAKE_JNUM} && make install
+if [ "x$?" != "x0" ] ; then
+  echo FAILURE 1
+  exit
 fi
 
-cd ${TOP}
+cd ${TEMP}
 TOOL=libtool
 TDIR=${TOOL}-${LIBTOOL_VERSION}
 FILE=${TDIR}.tar.gz
-BIN=${TOP}/bin/${TOOL}
 if [ ! -f ${FILE} ] ; then
   wget http://ftp.gnu.org/gnu/${TOOL}/${FILE}
 else
@@ -47,26 +46,21 @@ else
 fi
 if [ ! -d ${TDIR} ] ; then
   echo Unpacking ${FILE}
-  tar -xzf ${FILE}
+  tar -xaf ${FILE}
 else
   echo ${TDIR} already exists! Using existing copy.
 fi
-if [ -f ${BIN} ] ; then
-  echo ${BIN} already exists! Skipping build.
-else
-  cd ${TOP}/${TDIR}
-  ./configure --prefix=${TOP} M4=${TOP}/bin/m4 && make -j ${MAKE_JNUM} && make install
-  if [ "x$?" != "x0" ] ; then
-    echo FAILURE 2
-    exit
-  fi
+cd ${TEMP}/${TDIR}
+./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && make install
+if [ "x$?" != "x0" ] ; then
+  echo FAILURE 2
+  exit
 fi
 
-cd ${TOP}
+cd ${TEMP}
 TOOL=autoconf
 TDIR=${TOOL}-${AUTOCONF_VERSION}
 FILE=${TDIR}.tar.gz
-BIN=${TOP}/bin/${TOOL}
 if [ ! -f ${FILE} ] ; then
   wget http://ftp.gnu.org/gnu/${TOOL}/${FILE}
 else
@@ -74,26 +68,21 @@ else
 fi
 if [ ! -d ${TDIR} ] ; then
   echo Unpacking ${FILE}
-  tar -xzf ${FILE}
+  tar -xaf ${FILE}
 else
   echo ${TDIR} already exists! Using existing copy.
 fi
-if [ -f ${BIN} ] ; then
-  echo ${BIN} already exists! Skipping build.
-else
-  cd ${TOP}/${TDIR}
-  ./configure --prefix=${TOP} M4=${TOP}/bin/m4 && make -j ${MAKE_JNUM} && make install
-  if [ "x$?" != "x0" ] ; then
-    echo FAILURE 3
-    exit
-  fi
+cd ${TEMP}/${TDIR}
+./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && make install
+if [ "x$?" != "x0" ] ; then
+  echo FAILURE 3
+  exit
 fi
 
-cd ${TOP}
+cd ${TEMP}
 TOOL=automake
 TDIR=${TOOL}-${AUTOMAKE_VERSION}
 FILE=${TDIR}.tar.gz
-BIN=${TOP}/bin/${TOOL}
 if [ ! -f ${FILE} ] ; then
   wget http://ftp.gnu.org/gnu/${TOOL}/${FILE}
 else
@@ -101,22 +90,17 @@ else
 fi
 if [ ! -d ${TDIR} ] ; then
   echo Unpacking ${FILE}
-  tar -xzf ${FILE}
+  tar -xaf ${FILE}
 else
   echo ${TDIR} already exists! Using existing copy.
 fi
-if [ -f ${BIN} ] ; then
-  echo ${BIN} already exists! Skipping build.
-else
-  cd ${TOP}/${TDIR}
-  ./configure --prefix=${TOP} M4=${TOP}/bin/m4 && make -j ${MAKE_JNUM} && make install
-  if [ "x$?" != "x0" ] ; then
-    echo FAILURE 4
-    exit
-  fi
+cd ${TEMP}/${TDIR}
+./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && make install
+if [ "x$?" != "x0" ] ; then
+  echo FAILURE 4
+  exit
 fi
 
-cd ${TOP}
 #rm -f autoconf-${AUTOCONF_VERSION}.tar.gz
 #rm -f automake-${AUTOMAKE_VERSION}.tar.gz
 #rm -f libtool-${LIBTOOL_VERSION}.tar.gz
