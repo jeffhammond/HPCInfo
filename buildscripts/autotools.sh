@@ -1,7 +1,10 @@
 #!/bin/bash -v
 
-TEMP=/tmp/temp
-PREFIX=/tmp/usr/local
+set -ex
+
+TEMP=/tmp/
+PREFIX=/usr/local
+SUDO=sudo
 
 MAKE_JNUM="-j8"
 
@@ -29,7 +32,7 @@ else
   tar -xaf ${FILE}
 fi
 cd ${TEMP}/${TDIR}
-./configure --prefix=${PREFIX} && make ${MAKE_JNUM} && make install
+./configure --prefix=${PREFIX} && make ${MAKE_JNUM} && ${SUDO} make install
 if [ "x$?" != "x0" ] ; then
   echo FAILURE 1
   exit
@@ -51,7 +54,7 @@ else
   echo ${TDIR} already exists! Using existing copy.
 fi
 cd ${TEMP}/${TDIR}
-./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && make install
+./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && ${SUDO} make install
 if [ "x$?" != "x0" ] ; then
   echo FAILURE 2
   exit
@@ -73,7 +76,7 @@ else
   echo ${TDIR} already exists! Using existing copy.
 fi
 cd ${TEMP}/${TDIR}
-./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && make install
+./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && ${SUDO} make install
 if [ "x$?" != "x0" ] ; then
   echo FAILURE 3
   exit
@@ -95,7 +98,7 @@ else
   echo ${TDIR} already exists! Using existing copy.
 fi
 cd ${TEMP}/${TDIR}
-./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && make install
+./configure --prefix=${PREFIX} M4=${PREFIX}/bin/m4 && make ${MAKE_JNUM} && ${SUDO} make install
 if [ "x$?" != "x0" ] ; then
   echo FAILURE 4
   exit
