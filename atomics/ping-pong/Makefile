@@ -36,12 +36,15 @@ CFLAGS   := $(OFLAGS) $(OMPFLAGS) -std=gnu11
 CXXFLAGS := $(OFLAGS) $(OMPFLAGS) -std=gnu++11
 endif
 
-# Apple debug 
+# Apple debug
 #OFLAGS += -g3 -Wl,-pie
 
-OFLAGS   += -DSEQUENTIAL_CONSISTENCY
-BINARY    = sc.$(COMPILER)
-#BINARY    = ar.$(COMPILER)
+ifeq ($(model),sc)
+    OFLAGS   += -DSEQUENTIAL_CONSISTENCY
+    BINARY    = sc.$(COMPILER)
+else
+    BINARY    = ar.$(COMPILER)
+endif
 CFLAGS   += $(OFLAGS)
 CXXFLAGS += $(OFLAGS)
 
