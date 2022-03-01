@@ -1,5 +1,57 @@
 #!/bin/bash -xe
 
+CC=gcc-11
+CXX=g++-11
+
+if [ `uname -s` == Darwin ] ; then
+    # my laptop
+    LLVM_HOME=/opt/llvm
+else
+    # HPC servers
+    LLVM_HOME=/local/home/${USER}/LLVM
+fi
+mkdir -p $LLVM_HOME
+
+LLVM_TEMP=/tmp/llvm-build
+#rm -rf $LLVM_TEMP
+mkdir -p $LLVM_TEMP
+cd $LLVM_TEMP
+
+#REPO=https://github.com/llvm/llvm-project.git
+REPO=https://github.com/flang-compiler/f18-llvm-project.git
+#REPO=https://github.com/Sezoir/f18-llvm-project.git # SPECIAL
+
+# Download/update the source
+cd $LLVM_HOME
+if [ -d $LLVM_HOME/git ] ; then
+  cd $LLVM_HOME/git
+  git remote remove origin
+  git remote add origin $REPO
+  git fetch origin
+  git checkout fir-dev -b fir-dev || echo exists
+  git branch --set-upstream-to=origin/fir-dev fir-dev || echo dunno
+  git pull
+  git submodule update --init --recursive
+else
+  git clone --recursive $REPO $LLVM_HOME/git
+fi
+
+if [ `which ninja` ] ; then
+    BUILDTOOL="Ninja"
+else
+    BUILDTOOL="Unix Makefiles"
+fi
+
+if [ `uname -m` == arm64 ] || [ `uname -m` == aarch64 ] ; then
+    MYARCH=AArch64
+else
+    MYARCH=X86
+fi
+
+########################################################
+# throttle the build so the machine remains responsive #
+########################################################
+
 if [ `uname -s` == Darwin ] ; then
     NUM_HWTHREADS=`sysctl -n hw.ncpu`
 
@@ -23,48 +75,6 @@ else
     NUM_COMPILE=$MEMORY_COMPILE_LIMIT
     NUM_LINK=$MEMORY_LINK_LIMIT
 fi
-
-if [ `uname -m` == arm64 ] || [ `uname -m` == aarch64 ] ; then
-    MYARCH=AArch64
-else
-    MYARCH=X86
-fi
-
-CC=gcc-11
-CXX=g++-11
-
-LLVM_HOME=/local/home/jehammond/LLVM
-mkdir -p $LLVM_HOME
-
-LLVM_TEMP=/tmp/llvm-build
-
-#REPO=https://github.com/llvm/llvm-project.git
-REPO=https://github.com/flang-compiler/f18-llvm-project.git
-#REPO=https://github.com/Sezoir/f18-llvm-project.git # SPECIAL
-
-# Download/update the source
-cd $LLVM_HOME
-if [ -d $LLVM_HOME/git ] ; then
-  cd $LLVM_HOME/git
-  git remote remove origin
-  git remote add origin $REPO
-  git fetch origin
-  git checkout fir-dev
-  git pull
-  git submodule update --init --recursive
-else
-  git clone --recursive $REPO $LLVM_HOME/git
-fi
-
-if [ `which ninja` ] ; then
-    BUILDTOOL="Ninja"
-else
-    BUILDTOOL="Unix Makefiles"
-fi
-
-#rm -rf $LLVM_TEMP
-#mkdir -p $LLVM_TEMP
-cd $LLVM_TEMP
 
 # lldb busted on MacOS
 # libcxx requires libcxxabi
