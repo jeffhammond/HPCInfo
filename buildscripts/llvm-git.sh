@@ -30,13 +30,22 @@ else
     MYARCH=X86
 fi
 
-CC=gcc-11
-CXX=g++-11
+if [ `hostname` == "xavier-agx" ] ; then
+    CC=/samsung/GCC/11.2.0/bin/gcc-11
+    CXX=/samsung/GCC/11.2.0/bin/g++-11
+    LLVM_HOME=/samsung/LLVM
+    LLVM_TEMP=/samsung/LLVM/build
+else
+    CC=gcc-11
+    CXX=g++-11
+    LLVM_HOME=/local/home/$USER/LLVM
+    LLVM_TEMP=/tmp/$USER/build
+fi
 
-LLVM_HOME=/local/home/jehammond/LLVM
 mkdir -p $LLVM_HOME
-
-LLVM_TEMP=/tmp/llvm-build
+#rm -rf $LLVM_TEMP
+mkdir -p $LLVM_TEMP
+cd $LLVM_TEMP
 
 #REPO=https://github.com/llvm/llvm-project.git
 REPO=https://github.com/flang-compiler/f18-llvm-project.git
@@ -48,8 +57,9 @@ if [ -d $LLVM_HOME/git ] ; then
   cd $LLVM_HOME/git
   git remote remove origin
   git remote add origin $REPO
-  git fetch origin
+  git fetch --all # origin
   git checkout fir-dev
+  git branch --set-upstream-to=origin/fir-dev fir-dev
   git pull
   git submodule update --init --recursive
 else
@@ -61,10 +71,6 @@ if [ `which ninja` ] ; then
 else
     BUILDTOOL="Unix Makefiles"
 fi
-
-#rm -rf $LLVM_TEMP
-#mkdir -p $LLVM_TEMP
-cd $LLVM_TEMP
 
 # lldb busted on MacOS
 # libcxx requires libcxxabi
@@ -83,5 +89,5 @@ cmake \
       -DCMAKE_INSTALL_PREFIX=$LLVM_HOME/latest \
       $LLVM_HOME/git/llvm
 
-cmake --build . 
+cmake --build .
 
