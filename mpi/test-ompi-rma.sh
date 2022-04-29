@@ -16,7 +16,7 @@ for VER in $VERSIONS ; do
 
     # source
     pushd $OMPI_SRC
-    #git clean -dfx
+    git clean -dfx
     git reset --hard
     git checkout .
     git checkout $VER
@@ -28,7 +28,7 @@ for VER in $VERSIONS ; do
     #rm -rf build-ompi-$VER install-ompi-$VER armci-mpi-ompi-$VER
     mkdir -p build-ompi-$VER install-ompi-$VER
     pushd build-ompi-$VER
-    $OMPI_SRC/configure CC=gcc --prefix=/tmp/install-ompi-$VER --without-psm2 --without-libfabric --without-ofi --without-cuda --enable-mpi-fortran=none --enable-static --disable-shared
+    $OMPI_SRC/configure CC="$2" CFLAGS="$3" --prefix=/tmp/install-ompi-$VER --without-psm2 --without-libfabric --without-ofi --without-cuda --enable-mpi-fortran=none #--enable-static --disable-shared
     make -j`nproc` install
     popd
 
@@ -39,7 +39,7 @@ for VER in $VERSIONS ; do
     git clone --depth 1 https://github.com/pmodels/armci-mpi.git /tmp/armci-mpi-ompi-$VER
     pushd /tmp/armci-mpi-ompi-$VER
     ./autogen.sh
-    ./configure CC=/tmp/install-ompi-$VER/bin/mpicc --enable-g
+    ./configure CC=/tmp/install-ompi-$VER/bin/mpicc --enable-g CFLAGS="$3"
     make -j`nproc` checkprogs
     #MPIRUN=/tmp/install-ompi-$VER/bin/mpirun make check
     /tmp/install-ompi-$VER/bin/mpirun -n 1 ./tests/mpi/test_win_model
