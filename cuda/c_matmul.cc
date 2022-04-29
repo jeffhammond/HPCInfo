@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include <cutensor.h>
 
-const bool debug = false;
+[[maybe_unused]] const bool debug = false;
 
 static inline void check(const cutensorStatus_t s, const char * info = "")
 {
@@ -68,10 +68,6 @@ int main(int argc, char* argv[])
 
     std::cout << "dims=" << m << "," << n << "," << k << std::endl;
 
-    int64_t eA[2]={m,k};
-    int64_t eB[2]={k,n};
-    int64_t eC[2]={m,n};
-
     cudaError_t s2;
 
     cudaStream_t stream;
@@ -87,6 +83,10 @@ int main(int argc, char* argv[])
     cutensorContractionFind_t f;
     s = cutensorInitContractionFind(&h, &f, CUTENSOR_ALGO_DEFAULT);
     check(s,"cutensorInitContractionFind");
+
+    int64_t eA[2]={m,k};
+    int64_t eB[2]={k,n};
+    int64_t eC[2]={m,n};
 
     float *pA, *pB, *pC;
 

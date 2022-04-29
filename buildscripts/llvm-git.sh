@@ -1,22 +1,29 @@
 #!/bin/bash -xe
 
-CC=gcc-11
-CXX=g++-11
-
-if [ `uname -s` == Darwin ] ; then
-    # my laptop
+if [ `hostname` == "xavier-agx" ] ; then
+    CC=/samsung/GCC/11.2.0/bin/gcc-11
+    CXX=/samsung/GCC/11.2.0/bin/g++-11
+    LLVM_HOME=/samsung/LLVM
+    LLVM_TEMP=/samsung/LLVM/build
+elif [ `uname -s` == Darwin ] ; then
+    CC=gcc-12
+    CXX=g++-12
     LLVM_HOME=/opt/llvm
+    LLVM_TEMP=/tmp/llvm-build
 else
+    CC=gcc-11
+    CXX=g++-11
     if [ `hostname` == "nuclear" ] ; then
         LLVM_HOME=/opt/llvm
     else
-        # HPC servers
         LLVM_HOME=/local/home/${USER}/LLVM
     fi
+    LLVM_TEMP=/tmp/$USER/build
 fi
 mkdir -p $LLVM_HOME
 
-LLVM_TEMP=/tmp/llvm-build
+mkdir -p $LLVM_HOME
+
 #rm -rf $LLVM_TEMP
 mkdir -p $LLVM_TEMP
 cd $LLVM_TEMP
@@ -97,5 +104,5 @@ cmake \
       -DCMAKE_INSTALL_PREFIX=$LLVM_HOME/latest \
       $LLVM_HOME/git/llvm
 
-cmake --build . 
+cmake --build .
 
