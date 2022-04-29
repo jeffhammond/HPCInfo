@@ -39,6 +39,8 @@ endif
 # Apple debug
 #OFLAGS += -g3 -Wl,-pie
 
+OFLAGS += -march=armv8.2-a
+
 ifeq ($(model),sc)
     OFLAGS   += -DSEQUENTIAL_CONSISTENCY
     BINARY    = sc.$(COMPILER)

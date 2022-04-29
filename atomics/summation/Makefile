@@ -1,4 +1,4 @@
-GCC_VERSION = -7
+GCC_VERSION = -11
 
 OFLAGS = -O3
 
@@ -10,7 +10,7 @@ OFLAGS = -O3
 #OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 
 ifndef COMPILER
-    COMPILER=intel
+    COMPILER=gcc
 endif
 
 ifeq ($(COMPILER),gcc)

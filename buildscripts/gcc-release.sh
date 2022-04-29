@@ -1,16 +1,11 @@
 #!/bin/bash -xe
 
-#GCC_BASE=/opt/gcc
-GCC_BASE=$HOME/GCC/
-#GCC_TEMP=/tmp
-GCC_TEMP=/localdisk/${USER}
+GCC_BASE=/samsung/GCC/
+GCC_TEMP=/samsung/GCC/tmp
 
-#MAKE_JNUM="-j40"
 MAKE_JNUM="-j8"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
-
-CPU=native
 
 # process_lib: download, configure, build, install one of the gcc prerequisite
 # libraries
@@ -52,7 +47,7 @@ process_lib() {
     fi
 }
 
-for v in 10.2.0 9.3.0 8.4.0 7.5.0 ; do
+for v in 11.2.0 10.3.0 9.4.0 8.5.0 ; do
     GCC_VERSION=$v
     # There is a better way to do this...
     if [ ${GCC_VERSION:0:1} -eq 1 ] ; then
@@ -60,6 +55,7 @@ for v in 10.2.0 9.3.0 8.4.0 7.5.0 ; do
     else
         GCC_SUFFIX=-${GCC_VERSION:0:1}
     fi
+    time \
     process_lib gcc ${GCC_VERSION} gz releases/gcc-${GCC_VERSION} /bin/gcc "
       --program-suffix=${GCC_SUFFIX} \
       --enable-shared --enable-static \
@@ -68,7 +64,6 @@ for v in 10.2.0 9.3.0 8.4.0 7.5.0 ; do
       --with-system-zlib \
       --enable-__cxa_atexit \
       --enable-languages=c,c++,fortran \
-      --with-tune=$CPU \
       --enable-bootstrap \
       --enable-lto \
       --enable-gold=yes \
