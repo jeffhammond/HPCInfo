@@ -7,8 +7,12 @@ if [ `uname -s` == Darwin ] ; then
     # my laptop
     LLVM_HOME=/opt/llvm
 else
-    # HPC servers
-    LLVM_HOME=/local/home/${USER}/LLVM
+    if [ `hostname` == "nuclear" ] ; then
+        LLVM_HOME=/opt/llvm
+    else
+        # HPC servers
+        LLVM_HOME=/local/home/${USER}/LLVM
+    fi
 fi
 mkdir -p $LLVM_HOME
 
