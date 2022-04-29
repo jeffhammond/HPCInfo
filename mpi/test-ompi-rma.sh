@@ -4,6 +4,8 @@ set -ex
 
 OMPI_SRC=$HOME/MPI/ompi
 
+#git clone --recursive https://github.com/open-mpi/ompi.git $OMPI_SRC
+
 pushd $OMPI_SRC ; git fetch --all ; git remote prune origin ; git remote set-head origin --auto ; git gc
 
 #VERSIONS=`pushd $OMPI_SRC >& /dev/null ; git tag | sort -k1r | grep -v "v[1234]" ; popd >& /dev/null`
@@ -25,10 +27,10 @@ for VER in $VERSIONS ; do
 
     # build MPI
     pushd /tmp
-    #rm -rf build-ompi-$VER install-ompi-$VER armci-mpi-ompi-$VER
+    rm -rf build-ompi-$VER install-ompi-$VER
     mkdir -p build-ompi-$VER install-ompi-$VER
     pushd build-ompi-$VER
-    $OMPI_SRC/configure CC="$2" CFLAGS="$3" --prefix=/tmp/install-ompi-$VER --without-psm2 --without-libfabric --without-ofi --without-cuda --enable-mpi-fortran=none #--enable-static --disable-shared
+    $OMPI_SRC/configure CC="$2" CFLAGS="$3" --prefix=/tmp/install-ompi-$VER --without-psm2 --without-libfabric --without-ofi --without-cuda --enable-mpi-fortran=none --disable-oshmem --without-xpmem --without-ucx
     make -j`nproc` install
     popd
 
