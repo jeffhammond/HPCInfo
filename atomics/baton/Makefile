@@ -3,8 +3,8 @@ ifndef COMPILER
 endif
 
 ifeq ($(COMPILER),gcc)
-CC       := gcc-11
-CXX      := g++-11
+CC       := gcc
+CXX      := g++
 ASMFLAGS  = -S -fverbose-asm
 else ifeq ($(COMPILER),clang)
 CC       := clang-12
@@ -39,7 +39,8 @@ endif
 # Apple debug 
 #OFLAGS += -g3 -Wl,-pie
 
-OFLAGS   += -mcpu=neoverse-n1 #-mno-outline-atomics
+#OFLAGS   += -mcpu=neoverse-n1 #-mno-outline-atomics
+OFLAGS   += -march=armv8-a
 
 OFLAGS   += -DSEQUENTIAL_CONSISTENCY
 BINARY    = sc.$(COMPILER)

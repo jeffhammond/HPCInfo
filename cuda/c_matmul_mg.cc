@@ -1,8 +1,10 @@
 #include <cstdio>
 #include <iostream>
+#include <vector>
 
 #include <cuda_runtime.h>
 #include <cutensor.h>
+#include <cutensorMg.h>
 
 [[maybe_unused]] const bool debug = false;
 
@@ -68,26 +70,91 @@ int main(int argc, char* argv[])
 
     std::cout << "dims=" << m << "," << n << "," << k << std::endl;
 
+    std::vector<int> devices;
+    int numDevices;
+    check(cudaGetDeviceCount(&numDevices),"cudaGetDeviceCount");
+    std::cout << "num GPUs=" << numDevices << std::endl;
+    for (int i = 0; i < numDevices; i++) {   
+        devices.push_back(i);
+    }
+
     cudaError_t s2;
 
     cudaStream_t stream;
     s2 = cudaStreamCreate(&stream);
-    check(s2);
+    check(s2,"cudaStreamCreate");
 
     cutensorStatus_t s;
-    cutensorHandle_t h;
+    //cutensorHandle_t h;
+    cutensorMgHandle_t h;
 
-    s = cutensorInit(&h);
-    check(s,"cutensorInit");
+    //s = cutensorInit(&h);
+    //check(s,"cutensorInit");
+    s = cutensorMgCreate(&h, devices.size(), devices.data());
+    check(s,"cutensorMgCreate");
 
-    cutensorContractionFind_t f;
-    s = cutensorInitContractionFind(&h, &f, CUTENSOR_ALGO_DEFAULT);
-    check(s,"cutensorInitContractionFind");
+    //cutensorContractionFind_t f;
+    //s = cutensorInitContractionFind(&h, &f, CUTENSOR_ALGO_DEFAULT);
+    //check(s,"cutensorInitContractionFind");
+    cutensorMgContractionFind_t f;
+    s = cutensorMgCreateContractionFind(h, &f, CUTENSORMG_ALGO_DEFAULT);
+    check(s,"cutensorMgCreateContractionFind");
 
-    int64_t eA[2]={m,k};
-    int64_t eB[2]={k,n};
-    int64_t eC[2]={m,n};
+    int mbm, mbn, mbk; // mode blocking
+    switch (numDevices) {
+        case 1:
+            mbm = mbn = mbk = 1;
+            break;
+        case 2:
+            mbm = 2; mbn = mbk = 1;
+            break;
+        case 3:
+            mbm = 3; mbn = mbk = 1;
+            break;
+        case 4:
+            mbm = mbn = 2; mbk = 1;
+            break;
+        case 6:
+            mbm = 3; mbn = 2; mbk = 1;
+            break;
+        case 8:
+            mbm = 4; mbn = 2; mbk = 1;
+            //mbm = mbn = mbk = 2;
+            break;
+        default:
+            std::cout << "i am confused" << std::endl;
+            std::abort();
+            break;
+    }
+    if (m%mbm || n%mbn || k%mbk) {
+        std::cout << "dimensions must be evenly divisible by blocking!" << std::endl;
+        return 1;
+    }
 
+    int64_t eA[2]={m,k}, bA[2]={m/mbm,k/mbk};
+    int64_t eB[2]={k,n}, bB[2]={k/mbk,n/mbn};
+    int64_t eC[2]={m,n}, bC[2]={m/mbm,n/mbn};
+    int32_t dmbA[2]={mbm,mbk};
+    int32_t dmbB[2]={mbk,mbn};
+    int32_t dmbC[2]={mbm,mbn};
+
+    //cutensorTensorDescriptor_t dA, dB, dC;
+    //s = cutensorInitTensorDescriptor(&h, &dA, 2, eA, NULL, bA, CUDA_R_32F, CUTENSOR_OP_IDENTITY);
+    //check(s,"cutensorInitTensorDescriptor");
+    //s = cutensorInitTensorDescriptor(&h, &dB, 2, eB, NULL, bB, CUDA_R_32F, CUTENSOR_OP_IDENTITY);
+    //check(s,"cutensorInitTensorDescriptor");
+    //s = cutensorInitTensorDescriptor(&h, &dC, 2, eC, NULL, bC, CUDA_R_32F, CUTENSOR_OP_IDENTITY);
+    //check(s,"cutensorInitTensorDescriptor");
+
+    cutensorMgTensorDescriptor_t dA, dB, dC;
+    s = cutensorMgCreateTensorDescriptor(h, &dA, 2, eA, NULL, bA, NULL, dmbA, numDevices, devices.data(), CUDA_R_32F);
+    check(s,"cutensorMgCreateTensorDescriptor");
+    s = cutensorMgCreateTensorDescriptor(h, &dB, 2, eB, NULL, bB, NULL, dmbB, numDevices, devices.data(), CUDA_R_32F);
+    check(s,"cutensorMgCreateTensorDescriptor");
+    s = cutensorMgCreateTensorDescriptor(h, &dC, 2, eC, NULL, bC, NULL, dmbC, numDevices, devices.data(), CUDA_R_32F);
+    check(s,"cutensorMgCreateTensorDescriptor");
+
+#if 0
     float *pA, *pB, *pC;
 
     s2 = cudaMallocManaged(&pA, eA[0]*eA[1]*sizeof(float) );
@@ -104,17 +171,6 @@ int main(int argc, char* argv[])
     check(s2,"cudaMallocManaged");
     mset(eC[0],eC[1],pC,0);
     mprint(eC[0],eC[1],pC,"C before");
-
-    cutensorTensorDescriptor_t dA, dB, dC;
-
-    s = cutensorInitTensorDescriptor(&h, &dA, 2, eA, NULL, CUDA_R_32F, CUTENSOR_OP_IDENTITY);
-    check(s,"cutensorInitTensorDescriptor");
-
-    s = cutensorInitTensorDescriptor(&h, &dB, 2, eB, NULL, CUDA_R_32F, CUTENSOR_OP_IDENTITY);
-    check(s,"cutensorInitTensorDescriptor");
-
-    s = cutensorInitTensorDescriptor(&h, &dC, 2, eC, NULL, CUDA_R_32F, CUTENSOR_OP_IDENTITY);
-    check(s,"cutensorInitTensorDescriptor");
 
     uint32_t aA, aB, aC;
 
@@ -166,6 +222,10 @@ int main(int argc, char* argv[])
 
     s2 = cudaFree(pC);
     check(s2,"cudaFree");
+#endif
+
+    s = cutensorMgDestroy(h);
+    check(s,"cutensorMgDestroy");
 
     s2 = cudaStreamDestroy(stream);
     check(s2);
