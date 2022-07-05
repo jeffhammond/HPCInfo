@@ -135,6 +135,11 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
                     r.fp64 =   2;
                     r.fp32 = 128;
                     break;
+                // Orin GA10b (?)
+                case 7:
+                    r.fp64 =   2;
+                    r.fp32 = 128;
+                    break;
             }
             break;
         default:
@@ -164,16 +169,25 @@ void find_nvgpu(void)
 
         // memory bandwidth
         int memoryClock = dp.memoryClockRate;
+	int memoryBusWidth = dp.memoryBusWidth;
         // Xavier AGX override
         if (major==7 && minor==2) {
             memoryClock = 2133000; // 2.133 GHz in Khz
             printf("memoryClockRate (Xavier AGX LPDDR4x)    = %.3f GHz\n",  memoryClock*1.e-6);
         }
+	// Orin AGX override
+        if (major==8 && minor==7) {
+	    // https://www.nvidia.com/content/dam/en-zz/Solutions/gtcf21/jetson-orin/nvidia-jetson-agx-orin-technical-brief.pdf
+            memoryClock = 3200000; // 3.2 GHz in Khz
+	    memoryBusWidth = 256;
+            printf("memoryClockRate (Orin AGX LPDDR5x)      = %.3f GHz\n",  memoryClock*1.e-6);
+            printf("memoryBusWidth (Orin AGX LPDDR5x)       = %d bits\n",  memoryBusWidth);
+        }
         printf("memoryClockRate (CUDA device query)     = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
-        printf("memoryBusWidth                          = %d bits\n",   dp.memoryBusWidth );
+        printf("memoryBusWidth (CUDA device query)      = %d bits\n",   memoryBusWidth );
         // 2 for Dual Data Rate (https://en.wikipedia.org/wiki/Double_data_rate)
         // 1/8 = 0.125 for bit to byte
-        printf("peak bandwidth                          = %.1f GB/s\n", 2 * memoryClock*1.e-6 * dp.memoryBusWidth * 0.125);
+        printf("peak bandwidth                          = %.1f GB/s\n", 2 * memoryClock*1.e-6 * memoryBusWidth * 0.125);
 
         // memory capacity
         //printf("totalGlobalMem                          = %zu bytes\n", dp.totalGlobalMem);
@@ -183,7 +197,12 @@ void find_nvgpu(void)
         // compute throughput
         printf("multiProcessorCount                     = %d\n",       dp.multiProcessorCount);
         printf("warpSize                                = %d\n",       dp.warpSize);
-        printf("clockRate                               = %.3f GHz\n", dp.clockRate*1.e-6);
+	int clockRate = dp.clockRate;
+        if (major==8 && minor==7) {
+            clockRate = 2201600; // 2.2 GHz in Khz
+            printf("clockRate (Orin AGX)                    = %.3f GHz\n", clockRate*1.e-6);
+        }
+        printf("clockRate (CUDA device query)           = %.3f GHz\n", dp.clockRate*1.e-6);
 
         cuda_flops_per_sm_s r = cuda_flops_per_sm(major,minor);
 
