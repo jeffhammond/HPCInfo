@@ -3,11 +3,11 @@ CFLAGS := -std=c11
 CFLAGS += -I/opt/nvidia/hpc_sdk/Linux_$$(uname -m)/22.7/compilers/include_acc
 
 FC := nvfortran
-#FCFLAGS := -std=f2018 $(WARNFLAGS)
+FCFLAGS :=
 
 # required on nuclear (x86_64)
-CFLAGS  += -fPIE
-FCFLAGS += -fPIE
+#CFLAGS  += -fPIE
+#FCFLAGS += -fPIE
 
 all: test_cfi.x
 
