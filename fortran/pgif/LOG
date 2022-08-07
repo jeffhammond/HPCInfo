@@ -1,0 +1,35 @@
+a                           a(1:3,1:5,1:7)              a(2:4,2:6,2:8)
+========================    ========================    ========================
+buffer = 0x4040c0           buffer = 0x4040c0           buffer = 0x404164
+m,n,o = 5,7,9               m,n,o = 3,5,7               m,n,o = 3,5,7
+F90_Desc = 0x7ffd94710ae8   F90_Desc = 0x7ffd94710ca8   F90_Desc = 0x7ffd94710bc8
+F90_Desc->tag   = 35        F90_Desc->tag   = 35        F90_Desc->tag   = 35
+F90_Desc->rank  = 3         F90_Desc->rank  = 3         F90_Desc->rank  = 3
+F90_Desc->kind  = 25        F90_Desc->kind  = 25        F90_Desc->kind  = 25
+F90_Desc->len   = 4         F90_Desc->len   = 4         F90_Desc->len   = 4
+F90_Desc->flags = 536936448 F90_Desc->flags = 65536     F90_Desc->flags = 65536
+F90_Desc->lsize = 315       F90_Desc->lsize = 105       F90_Desc->lsize = 105
+F90_Desc->gsize = 315       F90_Desc->gsize = 105       F90_Desc->gsize = 105
+F90_Desc->lbase = -40       F90_Desc->lbase = -40       F90_Desc->lbase = -40
+F90_Desc->gbase = (nil)     F90_Desc->gbase = (nil)     F90_Desc->gbase = (nil)
+
+F90_Desc->dim.lbound  = 1   F90_Desc->dim.lbound  = 1   F90_Desc->dim.lbound  = 1
+F90_Desc->dim.extent  = 5   F90_Desc->dim.extent  = 3   F90_Desc->dim.extent  = 3
+F90_Desc->dim.sstride = 1   F90_Desc->dim.sstride = 1   F90_Desc->dim.sstride = 1
+F90_Desc->dim.soffset = 0   F90_Desc->dim.soffset = 0   F90_Desc->dim.soffset = 0
+F90_Desc->dim.lstride = 1   F90_Desc->dim.lstride = 1   F90_Desc->dim.lstride = 1
+F90_Desc->dim.ubound  = 5   F90_Desc->dim.ubound  = 3   F90_Desc->dim.ubound  = 3
+
+F90_Desc->dim.lbound  = 1   F90_Desc->dim.lbound  = 1   F90_Desc->dim.lbound  = 1
+F90_Desc->dim.extent  = 7   F90_Desc->dim.extent  = 5   F90_Desc->dim.extent  = 5
+F90_Desc->dim.sstride = 1   F90_Desc->dim.sstride = 1   F90_Desc->dim.sstride = 1
+F90_Desc->dim.soffset = 0   F90_Desc->dim.soffset = 0   F90_Desc->dim.soffset = 0
+F90_Desc->dim.lstride = 5   F90_Desc->dim.lstride = 5   F90_Desc->dim.lstride = 5
+F90_Desc->dim.ubound  = 7   F90_Desc->dim.ubound  = 5   F90_Desc->dim.ubound  = 5
+
+F90_Desc->dim.lbound  = 1   F90_Desc->dim.lbound  = 1   F90_Desc->dim.lbound  = 1
+F90_Desc->dim.extent  = 9   F90_Desc->dim.extent  = 7   F90_Desc->dim.extent  = 7
+F90_Desc->dim.sstride = 1   F90_Desc->dim.sstride = 1   F90_Desc->dim.sstride = 1
+F90_Desc->dim.soffset = 0   F90_Desc->dim.soffset = 0   F90_Desc->dim.soffset = 0
+F90_Desc->dim.lstride = 35  F90_Desc->dim.lstride = 35  F90_Desc->dim.lstride = 35
+F90_Desc->dim.ubound  = 9   F90_Desc->dim.ubound  = 7   F90_Desc->dim.ubound  = 7 

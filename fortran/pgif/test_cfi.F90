@@ -44,7 +44,7 @@ program test
     print*,'========================'
     call bar(a(2:4,2:6,2:8),3,5,7)
 
-    print*,'========================'
-    call bar(b,size(b,1),size(b,2),size(b,3))
+    !print*,'========================'
+    !call bar(b,size(b,1),size(b,2),size(b,3))
 
 end program test
