@@ -70,7 +70,7 @@ void bar(int * buffer, int * m, int * n, int * o, F90_Desc_la * d)
     printf("BAR F90_Desc->lsize = %lld\n", d->lsize);
     printf("BAR F90_Desc->gsize = %lld\n", d->gsize);
     printf("BAR F90_Desc->lbase = %lld\n", d->lbase);
-    printf("BAR F90_Desc->gbase = %p\n", d->gbase);
+    printf("BAR F90_Desc->gbase = %p\n",   d->gbase);
     for (int i=0; i<d->rank; i++) {
         printf("BAR F90_Desc->dim.lbound  = %lld\n", d->dim[i].lbound );
         printf("BAR F90_Desc->dim.extent  = %lld\n", d->dim[i].extent );

@@ -37,6 +37,9 @@ program test
     call bar(a,size(a,1),size(a,2),size(a,3))
     !call bar(a(1,1),size(a,1),size(a,2))
 
+    call bar(a(1:3,1:5,1:7),3,5,7)
+    !call bar(a(1,1),size(a,1),size(a,2))
+
     !call foo(a(:,:))
 
     !call foo(a(:,1:5))
