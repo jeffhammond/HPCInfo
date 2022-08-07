@@ -3,7 +3,9 @@ CFLAGS := -std=c11
 CFLAGS += -I/opt/nvidia/hpc_sdk/Linux_$$(uname -m)/22.7/compilers/include_acc
 
 FC := nvfortran
-FCFLAGS :=
+FCFLAGS := 
+#FCFLAGS += -Mstack_arrays
+FCFLAGS += -acc=gpu
 
 # required on nuclear (x86_64)
 #CFLAGS  += -fPIE

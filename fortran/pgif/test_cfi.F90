@@ -22,7 +22,10 @@ program test
     implicit none
     integer(4), dimension(5,7,9) :: a
     real(8), dimension(5,7,9) :: b
+    integer(4), dimension(:,:,:), allocatable :: c
     integer :: i, j, k
+
+    allocate( c(5,7,9) )
 
     do i=1,size(a,3)
       do j=1,size(a,2)
@@ -39,10 +42,13 @@ program test
     call bar(a,size(a,1),size(a,2),size(a,3))
 
     print*,'========================'
-    call bar(a(1:3,1:5,1:7),3,5,7)
+    call bar(c,size(c,1),size(c,2),size(c,3))
 
-    print*,'========================'
-    call bar(a(2:4,2:6,2:8),3,5,7)
+    !print*,'========================'
+    !call bar(a(1:3,1:5,1:7),3,5,7)
+
+    !print*,'========================'
+    !call bar(a(2:4,2:6,2:8),3,5,7)
 
     !print*,'========================'
     !call bar(b,size(b,1),size(b,2),size(b,3))

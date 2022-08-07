@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 // from /opt/nvidia/hpc_sdk/Linux_x86_64/22.7/compilers/include_acc/nvhpc_cuda_runtime.h
 
@@ -54,7 +55,26 @@ typedef struct F90_Desc_la {
 void foo(int * buffer, int * m, int * n, int * o)
 {
     printf("FOO buffer = %p\n", buffer);
-    printf("FOO m,n = %d,%d\n", *m, *n);
+    printf("FOO m,n,o = %d,%d,%d\n", *m, *n, *o);
+}
+
+void print_flags(long long flags)
+{
+    bool * TEMPLATE           = flags & 0x00010000;
+    bool * OFF_TEMPLATE       = flags & 0x00080000;
+    bool * SECTZBASE          = flags & 0x00400000;
+    bool * BOGUSBOUNDS        = flags & 0x00800000;
+    bool * NOT_COPIED         = flags & 0x01000000;
+    bool * NOREINDEX          = flags & 0x02000000;
+    bool * SEQUENTIAL_SECTION = flags & 0x20000000;
+
+    printf("TEMPLATE           = %s\n", TEMPLATE           ? "true" : "false");
+    printf("OFF_TEMPLATE       = %s\n", OFF_TEMPLATE       ? "true" : "false");
+    printf("SECTZBASE          = %s\n", SECTZBASE          ? "true" : "false");
+    printf("BOGUSBOUNDS        = %s\n", BOGUSBOUNDS        ? "true" : "false");
+    printf("NOT_COPIED         = %s\n", NOT_COPIED         ? "true" : "false");
+    printf("NOREINDEX          = %s\n", NOREINDEX          ? "true" : "false");
+    printf("SEQUENTIAL_SECTION = %s\n", SEQUENTIAL_SECTION ? "true" : "false");
 }
 
 void bar(int * buffer, int * m, int * n, int * o, F90_Desc_la * d)
@@ -67,6 +87,7 @@ void bar(int * buffer, int * m, int * n, int * o, F90_Desc_la * d)
     printf("BAR F90_Desc->kind  = %lld\n", d->kind );
     printf("BAR F90_Desc->len   = %lld\n", d->len  );
     printf("BAR F90_Desc->flags = %lld\n", d->flags);
+    print_flags(d->flags);
     printf("BAR F90_Desc->lsize = %lld\n", d->lsize);
     printf("BAR F90_Desc->gsize = %lld\n", d->gsize);
 #if 1
