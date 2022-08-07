@@ -69,6 +69,7 @@ void bar(int * buffer, int * m, int * n, int * o, F90_Desc_la * d)
     printf("BAR F90_Desc->flags = %lld\n", d->flags);
     printf("BAR F90_Desc->lsize = %lld\n", d->lsize);
     printf("BAR F90_Desc->gsize = %lld\n", d->gsize);
+#if 1
     printf("BAR F90_Desc->lbase = %lld\n", d->lbase);
     printf("BAR F90_Desc->gbase = %p\n",   d->gbase);
     for (int i=0; i<d->rank; i++) {
@@ -79,4 +80,5 @@ void bar(int * buffer, int * m, int * n, int * o, F90_Desc_la * d)
         printf("BAR F90_Desc->dim.lstride = %lld\n", d->dim[i].lstride);
         printf("BAR F90_Desc->dim.ubound  = %lld\n", d->dim[i].ubound );
     }
+#endif
 }

@@ -1,0 +1,35 @@
+
+
+F90_Desc->tag
+no idea
+
+F90_Desc->rank
+number of dimensions of array
+
+F90_Desc->kind
+
+32 = INTEGER(1)
+24 = INTEGER(2)
+25 = INTEGER(4)
+26 = INTEGER(8)
+45 = REAL(2)
+27 = REAL(4)
+28 = REAL(8)
+9  = COMPLEX(4)
+10 = COMPLEX(8)
+
+F90_Desc->len
+size of an element in bytes
+
+F90_Desc->flags
+no idea
+
+F90_Desc->lsize,gsize
+product of all dimensions of array
+
+F90_Desc->lbase
+no idea
+
+F90_Desc->gbase
+no idea, usually (nul)
+
