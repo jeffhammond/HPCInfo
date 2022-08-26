@@ -60,13 +60,13 @@ void foo(int * buffer, int * m, int * n, int * o)
 
 void print_flags(long long flags)
 {
-    bool * TEMPLATE           = flags & 0x00010000;
-    bool * OFF_TEMPLATE       = flags & 0x00080000;
-    bool * SECTZBASE          = flags & 0x00400000;
-    bool * BOGUSBOUNDS        = flags & 0x00800000;
-    bool * NOT_COPIED         = flags & 0x01000000;
-    bool * NOREINDEX          = flags & 0x02000000;
-    bool * SEQUENTIAL_SECTION = flags & 0x20000000;
+    bool TEMPLATE           = flags & 0x00010000;
+    bool OFF_TEMPLATE       = flags & 0x00080000;
+    bool SECTZBASE          = flags & 0x00400000;
+    bool BOGUSBOUNDS        = flags & 0x00800000;
+    bool NOT_COPIED         = flags & 0x01000000;
+    bool NOREINDEX          = flags & 0x02000000;
+    bool SEQUENTIAL_SECTION = flags & 0x20000000;
 
     printf("TEMPLATE           = %s\n", TEMPLATE           ? "true" : "false");
     printf("OFF_TEMPLATE       = %s\n", OFF_TEMPLATE       ? "true" : "false");
