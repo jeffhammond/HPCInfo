@@ -36,7 +36,9 @@ program test
     c = a
 
     call foo(a,size(a,1),size(a,2),size(a,3))
+    print*,'================================'
     call bar(a,size(a,1),size(a,2),size(a,3))
+    print*,'================================'
     call bar(c,size(c,1),size(c,2),size(c,3))
 
 end program test
