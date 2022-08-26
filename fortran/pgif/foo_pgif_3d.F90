@@ -29,9 +29,15 @@ module pgif
             print*,'bar',m
             print*,'bar',n
             print*,'bar',p
-            print*,'bar',size(b,1)
-            print*,'bar',size(b,2)
-            print*,'bar',size(b,3)
+            print*,'bar S',size(b,1)
+            print*,'bar S',size(b,2)
+            print*,'bar S',size(b,3)
+            print*,'bar L',lbound(b,1)
+            print*,'bar L',lbound(b,2)
+            print*,'bar L',lbound(b,3)
+            print*,'bar U',ubound(b,1)
+            print*,'bar U',ubound(b,2)
+            print*,'bar U',ubound(b,3)
             do k=1,p
              do j=1,n
               do i=1,m

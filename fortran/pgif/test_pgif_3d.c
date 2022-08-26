@@ -4,8 +4,8 @@
 #include "pgif90.h"
 
 #define M 11
-#define N 7
-#define P 3
+#define N 3
+#define P 7
 
 extern void foo(double *, int, int, int);
 extern void bar(double *, int, int, int, F90_Desc_la *);
@@ -42,31 +42,35 @@ int main(void)
     d.flags = 0x20000000; // sequential
     d.lsize = M*N*P;      // total size
     d.gsize = M*N*P;      // total size
-    d.lbase = 0;//-N*P;       // need to understand better to do rank>2 correctly
+    d.lbase = 0;          // set to 0 and lbound[>0] = 0 for simplicity
     d.gbase = NULL;       // always (nul)?
+
+    // NOTE: lbound and ubound here have no impact
+    //       on the result of lbound and ubound in
+    //       Fortran
 
     d.dim[0].lbound  = 1;
     d.dim[0].extent  = P;
-    d.dim[0].sstride = 0;
-    d.dim[0].soffset = 0;
+    //d.dim[0].sstride = 0;
+    //d.dim[0].soffset = 0;
     d.dim[0].lstride = 1;
-    d.dim[0].ubound  = 0;
+    //d.dim[0].ubound  = 0;
 
     // if lbase is 0, lbound below has to be 0
     d.dim[1].lbound  = 0; // correlated to lbase
     d.dim[1].extent  = N;
-    d.dim[1].sstride = 0;
-    d.dim[1].soffset = 0;
+    //d.dim[1].sstride = 0;
+    //d.dim[1].soffset = 0;
     d.dim[1].lstride = P;
-    d.dim[1].ubound  = 0;
+    //d.dim[1].ubound  = 0;
 
     // if lbase is 0, lbound below has to be 0
     d.dim[2].lbound  = 0; // correlated to lbase
     d.dim[2].extent  = M;
-    d.dim[2].sstride = 0;
-    d.dim[2].soffset = 0;
+    //d.dim[2].sstride = 0;
+    //d.dim[2].soffset = 0;
     d.dim[2].lstride = N*P;
-    d.dim[2].ubound  = 0;
+    //d.dim[2].ubound  = 0;
 
     bar(y,P,N,M,&d);
 
