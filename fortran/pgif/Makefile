@@ -26,4 +26,7 @@ test_pgif.x: test_pgif.c foo_pgif.o
 	$(FC) $(FCFLAGS) -c $< -o $@
 
 clean:
-	-rm -f *.x *.o *.mod
+	-rm -f *.o *.mod
+
+make realclean: clean
+	-rm -f *.x

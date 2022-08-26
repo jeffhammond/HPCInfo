@@ -21,13 +21,19 @@ module pgif
 
         subroutine bar(b,m,n) bind(C,name="bar")
             implicit none
-            real(kind=REAL64), dimension(..) :: b
+            real(kind=REAL64), dimension(:,:) :: b
             integer, value :: m, n
+            integer :: i, j
             print*,'bar',m
             print*,'bar',n
-            !print*,'bar',size(b,1)
-            !print*,'bar',size(b,2)
+            print*,'bar',size(b,1)
+            print*,'bar',size(b,2)
             !print*,'bar',b
+            do j=1,n
+              do i=1,m
+                print*,'foo',i,j,b(i,j)
+              end do
+            end do
         end subroutine bar
 
 end module pgif
