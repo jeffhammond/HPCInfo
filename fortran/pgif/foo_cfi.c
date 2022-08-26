@@ -62,20 +62,21 @@ void print_kind(long long kind)
 {
     char * name;
     switch (kind) {
-        case 32: name = "INTEGER(1)"; break;
-        case 24: name = "INTEGER(2)"; break;
-        case 25: name = "INTEGER(4)"; break;
-        case 26: name = "INTEGER(8)"; break;
-        case 45: name = "REAL(2)   "; break;
-        case 27: name = "REAL(4)   "; break;
-        case 28: name = "REAL(8)   "; break;
-        case  9: name = "COMPLEX(4)"; break;
-        case 10: name = "COMPLEX(8)"; break;
-        case 17: name = "LOGICAL(1)"; break;
-        case 18: name = "LOGICAL(2)"; break;
-        case 19: name = "LOGICAL(4)"; break;
-        case 20: name = "LOGICAL(8)"; break;
-        default: name = "UNKNOWN   "; break;
+        case 14: name = "CHARACTER(1)"; break; // no other character kinds supported
+        case  9: name = "COMPLEX(4)"  ; break;
+        case 10: name = "COMPLEX(8)"  ; break;
+        case 32: name = "INTEGER(1)"  ; break; // byte appears as this
+        case 24: name = "INTEGER(2)"  ; break;
+        case 25: name = "INTEGER(4)"  ; break;
+        case 26: name = "INTEGER(8)"  ; break;
+        case 17: name = "LOGICAL(1)"  ; break;
+        case 18: name = "LOGICAL(2)"  ; break;
+        case 19: name = "LOGICAL(4)"  ; break;
+        case 20: name = "LOGICAL(8)"  ; break;
+        case 45: name = "REAL(2)"     ; break;
+        case 27: name = "REAL(4)"     ; break;
+        case 28: name = "REAL(8)"     ; break; // double precision appears as this
+        default: name = "UNKNOWN"     ; break;
     }
     printf("kind = %s\n", name);
 }
