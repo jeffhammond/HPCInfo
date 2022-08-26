@@ -11,7 +11,7 @@ FCFLAGS := -O3
 #CFLAGS  += -fPIE
 #FCFLAGS += -fPIE
 
-all: test_cfi.x
+all: test_cfi.x test_pgif.x
 
 test_cfi.x: test_cfi.F90 foo_cfi.o
 	$(FC) $(FCFLAGS) $^ -o $@
@@ -19,5 +19,11 @@ test_cfi.x: test_cfi.F90 foo_cfi.o
 %.o: %.c pgif90.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+test_pgif.x: test_pgif.c foo_pgif.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+%.o: %.F90
+	$(FC) $(FCFLAGS) -c $< -o $@
+
 clean:
-	-rm -f test_cfi.x test_cfi.o foo_cfi.o cfi.mod
+	-rm -f *.x *.o *.mod
