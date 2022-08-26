@@ -48,7 +48,6 @@ program test
         !integer(4), dimension( 1:5, 0:6,-1:7) :: q3
         !integer(4), dimension( 2:6, 1:7, 0:8) :: q4
         !integer(4), dimension( 3:7, 2:8, 1:9) :: q5
-        integer(4), dimension( 0:2, 0:3, 0:5) :: q6
         !print*,'================================'
         !call bar(q0)
         !print*,'================================'
@@ -61,8 +60,8 @@ program test
         !call bar(q4)
         !print*,'================================'
         !call bar(q5)
-        print*,'================================'
-        call bar(q6)
+        !print*,'================================'
+        !call bar(q5(3:7:2,2:8:2,1:9:2))
     end block
 
 end program test
