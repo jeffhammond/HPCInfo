@@ -8,7 +8,7 @@ module cfi
     end interface
 
     interface
-        subroutine bar(buffer,m,n, o) bind(C,name="bar")
+        subroutine bar(buffer,m,n,o) bind(C,name="bar")
             implicit none
             class(*), dimension(..) :: buffer
             integer :: m, n, o
@@ -42,7 +42,21 @@ program test
     call bar(a,size(a,1),size(a,2),size(a,3))
 
     print*,'========================'
-    call bar(c,size(c,1),size(c,2),size(c,3))
+    call bar([.true.,.false.],2,1,1)
+
+    block
+      logical(1), dimension(1,1,1) :: p1
+      logical(2), dimension(1,1,1) :: p2
+      logical(4), dimension(1,1,1) :: p4
+      logical(8), dimension(1,1,1) :: p8
+      call bar(p1,1,1,1)
+      call bar(p2,1,1,1)
+      call bar(p4,1,1,1)
+      call bar(p8,1,1,1)
+    end block
+
+    !print*,'========================'
+    !call bar(c,size(c,1),size(c,2),size(c,3))
 
     !print*,'========================'
     !call bar(a(1:3,1:5,1:7),3,5,7)
