@@ -4,10 +4,15 @@
 
 #include "pgif90.h"
 
-void foo(int * buffer, int * m, int * n, int * o)
+void foo(int * buffer, int * dims, int ndim)
 {
     printf("FOO buffer = %p\n", buffer);
-    printf("FOO m,n,o = %d,%d,%d\n", *m, *n, *o);
+    printf("FOO dims = ");
+    for (int i=0; i<ndim; i++) {
+        printf("%d", dims[i]);
+        if (i<ndim-1) printf(",");
+    }
+    printf("\n");
 }
 
 void print_kind(long long kind)
@@ -52,10 +57,9 @@ void print_flags(long long flags)
     printf("SEQUENTIAL_SECTION = %s\n", SEQUENTIAL_SECTION ? "true" : "false");
 }
 
-void bar(int * buffer, int * m, int * n, int * o, F90_Desc_la * d)
+void bar(int * buffer, F90_Desc_la * d)
 {
     printf("BAR buffer = %p\n", buffer);
-    printf("BAR m,n,o = %d,%d,%d\n", *m, *n, *o);
     printf("BAR F90_Desc = %p\n", d);
     printf("BAR F90_Desc->tag   = %lld\n", d->tag  );
     printf("BAR F90_Desc->rank  = %lld\n", d->rank );

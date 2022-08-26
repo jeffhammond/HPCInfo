@@ -1,17 +1,17 @@
 module cfi
     interface
-        subroutine foo(buffer,m,n,o) bind(C,name="foo")
+        subroutine foo(buffer,dims,ndim) bind(C,name="foo")
             implicit none
             class(*), dimension(*) :: buffer
-            integer :: m, n, o
+            integer, dimension(*) :: dims
+            integer, value :: ndim
         end subroutine foo
     end interface
 
     interface
-        subroutine bar(buffer,m,n,o) bind(C,name="bar")
+        subroutine bar(buffer) bind(C,name="bar")
             implicit none
             class(*), dimension(..) :: buffer
-            integer :: m, n, o
         end subroutine bar
     end interface
 end module cfi 
@@ -35,10 +35,16 @@ program test
     end do
     c = a
 
-    call foo(a,size(a,1),size(a,2),size(a,3))
+    call foo(a,shape(a),size(shape(a)))
     print*,'================================'
-    call bar(a,size(a,1),size(a,2),size(a,3))
+    call bar(a)
     print*,'================================'
-    call bar(c,size(c,1),size(c,2),size(c,3))
+    call bar(c)
+
+    block
+        integer(4), dimension(-2:2,-3:3,-4:-4) :: q
+        q = -1
+        call bar(q)
+    end block
 
 end program test
