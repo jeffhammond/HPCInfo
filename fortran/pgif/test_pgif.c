@@ -3,8 +3,8 @@
 
 #include "pgif90.h"
 
-#define M 7
-#define N 3
+#define M 2
+#define N 47
 
 extern void foo(double *, int, int);
 extern void bar(double *, int, int, F90_Desc_la *);
@@ -37,23 +37,23 @@ int main(void)
     d.flags = 0x20000000; // sequential
     d.lsize = M*N;        // total size
     d.gsize = M*N;        // total size
-    d.lbase = -N;         // need to understand better to do rank>2 correctly
-    d.gbase = NULL;       // always (nul)?
 
     d.dim[0].lbound  = 1;
     d.dim[0].extent  = N;
     d.dim[0].sstride = 0;
     d.dim[0].soffset = 0;
     d.dim[0].lstride = 1;
-    d.dim[0].ubound  = 0;
+    d.dim[0].ubound  = d.dim[0].lbound+d.dim[0].extent;
 
-    // if lbase is 0, lbound below has to be 0
-    d.dim[1].lbound  = 1; // correlated to lbase
+    d.dim[1].lbound  = 1;
     d.dim[1].extent  = M;
     d.dim[1].sstride = 0;
     d.dim[1].soffset = 0;
     d.dim[1].lstride = N;
-    d.dim[1].ubound  = 0;
+    d.dim[1].ubound  = d.dim[1].lbound+d.dim[1].extent;
+
+    d.lbase = 1 - d.dim[0].lbound - d.dim[1].lbound * N;
+    d.gbase = NULL;       // always (nul)?
 
     bar(y,N,M,&d);
 
