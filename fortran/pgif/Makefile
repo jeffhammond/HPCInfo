@@ -11,7 +11,7 @@ FCFLAGS := -O3
 #CFLAGS  += -fPIE
 #FCFLAGS += -fPIE
 
-all: test_cfi.x test_pgif.x
+all: test_cfi.x test_pgif.x test_pgif_3d.x
 
 test_cfi.x: test_cfi.F90 foo_cfi.o
 	$(FC) $(FCFLAGS) $^ -o $@
@@ -20,6 +20,9 @@ test_cfi.x: test_cfi.F90 foo_cfi.o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 test_pgif.x: test_pgif.c foo_pgif.o
+	$(CC) $(CFLAGS) $^ -fortranlibs -o $@
+
+test_pgif_3d.x: test_pgif_3d.c foo_pgif_3d.o
 	$(CC) $(CFLAGS) $^ -fortranlibs -o $@
 
 %.o: %.F90
