@@ -6,8 +6,11 @@ if [ `hostname` == "xavier-agx" ] ; then
     LLVM_HOME=/samsung/LLVM
     LLVM_TEMP=/samsung/LLVM/build
 elif [ `uname -s` == Darwin ] ; then
-    CC=gcc-12
-    CXX=g++-12
+    # can't use GCC now (https://github.com/llvm/llvm-project/issues/34628)
+    #CC=gcc-12
+    #CXX=g++-12
+    CC=clang
+    CXX=clang++
     LLVM_HOME=/opt/llvm
     LLVM_TEMP=/tmp/llvm-build
 else
@@ -22,14 +25,11 @@ else
 fi
 mkdir -p $LLVM_HOME
 
-mkdir -p $LLVM_HOME
-
 #rm -rf $LLVM_TEMP
 mkdir -p $LLVM_TEMP
-cd $LLVM_TEMP
 
-#REPO=https://github.com/llvm/llvm-project.git
-REPO=https://github.com/flang-compiler/f18-llvm-project.git
+REPO=https://github.com/llvm/llvm-project.git
+#REPO=https://github.com/flang-compiler/f18-llvm-project.git
 #REPO=https://github.com/Sezoir/f18-llvm-project.git # SPECIAL
 
 # Download/update the source
@@ -39,8 +39,10 @@ if [ -d $LLVM_HOME/git ] ; then
   git remote remove origin
   git remote add origin $REPO
   git fetch origin
-  git checkout fir-dev -b fir-dev || echo exists
-  git branch --set-upstream-to=origin/fir-dev fir-dev || echo dunno
+  #git checkout fir-dev -b fir-dev || echo exists
+  git checkout origin/main -b main || echo exists
+  #git branch --set-upstream-to=origin/fir-dev fir-dev || echo dunno
+  git branch --set-upstream-to=origin/main main || echo dunno
   git pull
   git submodule update --init --recursive
 else
@@ -85,7 +87,12 @@ else
 
     NUM_COMPILE=$MEMORY_COMPILE_LIMIT
     NUM_LINK=$MEMORY_LINK_LIMIT
+
+    USE_GOLD="-DLLVM_USE_LINKER=gold"
 fi
+
+cd $LLVM_TEMP || exit
+rm -f ${LLVM_TEMP}/CMakeCache.txt
 
 # lldb busted on MacOS
 # libcxx requires libcxxabi
@@ -100,9 +107,10 @@ cmake \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
-      -DLLVM_USE_LINKER=gold \
+      $USE_GOLD \
       -DCMAKE_INSTALL_PREFIX=$LLVM_HOME/latest \
       $LLVM_HOME/git/llvm
+
 
 cmake --build .
 
