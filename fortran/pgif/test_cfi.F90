@@ -1,7 +1,7 @@
 module cfi
+    implicit none
     interface
         subroutine foo(buffer,dims,ndim) bind(C,name="foo")
-            implicit none
             class(*), dimension(*) :: buffer
             integer, dimension(*) :: dims
             integer, value :: ndim
@@ -10,7 +10,6 @@ module cfi
 
     interface
         subroutine bar(buffer) bind(C,name="bar")
-            implicit none
             class(*), dimension(..) :: buffer
         end subroutine bar
     end interface
@@ -20,6 +19,8 @@ program test
     use iso_c_binding
     use cfi
     implicit none
+
+#if 0
     integer(4), dimension(5,7,9) :: a
     integer(4), dimension(:,:,:), allocatable :: c
     integer :: i, j, k
@@ -40,6 +41,7 @@ program test
     call bar(a)
     print*,'================================'
     call bar(c)
+#endif
 
     block
         !integer(4), dimension(-2:2,-3:3,-4:4) :: q0
@@ -47,7 +49,9 @@ program test
         !integer(4), dimension( 0:4,-1:5,-2:6) :: q2
         !integer(4), dimension( 1:5, 0:6,-1:7) :: q3
         !integer(4), dimension( 2:6, 1:7, 0:8) :: q4
-        !integer(4), dimension( 3:7, 2:8, 1:9) :: q5
+        integer(4), dimension( 1 , 2:8, 1:9) :: q5
+        q5 = -1
+        q5(:,2:8:2,1:9:2) = 1
         !print*,'================================'
         !call bar(q0)
         !print*,'================================'
@@ -61,7 +65,7 @@ program test
         !print*,'================================'
         !call bar(q5)
         !print*,'================================'
-        !call bar(q5(3:7:2,2:8:2,1:9:2))
+        call bar(q5(:,2:8:2,1:9:2))
     end block
 
 end program test

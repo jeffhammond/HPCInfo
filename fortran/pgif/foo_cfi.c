@@ -63,11 +63,11 @@ void bar(int * buffer, F90_Desc_la * d)
     //printf("BAR F90_Desc = %p\n", d);
     //printf("BAR F90_Desc->tag   = %lld\n", d->tag  );
     printf("BAR F90_Desc->rank  = %lld\n", d->rank );
-    //printf("BAR F90_Desc->kind  = %lld\n", d->kind );
-    //print_kind(d->kind);
-    //printf("BAR F90_Desc->len   = %lld\n", d->len  );
-    //printf("BAR F90_Desc->flags = %lld\n", d->flags);
-    //print_flags(d->flags);
+    printf("BAR F90_Desc->kind  = %lld\n", d->kind );
+    print_kind(d->kind);
+    printf("BAR F90_Desc->len   = %lld\n", d->len  );
+    printf("BAR F90_Desc->flags = %lld\n", d->flags);
+    print_flags(d->flags);
     printf("BAR F90_Desc->lsize = %lld\n", d->lsize);
     printf("BAR F90_Desc->gsize = %lld\n", d->gsize);
     printf("BAR F90_Desc->lbase = %lld\n", d->lbase);
@@ -82,4 +82,6 @@ void bar(int * buffer, F90_Desc_la * d)
         printf("BAR F90_Desc->dim.ubound  = %lld\n", d->dim[i].ubound );
     }
 #endif
+    for (int i=0; i<d->lsize; i++) printf("%d,",buffer[i]);
+    printf("\n");
 }

@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "pgif90.h"
 
-#define M 7
-#define N 9
-#define P 11
+#define M 5
+#define N 7
+#define P 3
 
 extern void foo(double *, int, int, int);
 extern void bar(double *, int, int, int, F90_Desc_la *);
@@ -39,7 +40,7 @@ int main(void)
     d.rank  =  3;         // matrix
     d.kind  = 28;         // double
     d.len   = sizeof(*y); // element size
-    d.flags = 0x20000000; // sequential
+    d.flags = 0;
     d.lsize = M*N*P;      // total size
     d.gsize = M*N*P;      // total size
 
@@ -54,14 +55,14 @@ int main(void)
     d.dim[0].lstride = 1;
     d.dim[0].ubound  = d.dim[0].lbound+d.dim[0].extent;
 
-    d.dim[1].lbound  = -2;
+    d.dim[1].lbound  = -3;
     d.dim[1].extent  = N;
-    d.dim[1].sstride = 0;
-    d.dim[1].soffset = 0;
+    d.dim[1].sstride = INT_MAX;
+    d.dim[1].soffset = INT_MAX;
     d.dim[1].lstride = P;
     d.dim[1].ubound  = d.dim[1].lbound+d.dim[1].extent;
 
-    d.dim[2].lbound  = -2;
+    d.dim[2].lbound  = -1;
     d.dim[2].extent  = M;
     d.dim[2].sstride = 0;
     d.dim[2].soffset = 0;

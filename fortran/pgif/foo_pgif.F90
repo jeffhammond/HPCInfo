@@ -1,11 +1,11 @@
 module pgif
     use, intrinsic :: ISO_C_binding
     use, intrinsic :: ISO_Fortran_env
+    implicit none
 
     contains
 
         subroutine foo(b,m,n) bind(C,name="foo")
-            implicit none
             real(kind=REAL64), dimension(m,n) :: b
             integer, value :: m, n
             integer :: i, j
@@ -20,10 +20,10 @@ module pgif
         end subroutine foo
 
         subroutine bar(b,m,n) bind(C,name="bar")
-            implicit none
             real(kind=REAL64), dimension(:,:) :: b
             integer, value :: m, n
             integer :: i, j
+            print*,'bar',is_contiguous(b)
             print*,'bar',m
             print*,'bar',n
             print*,'bar',size(b,1)
