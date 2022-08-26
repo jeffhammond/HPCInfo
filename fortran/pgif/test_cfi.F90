@@ -42,9 +42,24 @@ program test
     call bar(c)
 
     block
-        integer(4), dimension(-2:2,-3:3,-4:-4) :: q
-        q = -1
-        call bar(q)
+        integer(4), dimension(-2:2,-3:3,-4:4) :: q0
+        integer(4), dimension(-1:3,-2:4,-3:5) :: q1
+        integer(4), dimension( 0:4,-1:5,-2:6) :: q2
+        integer(4), dimension( 1:5, 0:6,-1:7) :: q3
+        integer(4), dimension( 2:6, 1:7, 0:8) :: q4
+        integer(4), dimension( 3:7, 2:8, 1:9) :: q5
+        print*,'================================'
+        call bar(q0)
+        print*,'================================'
+        call bar(q1)
+        print*,'================================'
+        call bar(q2)
+        print*,'================================'
+        call bar(q3)
+        print*,'================================'
+        call bar(q4)
+        print*,'================================'
+        call bar(q5)
     end block
 
 end program test

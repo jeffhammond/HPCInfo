@@ -59,19 +59,19 @@ void print_flags(long long flags)
 
 void bar(int * buffer, F90_Desc_la * d)
 {
-    printf("BAR buffer = %p\n", buffer);
-    printf("BAR F90_Desc = %p\n", d);
-    printf("BAR F90_Desc->tag   = %lld\n", d->tag  );
+    //printf("BAR buffer = %p\n", buffer);
+    //printf("BAR F90_Desc = %p\n", d);
+    //printf("BAR F90_Desc->tag   = %lld\n", d->tag  );
     printf("BAR F90_Desc->rank  = %lld\n", d->rank );
-    printf("BAR F90_Desc->kind  = %lld\n", d->kind );
-    print_kind(d->kind);
-    printf("BAR F90_Desc->len   = %lld\n", d->len  );
-    printf("BAR F90_Desc->flags = %lld\n", d->flags);
-    print_flags(d->flags);
+    //printf("BAR F90_Desc->kind  = %lld\n", d->kind );
+    //print_kind(d->kind);
+    //printf("BAR F90_Desc->len   = %lld\n", d->len  );
+    //printf("BAR F90_Desc->flags = %lld\n", d->flags);
+    //print_flags(d->flags);
     printf("BAR F90_Desc->lsize = %lld\n", d->lsize);
     printf("BAR F90_Desc->gsize = %lld\n", d->gsize);
     printf("BAR F90_Desc->lbase = %lld\n", d->lbase);
-    printf("BAR F90_Desc->gbase = %p\n",   d->gbase);
+    //printf("BAR F90_Desc->gbase = %p\n",   d->gbase); // always (nil) ?
 #if 1
     for (int i=0; i<d->rank; i++) {
         printf("BAR F90_Desc->dim.lbound  = %lld\n", d->dim[i].lbound );
