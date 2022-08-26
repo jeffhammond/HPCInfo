@@ -20,7 +20,7 @@ test_cfi.x: test_cfi.F90 foo_cfi.o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 test_pgif.x: test_pgif.c foo_pgif.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -fortranlibs -o $@
 
 %.o: %.F90
 	$(FC) $(FCFLAGS) -c $< -o $@
