@@ -25,10 +25,10 @@ module pgif
             real(kind=REAL64), dimension(:,:,:) :: b
             integer, value :: m, n, p
             integer :: i, j, k
-            print*,'bar',is_contiguous(b)
             print*,'bar',m
             print*,'bar',n
             print*,'bar',p
+            print*,'bar CONTIGUOUS:',is_contiguous(b)
             print*,'bar S',size(b,1)
             print*,'bar S',size(b,2)
             print*,'bar S',size(b,3)

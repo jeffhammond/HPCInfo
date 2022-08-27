@@ -48,23 +48,23 @@ int main(void)
     //       on the result of lbound and ubound in
     //       Fortran (it seems)
 
-    d.dim[0].lbound  = -2;
+    d.dim[0].lbound  = 0;
     d.dim[0].extent  = P;
-    d.dim[0].sstride = 0;
+    d.dim[0].sstride = 1;
     d.dim[0].soffset = 0;
     d.dim[0].lstride = 1;
     d.dim[0].ubound  = d.dim[0].lbound+d.dim[0].extent;
 
-    d.dim[1].lbound  = -3;
+    d.dim[1].lbound  = 0;
     d.dim[1].extent  = N;
-    d.dim[1].sstride = INT_MAX;
-    d.dim[1].soffset = INT_MAX;
+    d.dim[1].sstride = 1;
+    d.dim[1].soffset = 0;
     d.dim[1].lstride = P;
     d.dim[1].ubound  = d.dim[1].lbound+d.dim[1].extent;
 
-    d.dim[2].lbound  = -1;
+    d.dim[2].lbound  = 0;
     d.dim[2].extent  = M;
-    d.dim[2].sstride = 0;
+    d.dim[2].sstride = 1;
     d.dim[2].soffset = 0;
     d.dim[2].lstride = N*P;
     d.dim[2].ubound  = d.dim[2].lbound+d.dim[2].extent;

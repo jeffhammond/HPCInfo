@@ -10,7 +10,14 @@ module cfi
 
     interface
         subroutine bar(buffer) bind(C,name="bar")
-            class(*), dimension(..) :: buffer
+            ! NOTE: ignore_tkr(c) only causes a noncontiguous buffer to be passed
+            !       when known-rank arrays are used.  assumed-rank arrays will be
+            !       copied into a contiguous subarray.
+            !pgi$ ignore_tkr(c) buffer
+            class(*), dimension(:,:,:) :: buffer
+            !class(*), dimension(..) :: buffer
+            !integer, dimension(..) :: buffer
+            !integer, dimension(:,:,:) :: buffer
         end subroutine bar
     end interface
 end module cfi 
@@ -49,9 +56,7 @@ program test
         !integer(4), dimension( 0:4,-1:5,-2:6) :: q2
         !integer(4), dimension( 1:5, 0:6,-1:7) :: q3
         !integer(4), dimension( 2:6, 1:7, 0:8) :: q4
-        integer(4), dimension( 1 , 2:8, 1:9) :: q5
-        q5 = -1
-        q5(:,2:8:2,1:9:2) = 1
+        integer(4), dimension(4,8,9) :: q5
         !print*,'================================'
         !call bar(q0)
         !print*,'================================'
@@ -65,7 +70,9 @@ program test
         !print*,'================================'
         !call bar(q5)
         !print*,'================================'
-        call bar(q5(:,2:8:2,1:9:2))
+        q5 = -1
+        q5(1:4:2,1:8:2,1:9:3) = 1
+        call bar(q5(1:4:2,1:8:2,1:9:3))
     end block
 
 end program test
