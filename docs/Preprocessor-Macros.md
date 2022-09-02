@@ -93,6 +93,17 @@ Macro|Purpose
 ``__IBMC__ ``|Version (Format: VRP, where V = Version, R = Revision, P = Patch)
 ``__IBMCPP__ ``|Version (Format: VRP, where V = Version, R = Revision, P = Patch)
 
+## NVHPC
+
+Macro|Purpose
+---|---
+``__NVCOMPILER ``|Identification
+``__NVCOMPILER_MAJOR__ ``|Version
+``__NVCOMPILER_MINOR__ ``|Revision
+``__NVCOMPILER_PATCHLEVEL__ ``|Patch
+
+Note that the following PGI macros are also supported, for historical reasons.
+
 ## PGI
 
 Macro|Purpose
