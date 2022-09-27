@@ -95,12 +95,18 @@ Macro|Purpose
 
 ## NVHPC
 
+Use ``nvc++ -stdpar -cuda -acc -mp -target=multicore -dM -E /dev/null | grep NV`` to find more...
+
 Macro|Purpose
 ---|---
 ``__NVCOMPILER ``|Identification
 ``__NVCOMPILER_MAJOR__ ``|Version
 ``__NVCOMPILER_MINOR__ ``|Revision
 ``__NVCOMPILER_PATCHLEVEL__ ``|Patch
+``__NVCOMPILER_CUDA__``, ``_NVHPC_CUDA``|CUDA support enabled
+``_NVHPC_STDPAR_GPU``, ``_NVHPC_STDPAR_CUDA``| StdPar for GPU with CUDA (i.e. ``-stdpar=gpu``)
+``_NVHPC_STDPAR_MULTICORE``, ``_NVHPC_STDPAR_OMP``| StdPar for CPU with OpenMP (i.e. ``-stdpar=multicore``)
+``__NVCOMPILER_CUDA_ARCH__``|CUDA arch (e.g. 860 for ``sm_86``)
 
 Note that the following PGI macros are also supported, for historical reasons.
 
