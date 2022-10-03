@@ -1,0 +1,30 @@
+integer(4), dimension(-2:2,-3:3,-4:4) :: q0
+integer(4), dimension(-1:3,-2:4,-3:5) :: q1
+integer(4), dimension( 0:4,-1:5,-2:6) :: q2
+integer(4), dimension( 1:5, 0:6,-1:7) :: q3
+integer(4), dimension( 2:6, 1:7, 0:8) :: q4
+integer(4), dimension( 3:7, 2:8, 1:9) :: q5
+==================================================================================================================================
+D->rank  = 3          D->rank  = 3          D->rank  = 3          D->rank  = 3          D->rank  = 3          D->rank  = 3
+D->lsize = 315        D->lsize = 315        D->lsize = 315        D->lsize = 315        D->lsize = 315        D->lsize = 315
+D->gsize = 315        D->gsize = 315        D->gsize = 315        D->gsize = 315        D->gsize = 315        D->gsize = 315
+D->lbase = 158        D->lbase = 117        D->lbase = 76         D->lbase = 35         D->lbase = -6         D->lbase = -47
+D->dim.lbound  = -2   D->dim.lbound  = -1   D->dim.lbound  = 0    D->dim.lbound  = 1    D->dim.lbound  = 2    D->dim.lbound  = 3
+D->dim.extent  = 5    D->dim.extent  = 5    D->dim.extent  = 5    D->dim.extent  = 5    D->dim.extent  = 5    D->dim.extent  = 5
+D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1
+D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0
+D->dim.lstride = 1    D->dim.lstride = 1    D->dim.lstride = 1    D->dim.lstride = 1    D->dim.lstride = 1    D->dim.lstride = 1
+D->dim.ubound  = 2    D->dim.ubound  = 3    D->dim.ubound  = 4    D->dim.ubound  = 5    D->dim.ubound  = 6    D->dim.ubound  = 7
+D->dim.lbound  = -3   D->dim.lbound  = -2   D->dim.lbound  = -1   D->dim.lbound  = 0    D->dim.lbound  = 1    D->dim.lbound  = 2
+D->dim.extent  = 7    D->dim.extent  = 7    D->dim.extent  = 7    D->dim.extent  = 7    D->dim.extent  = 7    D->dim.extent  = 7
+D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1
+D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0
+D->dim.lstride = 5    D->dim.lstride = 5    D->dim.lstride = 5    D->dim.lstride = 5    D->dim.lstride = 5    D->dim.lstride = 5
+D->dim.ubound  = 3    D->dim.ubound  = 4    D->dim.ubound  = 5    D->dim.ubound  = 6    D->dim.ubound  = 7    D->dim.ubound  = 8
+D->dim.lbound  = -4   D->dim.lbound  = -3   D->dim.lbound  = -2   D->dim.lbound  = -1   D->dim.lbound  = 0    D->dim.lbound  = 1
+D->dim.extent  = 9    D->dim.extent  = 9    D->dim.extent  = 9    D->dim.extent  = 9    D->dim.extent  = 9    D->dim.extent  = 9
+D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1    D->dim.sstride = 1
+D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0    D->dim.soffset = 0
+D->dim.lstride = 35   D->dim.lstride = 35   D->dim.lstride = 35   D->dim.lstride = 35   D->dim.lstride = 35   D->dim.lstride = 35
+D->dim.ubound  = 4    D->dim.ubound  = 5    D->dim.ubound  = 6    D->dim.ubound  = 7    D->dim.ubound  = 8    D->dim.ubound  = 9
+==================================================================================================================================
