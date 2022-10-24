@@ -61,7 +61,9 @@ void foo(CFI_cdesc_t * d)
     printf("CFI_cdesc_t.attribute = %s\n",  get_attr(d->attribute));
     printf("CFI_cdesc_t.rank      = %d\n",  (int)d->rank);
     printf("CFI_cdesc_t.type      = %s\n",  get_type(d->type));
-    printf("CFI_cdesc_t.dim[0].lb = %td\n", (ptrdiff_t)d->dim[0].lower_bound);
-    printf("CFI_cdesc_t.dim[0].sm = %td\n", (ptrdiff_t)d->dim[0].sm);
-    printf("CFI_cdesc_t.dim[0].xt = %td\n", (ptrdiff_t)d->dim[0].extent);
+    if (d->rank > 0) {
+        printf("CFI_cdesc_t.dim[0].lb = %td\n", (ptrdiff_t)d->dim[0].lower_bound);
+        printf("CFI_cdesc_t.dim[0].sm = %td\n", (ptrdiff_t)d->dim[0].sm);
+        printf("CFI_cdesc_t.dim[0].xt = %td\n", (ptrdiff_t)d->dim[0].extent);
+    }
 }
