@@ -55,6 +55,7 @@ void foo(CFI_cdesc_t * d)
 {
     printf("CFI_cdesc_t           = %p\n",  d);
     printf("CFI_cdesc_t.base_addr = %p\n",  d->base_addr);
+    //printf("CFI_cdesc_t address   = %p\n",  CFI_address(d,NULL)); // segfaults if array, trivial for scalar
     printf("CFI_cdesc_t.elem_len  = %zu bytes\n", d->elem_len);
     printf("CFI_cdesc_t.version   = %d\n",  d->version);
     printf("CFI_cdesc_t.attribute = %s\n",  get_attr(d->attribute));

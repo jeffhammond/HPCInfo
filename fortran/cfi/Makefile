@@ -1,8 +1,8 @@
 CC = gcc-12
 FC = gfortran-12
 
-CFLAGS = -std=c11
-FCFLAGS = -std=f2018
+CFLAGS = -g -std=c11
+FCFLAGS = -g -std=f2018
 
 all: class.x
 
