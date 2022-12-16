@@ -22,18 +22,19 @@ exceeds the `INT_MAX` limit takes at least an hour, and probably more.
 This file is also likely to be tens of gigabytes in size.
 
 ```sh
-gcc -O3 gigastruct.c -o gen && time ./gen $((1024*1024*10))  && time gcc -Os temp.c && time ./a.out
+$ gcc -O3 gigastruct.c -o gen && time ./gen $((1024*1024*100))  && ll temp.c && time gcc -Os temp.c && time ./a.out
 
-real	0m2.021s
-user	0m0.866s
-sys	0m0.155s
+real	0m15.372s
+user	0m8.808s
+sys	0m1.334s
+-rw-r--r-- 1 jehammond 1.6G Dec 16 04:44 temp.c
 
-real	0m26.135s
-user	0m23.859s
-sys	0m2.244s
-sizeof=10485760
+real	4m53.584s
+user	4m30.625s
+sys	0m22.525s
+sizeof=104857600
 
 real	0m0.001s
-user	0m0.001s
-sys	0m0.000s
+user	0m0.000s
+sys	0m0.001s
 ```
