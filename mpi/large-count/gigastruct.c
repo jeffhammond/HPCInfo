@@ -8,10 +8,9 @@ int main(int argc, char * argv[])
     FILE * f = fopen("temp.c","w+");
     if (!f) printf("oh shit\n");
     fprintf(f,"#include <stdio.h>\n"
-              "#include <stdint.h>\n"
               "typedef struct {\n");
     for (long i=0; i<n; i++) {
-        fprintf(f,"  int8_t  a%ld;\n", i);
+        fprintf(f,"char a%ld;\n", i);
     }
     fprintf(f,"} giga_s;\n\n"
               "int main(void) {\n"
