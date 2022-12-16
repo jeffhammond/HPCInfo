@@ -98,3 +98,15 @@ Process 87575 stopped
     frame #3: 0x0000000100000e20 win_fence.x`main(argc=<unavailable>, argv=<unavailable>) + 336 at win_fence.c:64
     frame #4: 0x00007fff8afd45ad libdyld.dylib`start + 1
 ```
+
+# LLDB non-interactive
+
+This runs non-interactively and does a backtrace on failure, but if the job doesn't fail, the backtrace fails with `error: invalid thread`, in which case you have to kill it.  I think this is mostly user error.
+```
+mpicc -g3 -Wl,-pie bad.cc
+mpirun -n 2 \
+lldb ./a.out \
+--one-line 'run' \
+--one-line-on-crash 'bt' \
+--one-line 'quit'
+```
