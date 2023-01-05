@@ -42,7 +42,10 @@ int cancel_fn(void * extra_state, int complete)
 
 void * reduce_fn(void * ptr)
 {
-
+    printf("reduce_fn called\n"); 
+    reduce_args * args = (reduce_args*)ptr;
+    MPI_Reduce(args->sbuf, args->rbuf, args->count, args->dt, args->op, args->root, args->comm);
+    MPI_Grequest_complete(args->req);
     return NULL;
 }
 
@@ -81,8 +84,32 @@ int main(int argc, char * argv[])
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     if (provided != MPI_THREAD_MULTIPLE) MPI_Abort(MPI_COMM_WORLD, provided);
 
+    int me, np;
+    MPI_Comm_rank(MPI_COMM_WORLD, &me);
+    MPI_Comm_size(MPI_COMM_WORLD, &np);
 
+    int count = 100;
+    double * x = malloc( count * sizeof(double) );
+    double * y = malloc( count * sizeof(double) );
+    for (int i=0; i<count; i++) {
+        x[i] = i;
+        y[i] = 0;
+    }
+    
+    MPI_Request r;
+    My_Ireduce(x, y, count, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD, &r);
+    MPI_Wait(&r, MPI_STATUS_IGNORE);
+
+    for (int i=0; i<count; i++) {
+        if (y[i] != np * x[i]) {
+            printf("error: x[%d]=%f y[%d]=%f ref=%f\n", i, x[i], i, y[i], np * x[i]);
+        }
+    }
+
+    free(x);
+    free(y);
 
     MPI_Finalize();
+
     return 0;
 }
