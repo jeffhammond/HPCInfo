@@ -96,13 +96,22 @@ int main(int argc, char * argv[])
         y[i] = 0;
     }
     
+    int root = 0;
     MPI_Request r;
-    My_Ireduce(x, y, count, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD, &r);
-    MPI_Wait(&r, MPI_STATUS_IGNORE);
+    My_Ireduce(x, y, count, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD, &r);
 
-    for (int i=0; i<count; i++) {
-        if (y[i] != np * x[i]) {
-            printf("error: x[%d]=%f y[%d]=%f ref=%f\n", i, x[i], i, y[i], np * x[i]);
+    MPI_Status s;
+    MPI_Wait(&r, &s);
+
+    int out_count;
+    MPI_Get_count(&s, MPI_DOUBLE, &out_count);
+    printf("%d: out count = %d\n", me, out_count);
+
+    if (me == root) {
+        for (int i=0; i<count; i++) {
+            if (y[i] != np * x[i]) {
+                printf("error: x[%d]=%f y[%d]=%f ref=%f\n", i, x[i], i, y[i], np * x[i]);
+            }
         }
     }
 
