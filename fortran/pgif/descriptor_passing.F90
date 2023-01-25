@@ -33,7 +33,7 @@ subroutine outer(X,n) bind(C,name="outer")
     !end do
     D(1)  = 35           ! tag (version)
     D(2)  =  1           ! rank
-    D(3)  = 28           ! kind
+    D(3)  = 27           ! kind
     D(4)  =  4           ! len
     D(5)  =  0           ! flags
     D(6)  = size(X)      ! lsize
