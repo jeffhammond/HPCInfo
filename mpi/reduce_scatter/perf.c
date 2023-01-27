@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
     int count;
     if (me==0) {
         count = (argc > 1) ? atoi(argv[1]) : 1000;
-        printf("reduce scatter test: count = %d\n", count);
+        printf("reduce scatter test: count = %d (64-bit integers)\n", count);
     }
     rc = MPI_Bcast(&count, 1, MPI_INT, 0, comm);
 
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
         rc = MPI_Barrier(comm);
         t1 = MPI_Wtime();
         if (me==0) {
-            printf("dt = %f\n", (t1-t0) / REPS);
+            printf("dt = %f seconds\n", (t1-t0) / REPS);
         }
     }
 
