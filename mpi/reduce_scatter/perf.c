@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include <mpi.h>
 
@@ -146,17 +147,17 @@ int main(int argc, char* argv[])
     }
 
     double t0, t1;
-    for (int e=0; e<VARIANT_MAX; e++) {
+    for (int e=0; e<VARIANT_MAX; e++) 
+    //if (e==MULTIROOT_REDUCE)
+    {
 
         // initialize buffers every time we change variants
-        if (me==0) {
-            for (int r=0; r<np; r++) {
-                for (int k=0; k<count; k++) {
-                    input[r*(size_t)count + k] = 1;
-                }
+        for (int r=0; r<np; r++) {
+            for (int k=0; k<count; k++) {
+                input[r*(size_t)count + k] = r * INT_MAX + k;
             }
         }
-        memset(input, 0, count * sizeof(int64_t));
+        memset(output, 0, count * sizeof(int64_t));
 
         // iteration 0: print and verify
         // subsequent iterations: timing
@@ -174,7 +175,7 @@ int main(int argc, char* argv[])
             rc = test_reduce_scatter(input, output, count, counts, type, op, comm, e, me, np, reqs);
             if (rc != MPI_SUCCESS) MPI_Abort(comm,rc);
 
-            if (j==0) {
+            if (0 && j==0) {
                 // verification
                 for (int k=0; k<count; k++) {
                     printf("variant %d rank %d: output[%d]=%lld\n", e, me, k, output[k]);
