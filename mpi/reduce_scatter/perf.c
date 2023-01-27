@@ -180,14 +180,16 @@ int main(int argc, char* argv[])
                     memcpy(outref, output, count*sizeof(int64_t));
                 } else {
                     int check = memcmp(outref, output, count*sizeof(int64_t));
-                    printf("variant %d rank %d: check=0\n", e, me, check);
+                    if (check != 0) {
+                        printf("variant %d rank %d: fails correctness check\n", e, me);
+                        for (int k=0; k<count; k++) {
+                            if (outref[k] != output[k]) {
+                                printf("variant %d rank %d: output[%d]=%lld\n", e, me, k, output[k]);
+                            }
+                        }
+                        fflush(stdout);
+                    }
                 }
-#if 0
-                for (int k=0; k<count; k++) {
-                    printf("variant %d rank %d: output[%d]=%lld\n", e, me, k, output[k]);
-                }
-                fflush(stdout);
-#endif
             }
         }
         rc = MPI_Barrier(comm);
