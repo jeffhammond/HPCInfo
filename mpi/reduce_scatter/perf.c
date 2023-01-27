@@ -93,14 +93,14 @@ int test_reduce_scatter(int64_t * input, int64_t * output, int count, int * coun
         case MULTIROOT_REDUCE:
         {
             for (int r=0; r<np; r++) {
-                rc = MPI_Reduce(&input[me * count], output, count, type, op, r, comm);
+                rc = MPI_Reduce(&input[r * count], (r==me) ? output : NULL, count, type, op, r, comm);
             }
             break;
         }
         case MULTIROOT_IREDUCE:
         {
             for (int r=0; r<np; r++) {
-                rc = MPI_Ireduce(&input[me * count], output, count, type, op, r, comm, &reqs[r]);
+                rc = MPI_Ireduce(&input[r * count], (r==me) ? output : NULL, count, type, op, r, comm, &reqs[r]);
             }
             rc = MPI_Waitall(np, reqs, MPI_STATUSES_IGNORE);
             break;
