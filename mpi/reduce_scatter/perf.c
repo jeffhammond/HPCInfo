@@ -57,7 +57,7 @@ void print_variant_name(variant_e e)
     }
 }
 
-int test_reduce_scatter(void * input, void * output, int count, int * counts,
+int test_reduce_scatter(int64_t * input, int64_t * output, int count, int * counts,
                         MPI_Datatype type, MPI_Op op, MPI_Comm comm,
                         variant_e e, int me, int np, MPI_Request reqs[])
 {
@@ -85,7 +85,9 @@ int test_reduce_scatter(void * input, void * output, int count, int * counts,
         case ALLREDUCE_MEMCPY:
         {
             rc = MPI_Allreduce(MPI_IN_PLACE, input, np * count, type, op, comm);
-            memcpy(output, &input[me * count], count);
+            for (int k=0; k<count; k++) {            
+                output[k] = input[me * count + k];
+            }
             break;
         }
         case MULTIROOT_REDUCE:
@@ -138,14 +140,6 @@ int main(int argc, char* argv[])
     int64_t * input  = calloc(count*np,sizeof(int64_t));
     int64_t * output = calloc(count,sizeof(int64_t));
 
-    if (me==0) {
-        for (int r=0; r<np; r++) {
-            for (int k=0; k<count; k++) {
-                input[r*(size_t)count + k] = 1;
-            }
-        }
-    }
-
     int * counts = malloc(np*sizeof(int));
     for (int r=0; r<np; r++) {
         counts[r] = count;
@@ -153,7 +147,20 @@ int main(int argc, char* argv[])
 
     double t0, t1;
     for (int e=0; e<VARIANT_MAX; e++) {
-        for (int j=0; j<REPS; j++) {
+
+        // initialize buffers every time we change variants
+        if (me==0) {
+            for (int r=0; r<np; r++) {
+                for (int k=0; k<count; k++) {
+                    input[r*(size_t)count + k] = 1;
+                }
+            }
+        }
+        memset(input, 0, count * sizeof(int64_t));
+
+        // iteration 0: print and verify
+        // subsequent iterations: timing
+        for (int j=0; j<=REPS; j++) {
             if (me==0 && j==0) {
                 printf("variant %d:", e);
                 print_variant_name(e);
@@ -169,12 +176,16 @@ int main(int argc, char* argv[])
 
             if (j==0) {
                 // verification
+                for (int k=0; k<count; k++) {
+                    printf("variant %d rank %d: output[%d]=%lld\n", e, me, k, output[k]);
+                }
+                fflush(stdout);
             }
         }
         rc = MPI_Barrier(comm);
         t1 = MPI_Wtime();
         if (me==0) {
-            printf("dt = %f\n", t1-t0);
+            printf("dt = %f\n", (t1-t0) / REPS);
         }
     }
 
