@@ -140,6 +140,7 @@ int main(int argc, char* argv[])
     MPI_Datatype type = MPI_INT64_T;
     int64_t * input  = calloc(count*np,sizeof(int64_t));
     int64_t * output = calloc(count,sizeof(int64_t));
+    int64_t * outref = calloc(count,sizeof(int64_t));
 
     int * counts = malloc(np*sizeof(int));
     for (int r=0; r<np; r++) {
@@ -148,9 +149,7 @@ int main(int argc, char* argv[])
 
     double t0, t1;
     for (int e=0; e<VARIANT_MAX; e++) 
-    //if (e==MULTIROOT_REDUCE)
     {
-
         // initialize buffers every time we change variants
         for (int r=0; r<np; r++) {
             for (int k=0; k<count; k++) {
@@ -175,12 +174,20 @@ int main(int argc, char* argv[])
             rc = test_reduce_scatter(input, output, count, counts, type, op, comm, e, me, np, reqs);
             if (rc != MPI_SUCCESS) MPI_Abort(comm,rc);
 
-            if (0 && j==0) {
+            if (j==0) {
                 // verification
+                if (e==0) {
+                    memcpy(outref, output, count*sizeof(int64_t));
+                } else {
+                    int check = memcmp(outref, output, count*sizeof(int64_t));
+                    printf("variant %d rank %d: check=0\n", e, me, check);
+                }
+#if 0
                 for (int k=0; k<count; k++) {
                     printf("variant %d rank %d: output[%d]=%lld\n", e, me, k, output[k]);
                 }
                 fflush(stdout);
+#endif
             }
         }
         rc = MPI_Barrier(comm);
