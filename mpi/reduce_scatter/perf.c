@@ -79,7 +79,7 @@ int test_reduce_scatter(int64_t * input, int64_t * output, int count, int * coun
         case REDUCE_THEN_SCATTER:
         {
             const int root = 0;
-            rc = MPI_Reduce(MPI_IN_PLACE, input, np * count, type, op, root, comm);
+            rc = MPI_Reduce((me==root) ? MPI_IN_PLACE : input, input, np * count, type, op, root, comm);
             rc = MPI_Scatter(input, count, type, output, count, type, root, comm);
             break;
         }
