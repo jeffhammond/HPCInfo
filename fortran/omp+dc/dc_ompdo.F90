@@ -6,6 +6,7 @@ program main
   m = 100
   allocate( x(m,n) )
   do concurrent (j=1:m)
+    !$omp parallel do
     do i=1,n
       x(i,j) = i+j*m
     end do
