@@ -1,22 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Both of these signatures are acceptable.
- * The first one looks more like the cast below.
- * The second format does not work as a cast below. */
-#if 1
-void print2(int m, int n, double (* const restrict A)[n])
-#else
-void print2(int m, int n, double (A[restrict])[n])
-#endif
+void print2x(int m, int n, const double A[restrict m][n])
+{
+    for(int i=0; i<m; i++)
+        for(int j=0; j<n; j++)
+            printf("*(%d,%d)=%lf\n",i,j,A[i][j]);
+}
+
+void print2(int m, int n, const double (* const restrict A)[n])
 {
     for(int i=0; i<m; i++)
         for(int j=0; j<n; j++)
             printf("(%d,%d)=%lf\n",i,j,A[i][j]);
-
 }
 
-void print1(int m, int n, double A[])
+void print1(int m, int n, const double A[restrict])
 {
     for(int i=0; i<(m*n); i++)
         printf("(%d)=%lf\n",i,A[i]);
@@ -36,12 +35,25 @@ int main(int argc, char* argv[])
         for(int j=0; j<n; j++)
             B[i][j] = (double)(i*n+j);
 
+    double (*C)[m][n] = malloc(m*n*sizeof(double));
+    for(int i=0; i<m; i++)
+        for(int j=0; j<n; j++)
+            (*C)[i][j] = (double)(i*n+j);
+
+    printf("A\n");
     print1(m,n,A);
     print2(m,n,(double (*)[n])A);
 
+    printf("B\n");
     print1(m,n,(double * restrict)B);
     print2(m,n,B);
 
+    printf("C\n");
+    print1(m,n,(double * restrict)C);
+    print2(m,n,(double (*)[n])C);
+    print2x(m,n,(double (*)[n])C);
+
+    free(C);
     free(B);
     free(A);
 

@@ -1,11 +1,11 @@
-CC      := icc
+CC      := gcc
 CFLAGS   = -g -O3 -Wall -std=c99
 LIBS     =
 
 LD       = $(CC)
 LDFLAGS  = $(CFLAGS)
 
-TESTS = array2d array3d warn-stack array-restrict alias2d.o overflow
+TESTS = array2d array3d array-restrict alias2d.o
 
 all: $(TESTS)
 
