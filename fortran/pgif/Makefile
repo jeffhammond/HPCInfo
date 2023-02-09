@@ -11,7 +11,10 @@ FCFLAGS := -O0
 #CFLAGS  += -fPIE
 #FCFLAGS += -fPIE
 
-all: test_cfi.x test_pgif.x test_pgif_3d.x
+all: test_cfi.x test_pgif.x test_pgif_3d.x descriptor_passing.x
+
+descriptor_passing.x: descriptor_passing.F90
+	$(FC) $(FCFLAGS) $^ -o $@
 
 test_cfi.x: test_cfi.F90 foo_cfi.o
 	$(FC) $(FCFLAGS) $^ -o $@
