@@ -13,6 +13,9 @@ int main(int argc, char * argv[])
     int provided;
     MPI_Init(&argc, &argv);
 
+    MPI_Comm_set_errhandler(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+    MPI_Comm_set_errhandler(MPI_COMM_SELF, MPI_ERRORS_RETURN);
+
     int me, np;
     MPI_Comm_rank(MPI_COMM_WORLD, &me);
     MPI_Comm_size(MPI_COMM_WORLD, &np);
@@ -35,7 +38,7 @@ int main(int argc, char * argv[])
     printf("main: &dt=%p\n", &dt);
 
     MPI_Request r = MPI_REQUEST_NULL;
-    MPI_Iallreduce(x, y, count, dt, op, MPI_COMM_WORLD, &r);
+    MPI_Iallreduce(x, y, 1, dt, op, MPI_COMM_WORLD, &r);
     //sleep(1);
     MPI_Wait(&r, MPI_STATUS_IGNORE);
 

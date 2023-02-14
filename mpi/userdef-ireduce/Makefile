@@ -1,4 +1,4 @@
-CC      = mpicc
+CC  := false
 COPT    = -g -O2 -Wall -Wextra -Wpedantic -Werror -std=c11
 
 all: userdef_ireduce.x
