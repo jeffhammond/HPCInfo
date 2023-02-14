@@ -1,5 +1,5 @@
 CC      = mpicc
-COPT    = -g -O2 -Wall
+COPT    = -g -O2 -Wall -Wextra -Wpedantic -Werror -std=c11
 
 all: userdef_ireduce.x
 
