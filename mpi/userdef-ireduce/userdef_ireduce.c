@@ -46,8 +46,8 @@ int main(int argc, char * argv[])
     MPI_Op_free(&op);
     MPI_Finalize();
 
-    //free(x);
-    //free(y);
+    free(x);
+    free(y);
 
     return 0;
 }
