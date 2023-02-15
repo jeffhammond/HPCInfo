@@ -8,7 +8,9 @@ See the [OpenACC home page](http://www.openacc-standard.org/) for the latest spe
 
 ## Implementations
 
-Unfortunately, there is [http://www.phoronix.com/scan.php?page=news_item&px=MTI0MjM no open-source compiler for OpenACC].  The current providers of OpenACC compilers are [[Cray]], PGI and CAPS.
+The current providers of OpenACC compilers are Cray (Fortran only now), NVIDIA (formerly PGI) and GCC.
+
+Intel "supports" OpenACC via a source-to-source translation tool: https://github.com/intel/intel-application-migration-tool-for-openacc-to-openmp.
 
 ## Documentation
 
