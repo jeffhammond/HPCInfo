@@ -169,17 +169,17 @@ void find_nvgpu(void)
 
         // memory bandwidth
         int memoryClock = dp.memoryClockRate;
-	int memoryBusWidth = dp.memoryBusWidth;
+        int memoryBusWidth = dp.memoryBusWidth;
         // Xavier AGX override
         if (major==7 && minor==2) {
             memoryClock = 2133000; // 2.133 GHz in Khz
             printf("memoryClockRate (Xavier AGX LPDDR4x)    = %.3f GHz\n",  memoryClock*1.e-6);
         }
-	// Orin AGX override
+        // Orin AGX override
         if (major==8 && minor==7) {
-	    // https://www.nvidia.com/content/dam/en-zz/Solutions/gtcf21/jetson-orin/nvidia-jetson-agx-orin-technical-brief.pdf
+            // https://www.nvidia.com/content/dam/en-zz/Solutions/gtcf21/jetson-orin/nvidia-jetson-agx-orin-technical-brief.pdf
             memoryClock = 3200000; // 3.2 GHz in Khz
-	    memoryBusWidth = 256;
+            memoryBusWidth = 256;
             printf("memoryClockRate (Orin AGX LPDDR5x)      = %.3f GHz\n",  memoryClock*1.e-6);
             printf("memoryBusWidth (Orin AGX LPDDR5x)       = %d bits\n",  memoryBusWidth);
         }
@@ -197,7 +197,7 @@ void find_nvgpu(void)
         // compute throughput
         printf("multiProcessorCount                     = %d\n",       dp.multiProcessorCount);
         printf("warpSize                                = %d\n",       dp.warpSize);
-	int clockRate = dp.clockRate;
+        int clockRate = dp.clockRate;
         if (major==8 && minor==7) {
             clockRate = 2201600; // 2.2 GHz in Khz
             printf("clockRate (Orin AGX)                    = %.3f GHz\n", clockRate*1.e-6);
