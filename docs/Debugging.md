@@ -2,22 +2,8 @@
 
 GDB is hard to use with MPI because of the interactivity.  It is not always possible to use the well-known `xterm` trick described [here](https://www.open-mpi.org/faq/?category=debugging).
 
-The better option is to use non-interactive GDB.  There is a short example [here](http://matetelki.com/blog/?p=456), which shows:
 ```sh
-gdb EXECUTABLE \
--ex "set width 1000" \
--ex "thread apply all bt" \
--ex run \
--ex bt \
--ex "set confirm off" \
--ex quit
-```
-
-TODO
-
-# GDB non-interactive
-
-```sh
+mpirun $(MPIRUN_ARGS) -n 4 \
 gdb \
 -ex "set width 1000" \
 -ex "thread apply all bt" \
@@ -25,7 +11,7 @@ gdb \
 -ex bt \
 -ex "set confirm off" \
 -ex quit \
---args ./build/pennant test/leblancbig/leblancbig.pnt
+--args $(PROGRAM) $(PROGRAM_ARGS)
 ```
 
 # LLDB
