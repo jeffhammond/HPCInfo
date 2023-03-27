@@ -14,47 +14,54 @@ Finally, it sorts the dimensions in non-increasing order and returns MPI_SUCCESS
 #include <stdlib.h>
 #include <mpi.h>
 
-int XXX_Dims_create(int nnodes, int ndims, int dims[]) {
-    int i, factor, remain;
+int XXX_Dims_create(int nnodes, int ndims, int dims[])
+{
+    int i, factor, remain, constrained_ndims;
+    int constrained_dims[ndims];
     
-    if (ndims == 0) {
-        return MPI_ERR_DIMS;
-    }
-    
-    factor = 1;
+    constrained_ndims = 0;
     for (i = 0; i < ndims; i++) {
         if (dims[i] < 0) {
             return MPI_ERR_ARG;
         } else if (dims[i] > 0) {
-            factor *= dims[i];
+            constrained_dims[i] = dims[i];
+            constrained_ndims++;
+        } else {
+            constrained_dims[i] = 0;
         }
     }
     
-    remain = nnodes / factor;
+    factor = 1;
     for (i = 0; i < ndims; i++) {
-        if (dims[i] == 0) {
+        if (constrained_dims[i] == 0) {
+            remain = nnodes / factor;
             while (remain > 1 && (nnodes % (factor * remain)) != 0) {
                 remain--;
             }
-            dims[i] = remain;
+            constrained_dims[i] = remain;
             factor *= remain;
-            remain = nnodes / factor;
+        } else {
+            factor *= constrained_dims[i];
         }
     }
     
     for (i = 0; i < ndims; i++) {
+        dims[i] = constrained_dims[i];
+    }
+    
+    for (i = 0; i < constrained_ndims; i++) {
         int j, max_index = i;
-        int max_val = dims[i];
-        for (j = i + 1; j < ndims; j++) {
-            if (dims[j] > max_val) {
+        int max_val = constrained_dims[i];
+        for (j = i + 1; j < constrained_ndims; j++) {
+            if (constrained_dims[j] > max_val) {
                 max_index = j;
-                max_val = dims[j];
+                max_val = constrained_dims[j];
             }
         }
         if (max_index != i) {
-            int tmp = dims[i];
-            dims[i] = dims[max_index];
-            dims[max_index] = tmp;
+            int tmp = constrained_dims[i];
+            constrained_dims[i] = constrained_dims[max_index];
+            constrained_dims[max_index] = tmp;
         }
     }
     
