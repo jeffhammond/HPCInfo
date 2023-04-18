@@ -1,5 +1,6 @@
 CC      = mpicc
 CFLAGS  = -g -O2 -Wall
+#CFLAGS += -fopenmp
 
 FC	= mpifort
 FFLAGS  = -g -O2 -Wall
