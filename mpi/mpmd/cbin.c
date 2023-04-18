@@ -5,6 +5,12 @@
 #endif
 #include <mpi.h>
 
+void print_affinity(void)
+{
+
+
+}
+
 int main(int argc, char* argv[])
 {
     int required = MPI_THREAD_SERIALIZED, provided;
