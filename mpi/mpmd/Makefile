@@ -8,10 +8,10 @@ FFLAGS  = -g -O2 -Wall
 all: cbin.x fbin.x
 
 %.x: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
 %.x: %.F90
-	$(FC) $(FFLAGS) -c $< -o $@
+	$(FC) $(FFLAGS) $< -o $@
 
 clean:
 	-rm -f *.o *.x
