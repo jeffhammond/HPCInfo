@@ -47,5 +47,10 @@ program main
     flush(0)
     call MPI_Barrier(MPI_COMM_WORLD)
 
+    call print_affinity(me)
+
+    flush(0)
+    call MPI_Barrier(MPI_COMM_WORLD)
+
     call MPI_Finalize
 end program main

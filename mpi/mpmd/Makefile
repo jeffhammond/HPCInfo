@@ -12,8 +12,11 @@ all: cbin.x fbin.x
 %.x: %.c
 	$(CC) $(CFLAGS) $< -o $@
 
-%.x: %.F90
-	$(FC) $(FFLAGS) $< -o $@
+%.x: %.F90 affinity.o
+	$(FC) $(FFLAGS) $^ -o $@
+
+affinity.o: cbin.c
+	$(CC) $(CFLAGS) -DNO_MAIN -c $< -o $@
 
 clean:
 	-rm -f *.o *.x

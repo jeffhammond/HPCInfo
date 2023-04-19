@@ -7,13 +7,15 @@
 
 void print_affinity(int rank)
 {
-
+    int nt=1;
 #ifdef _OPENMP
-
+    nt = omp_get_max_threads();
+    printf("%d: %d OpenMP threads\n", rank, nt);
 #endif
 
 }
 
+#ifndef NO_MAIN
 int main(int argc, char* argv[])
 {
     int required = MPI_THREAD_SERIALIZED, provided;
@@ -40,6 +42,12 @@ int main(int argc, char* argv[])
     fflush(0);
     MPI_Barrier(MPI_COMM_WORLD);
 
+    print_affinity(me);
+
+    fflush(0);
+    MPI_Barrier(MPI_COMM_WORLD);
+
     MPI_Finalize();
     return 0;
 }
+#endif
