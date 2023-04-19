@@ -28,7 +28,7 @@ program main
     block
         call MPI_Comm_rank(MPI_COMM_WORLD, me)
         call MPI_Comm_size(MPI_COMM_WORLD, np)
-        print*,'I am ',me,' of ',np
+        write(6,'(a,i3,a,i3)') 'F: I am ',me,' of ',np
     end block
 
     flush(0)
@@ -40,7 +40,7 @@ program main
         call MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, node)
         call MPI_Comm_rank(node, node_me)
         call MPI_Comm_size(node, node_np)
-        print*,'rank ',me,' is the ',node_me,' rank of ',node_np
+        write(6,'(a,i3,a,i3,a,i3)') 'F: rank ',me,' is the ',node_me,' rank of ',node_np
     end block
 
     flush(0)
