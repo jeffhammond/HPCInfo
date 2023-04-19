@@ -97,7 +97,7 @@ rm -f ${LLVM_TEMP}/CMakeCache.txt
 # lldb busted on MacOS
 # libcxx requires libcxxabi
 cmake \
-      -G $BUILDTOOL \
+      -G "$BUILDTOOL" \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLVM_PARALLEL_LINK_JOBS=$NUM_LINK \
       -DLLVM_PARALLEL_COMPILE_JOBS=$NUM_COMPILE \
