@@ -1,9 +1,10 @@
 module affinity
-    use, intrinsic :: iso_c_binding
-
     interface
-        subroutine print_affinity() &
+        subroutine print_affinity(rank) &
                    bind(C,name="print_affinity")
+            use, intrinsic :: iso_c_binding
+            implicit none
+            integer(kind=c_int), value :: rank
         end subroutine print_affinity
     end interface
 

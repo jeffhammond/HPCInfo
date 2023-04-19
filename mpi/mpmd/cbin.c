@@ -5,9 +5,12 @@
 #endif
 #include <mpi.h>
 
-void print_affinity(void)
+void print_affinity(int rank)
 {
 
+#ifdef _OPENMP
+
+#endif
 
 }
 
