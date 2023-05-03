@@ -66,7 +66,7 @@ process_lib() {
     fi
 }
 
-for v in 12.2.0 ; do # 11.3.0 10.3.0 9.4.0 8.5.0 ; do
+for v in 13.1.0 ; do # 11.3.0 10.3.0 9.4.0 8.5.0 ; do
     GCC_VERSION=$v
     # There is a better way to do this...
     if [ ${GCC_VERSION:0:1} -eq 1 ] ; then
