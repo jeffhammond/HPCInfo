@@ -1,9 +1,28 @@
 #!/bin/bash -xe
 
-GCC_BASE=/samsung/GCC/
-GCC_TEMP=/samsung/GCC/tmp
+if [ `uname -s` == Darwin ] ; then
+    GCC_BASE=/opt/gcc
+    GCC_TEMP=/tmp/gcc
+else
+    if [ `hostname` == "xavier-agx" ] ; then
+        GCC_BASE=/samsung/GCC
+        GCC_TEMP=/samsung/GCC/tmp
+    else
+        if [ `hostname` == "nuclear" ] ; then
+            GCC_BASE=/opt/gcc
+        else
+            GCC_BASE=/local/home/${USER}/LLVM
+        fi
+        GCC_TEMP=/tmp/$USER/gcc
+    fi
+fi
 
-MAKE_JNUM="-j8"
+if [ `uname -s` == Darwin ] ; then
+    NUM_HWTHREADS=`sysctl -n hw.ncpu`
+else
+    NUM_HWTHREADS=`nproc`
+fi
+MAKE_JNUM="-j${NUM_HWTHREADS}"
 
 FTP_HOST=ftp://gcc.gnu.org/pub/gcc
 
@@ -47,7 +66,7 @@ process_lib() {
     fi
 }
 
-for v in 11.2.0 10.3.0 9.4.0 8.5.0 ; do
+for v in 13.1.0 ; do # 11.3.0 10.3.0 9.4.0 8.5.0 ; do
     GCC_VERSION=$v
     # There is a better way to do this...
     if [ ${GCC_VERSION:0:1} -eq 1 ] ; then
