@@ -14,10 +14,10 @@
 
 ****************************************/
 
-bool pass(int a, int b, int c,
-          int d, int e, int f,
-          int g, int h, int i,
-          int j, int k, int l)
+static inline bool pass(int a, int b, int c,
+                        int d, int e, int f,
+                        int g, int h, int i,
+                        int j, int k, int l)
 {
     return ( ((b+c+d+e)==26) && // top row
              ((h+i+j+k)==26) && // bottom row
@@ -54,11 +54,16 @@ int main(void)
                          for (int l=1; l<=12; l++)
                           if (l!=k && l!=j && l!=i && l!=h && l!=g && l!=f && l!=e && l!=d && l!=c && l!=b && l!=a) 
                            if ( pass(a,b,c,d,e,f,g,h,i,j,k,l) ) {
+#if 1
                                std::cout << a << "," << b << "," << c << "," << d << "," 
                                          << e << "," << f << "," << g << "," << h << "," 
                                          << i << "," << j << "," << k << "," << l << ","
                                          << " pass " << n++ << "\n";
+#else
+                            n++;
+#endif
                            }
+    std::cout << n++ << "\n";
     return 0;
 }
 
