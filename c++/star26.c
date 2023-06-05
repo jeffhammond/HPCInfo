@@ -55,10 +55,14 @@ int main(void)
                          for (int l=1; l<=12; l++)
                           if (l!=k && l!=j && l!=i && l!=h && l!=g && l!=f && l!=e && l!=d && l!=c && l!=b && l!=a) 
                            if ( pass(a,b,c,d,e,f,g,h,i,j,k,l) ) {
+#if 0
                             fprintf(stderr,
                                     "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s,%d\n",
                                     a,b,c,d,e,f,g,h,i,j,k,l,"pass",n++);
+#endif
+                            n++;
                            }
+    printf("%d\n",n);
     return 0;
 }
 
