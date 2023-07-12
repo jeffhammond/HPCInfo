@@ -9,7 +9,7 @@ pure subroutine inner(x,y)
     real, intent(out) :: y(:)
     integer :: i, n
     n = max(size(x),size(y))
-!$acc parallel loop
+!$acc parallel loop worker
     do concurrent (i=1:n)
         y(i) = x(i)
     end do
@@ -24,7 +24,7 @@ subroutine outer(x,y)
     real, intent(out) :: y(:,:)
     integer :: i, n
     n = max(size(x,2),size(y,2))
-!$acc parallel loop
+!$acc parallel loop gang
     do concurrent (i=1:n)
         call inner(x(:,i),y(:,i))
     end do
