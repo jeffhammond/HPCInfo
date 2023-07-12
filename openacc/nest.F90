@@ -4,12 +4,12 @@ contains
 
 pure subroutine inner(x,y)
     implicit none
-!$acc routine
+!$acc routine worker
     real, intent(in) :: x(:)
     real, intent(out) :: y(:)
     integer :: i, n
     n = max(size(x),size(y))
-!$acc parallel loop worker
+!$acc loop
     do concurrent (i=1:n)
         y(i) = x(i)
     end do
