@@ -4,6 +4,7 @@ contains
 
 pure subroutine inner(x,y)
     implicit none
+!$acc routine
     real, intent(in) :: x(:)
     real, intent(out) :: y(:)
     integer :: i, n
