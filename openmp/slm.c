@@ -9,15 +9,12 @@ int main(void)
     int mxtd = omp_get_teams_thread_limit();
     printf("omp_get_max_teams = %d\n",mxtm);
     printf("omp_get_teams_thread_limit = %d\n",mxtd);
-    #pragma omp target teams reduction(max:mxtm)
+    #pragma omp target teams reduction(max:mxtm,mxtd)
     {
-        mxtm = omp_get_team_num()+1;
-    }
-    printf("omp_get_max_teams = %d\n",mxtm);
-    #pragma omp target teams reduction(max:mxtd)
-    {
+        mxtm = omp_get_num_teams();
         mxtd = omp_get_max_threads();
     }
+    printf("omp_get_max_teams = %d\n",mxtm);
     printf("omp_get_teams_thread_limit = %d\n",mxtd);
 
     //int * a = omp_target_alloc(mxtm*mxtd*sizeof(int),omp_get_default_device());
