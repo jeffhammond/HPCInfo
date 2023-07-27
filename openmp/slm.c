@@ -5,8 +5,8 @@
 
 int main(void)
 {
-    int mxtm = omp_get_max_teams();
-    int mxtd = omp_get_teams_thread_limit();
+    int mxtm = 0;//omp_get_max_teams();
+    int mxtd = 0;//omp_get_teams_thread_limit();
     printf("omp_get_max_teams = %d\n",mxtm);
     printf("omp_get_teams_thread_limit = %d\n",mxtd);
     #pragma omp target teams reduction(max:mxtm,mxtd)
@@ -33,7 +33,7 @@ int main(void)
         }
     }
     for (int i=0; i<mxtd*mxtm; i++) {
-        if (a[i] != 0) printf("%d %d\n",i, a[i]);
+        if (a[i] != 0) printf("%d,",a[i]);
     }
     return 0;
 }
