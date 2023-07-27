@@ -23,10 +23,10 @@ int main(void)
     //int * a = omp_target_alloc(mxtm*mxtd*sizeof(int),omp_get_default_device());
     int * restrict a = calloc(mxtm*mxtd,sizeof(int));
     printf("a=%p\n",a);
-    #pragma omp target teams map(tofrom:a) num_teams(4)
+    #pragma omp target teams map(tofrom:a[0:mxtm*mxtd]) //num_teams(4)
     {
         const int team = omp_get_team_num();
-        #pragma omp parallel shared(a) num_threads(4)
+        #pragma omp parallel shared(a) //num_threads(4)
         {
             mxtd = omp_get_max_threads();
             const int thrd = omp_get_thread_num();
