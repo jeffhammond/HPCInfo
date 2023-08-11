@@ -1,4 +1,4 @@
-This is a mirror of http://www.ieeetcsc.org/activities/blog/challenges_for_interoperability_of_runtime_systems_in_scientific_applications because that website has an invalid HTTPS certificate.
+This is a mirror of http://www.ieeetcsc.org/activities/blog/challenges_for_interoperability_of_runtime_systems_in_scientific_applications because that website had an invalid HTTPS certificate and now has disappeared from the internet.
 
 # Challenges for Interoperability of Runtime Systems in Scientific Applications
 
