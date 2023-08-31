@@ -15,10 +15,7 @@ pure subroutine inner(x,y)
     end do
 end subroutine inner
 
-end module m
-
 subroutine outer(x,y)
-    use m
     implicit none
     real, intent(in) :: x(:,:)
     real, intent(out) :: y(:,:)
@@ -29,3 +26,20 @@ subroutine outer(x,y)
         call inner(x(:,i),y(:,i))
     end do
 end subroutine outer
+
+end module m
+
+program main
+    use m
+    implicit none
+    real :: x(1024,1024)
+    real :: y(1024,1024)
+    x = 1
+    y = 0
+    call outer(x,y)
+    if (any(x.ne.y)) then
+        print*,'bad'
+    else
+        print*,'good'
+    end if
+end program main
