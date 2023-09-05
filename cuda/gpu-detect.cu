@@ -140,6 +140,14 @@ cuda_flops_per_sm_s cuda_flops_per_sm(int major, int minor)
                     r.fp64 =   2;
                     r.fp32 = 128;
                     break;
+                // Ada
+	        // https://images.nvidia.com/aem-dam/Solutions/Data-Center/l4/nvidia-ada-gpu-architecture-whitepaper-v2.1.pdf
+                // "The AD102 GPU also includes 288 FP64 Cores (2 per SM) which are not depicted in the above diagram.
+                //  The FP64 TFLOP rate is 1/64th the TFLOP rate of FP32 operations."
+                case 9:
+                    r.fp64 =   2;
+                    r.fp32 = 128;
+                    break;
             }
             break;
         default:
