@@ -16,7 +16,7 @@ elif [ `uname -s` == Darwin ] ; then
 else
     CC=gcc-12
     CXX=g++-12
-    if [ `hostname` == "nuclear" ] ; then
+    if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ]; then
         LLVM_HOME=/opt/llvm
     else
         LLVM_HOME=/local/home/${USER}/LLVM

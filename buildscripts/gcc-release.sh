@@ -11,7 +11,7 @@ else
         if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ]; then
             GCC_BASE=/opt/gcc
         else
-            GCC_BASE=/local/home/${USER}/LLVM
+            GCC_BASE=/local/home/${USER}/GCC
         fi
         GCC_TEMP=/tmp/$USER/gcc
     fi
