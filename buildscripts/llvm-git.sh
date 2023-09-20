@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-if [ `hostname` == "xavier-agx" ] ; then
+if [ `hostname` == "xavier-agx" ] || [ `hostname` == "orin" ]; then
     CC=/samsung/GCC/11.2.0/bin/gcc-11
     CXX=/samsung/GCC/11.2.0/bin/g++-11
     LLVM_HOME=/samsung/LLVM
