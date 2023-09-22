@@ -1,6 +1,7 @@
 module m
 
-    type, bind(C) :: ta
+    !type, bind(C) :: ta
+    type :: ta
         integer, allocatable :: m(:)
         integer :: i
     end type
@@ -10,7 +11,8 @@ module m
         integer :: i
     end type
 
-    type, bind(C) :: ca
+    !type, bind(C) :: ca
+    type :: ca
         type(ta) :: a
         integer :: i
     end type
@@ -26,15 +28,15 @@ program main
     use m
     implicit none
     interface
-        subroutine fa(ca) bind(C)
+        subroutine fa(xa) !bind(C)
             use m
-            type(ca) :: ca
+            type(ca) :: xa
         end subroutine fa
     end interface
     interface
-        subroutine fb(cb) bind(C)
+        subroutine fb(xb) bind(C)
             use m
-            type(cb) :: cb
+            type(cb) :: xb
         end subroutine fb
     end interface
     type(ca) :: xa

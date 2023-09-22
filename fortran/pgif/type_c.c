@@ -3,7 +3,12 @@
 
 typedef struct {
     int * m;
-    long long d[17];
+    void * wtf; 
+    // this is 16 because d is a F90_Desc_la where
+    // F90_DescDim_la is instantiated with MAXDIMS=1,
+    // because the compiler is optimizing away unused
+    // metadata.
+    long long d[16];
     int i;
 } ta_c;
 
@@ -22,10 +27,14 @@ typedef struct {
     int i;
 } cb_c;
 
-void fa(ca_c * pa)
+void fa_(ca_c * pa)
 {
     printf("pa=%zu &(pa->a)=%zu &(pa->i)=%zu pa->i=%d pa->a->m=%zu pa->a->i=%d\n", 
             pa, &(pa->a), &(pa->i), pa->i, pa->a.m, pa->a.i);
+    printf("pa->a.wtf = %p\n", pa->a.wtf);
+    for (int i=0; i<16; i++) {
+        printf("pa->a.d[%d] = %zu\n", i, pa->a.d[i]);
+    }
 }
 
 void fb(cb_c * pb)
