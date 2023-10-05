@@ -14,6 +14,7 @@ static inline double wtime(void)
     return t;
 }
 
+#include <cuda.h>
 #include <cuda_runtime_api.h>
 
 int main(void)
@@ -31,9 +32,8 @@ int main(void)
     size_t n = 0;
     const double t0 = wtime();
     for (intptr_t i=0; i < INT_MAX; i += 4096) {
-        cudaError_t e = cudaPointerGetAttributes(&a, (void*)i);
-        //printf("type=%d device=%d device pointer=%p host pointer=%p\n",
-        //        a.type, a.device, a.devicePointer, a.hostPointer);
+        int data;
+        CUresult r = cuPointerGetAttribute(&data, CU_POINTER_ATTRIBUTE_MEMORY_TYPE, i);
         n++;
     }
     const double t1 = wtime();
