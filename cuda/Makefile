@@ -6,7 +6,10 @@ CUTFLAG += -L/opt/nvidia/hpc_sdk/Linux_x86_64/22.1/math_libs/11.5/targets/x86_64
 
 .PHONY: clean
 
-all: gpu-detect
+all: gpu-detect getptrattr
+
+%: %.c
+	$(NVCC) $< -o $@
 
 %: %.cu
 	$(NVCC) $< -o $@
