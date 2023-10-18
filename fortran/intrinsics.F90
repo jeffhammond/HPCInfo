@@ -8,7 +8,7 @@ program main
         character(len=16) :: c
         n = iargc()
         print*,'iargc: ',n
-        do i=1,n
+        do i=0,n
             call getarg(i,c)
             print*,'getarg: ',i,c
         end do
@@ -19,10 +19,12 @@ program main
         character(len=16) :: c
         n = command_argument_count()
         print*,'command_argument_count: ',n
-        do i=1,n
+        do i=0,n
             call get_command_argument(i,c)
             print*,'get_command_argument: ',i,c
         end do
+        call get_command(c)
+        print*,'get_command: ',c
     end block
 
     ! shell commands
