@@ -3,6 +3,7 @@ program main
 
     ! arguments
 
+#ifdef NONSTANDARD
     block
         integer :: n,i
         character(len=16) :: c
@@ -13,6 +14,7 @@ program main
             print*,'getarg: ',i,c
         end do
     end block
+#endif
 
     block
         integer :: n,i
@@ -29,6 +31,7 @@ program main
 
     ! shell commands
 
+#ifdef NONSTANDARD
     block
         integer :: s
         call system(command='true',status=s)
@@ -36,6 +39,7 @@ program main
         call system(command='false',status=s)
         print*,'false',s
     end block
+#endif
 
     block
         integer :: s
@@ -47,11 +51,13 @@ program main
 
     ! get current user
 
+#ifdef NONSTANDARD
     block
         character(len=32) :: c = 'xxxxxxxxxxxxxx'
         call getlog(c)
         print*,'getlog: ',c
     end block
+#endif
 
     block
         character(len=32) :: c = 'xxxxxxxxxxxxxx'
@@ -61,11 +67,13 @@ program main
 
     ! date
 
+#ifdef NONSTANDARD
     block
         character(len=32) :: c = 'xxxxxxxxxxxxxx'
         call fdate(c)
         print*,'date: ',c
     end block
+#endif
 
     block
         character(len=8) :: d
@@ -78,12 +86,14 @@ program main
 
     ! time
 
+#ifdef NONSTANDARD
     block
         real(kind=4), dimension(2) :: v
         real(kind=4) :: t
         call etime(v,t)
         print*,'etime: ',v,t
     end block
+#endif
 
     block
         real :: t
