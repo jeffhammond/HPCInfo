@@ -17,24 +17,27 @@ CC	 = gcc -std=c11
 #LDFLAGS  = $(OPT)
 #LIBS     =
 
-TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic fortran-align # interop_f
+TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic align # interop_f
 
 all: $(TESTS)
 
 interop_f: interop_f.o interop_c.o
 	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
-%: %.c
-	$(CC) $(CFLAGS) $< -o $@
-
-%: %.f90
-	$(FC) $(FFLAGS) $< -o $@
+align: align.o my_allocate.o
+	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
 %: %.F90
 	$(FC) $(FFLAGS) $< -o $@
 
-#%: %.o
-#	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+%: %.f90
+	$(FC) $(FFLAGS) $< -o $@
+
+%: %.c
+	$(CC) $(CFLAGS) $< -o $@
+
+%: %.o
+	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
 clean:
 	-rm -f *.o
