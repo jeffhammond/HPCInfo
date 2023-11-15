@@ -3,7 +3,7 @@
 #CC	 = icc -std=c11
 
 OPT	 = -O3 # -fopenmp
-FC	 = gfortran -std=f2018 -ffree-form -fcheck=all
+FC	 = gfortran -std=f2018 -ffree-form -fcheck=all -g3
 CC	 = gcc -std=c11
 
 #OPT	 = -O3 -target=gpu
@@ -17,7 +17,7 @@ CC	 = gcc -std=c11
 #LDFLAGS  = $(OPT)
 #LIBS     =
 
-TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic # interop_f
+TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic fortran-align # interop_f
 
 all: $(TESTS)
 
