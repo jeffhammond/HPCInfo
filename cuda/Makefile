@@ -11,7 +11,7 @@ CUTFLAG += -L/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/math_libs/12.2/targets/x86_64
 
 .PHONY: clean
 
-all: gpu-detect getptrattr getptrattr2
+all: gpu-detect getptrattr getptrattr2 mps-detect
 
 %: %.c
 	$(CC) $< $(CFLAGS) $(LDFLAGS) -o $@
