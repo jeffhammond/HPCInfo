@@ -1,11 +1,15 @@
 module m
-  !implicit real (a-z)
-  implicit none
+  implicit real (a-z)
+  !implicit none
 end module m
 
 program main
-  use m
   !implicit none
-  implicit real (a-z)
-  a = 1.0
+  implicit integer (a-z)
+  real :: x
+  block
+  use m
+  a = 1.5
+  print*,a
+  end block
 end program main
