@@ -102,7 +102,7 @@ cmake \
       -DLLVM_PARALLEL_LINK_JOBS=$NUM_LINK \
       -DLLVM_PARALLEL_COMPILE_JOBS=$NUM_COMPILE \
       -DLLVM_TARGETS_TO_BUILD=$MYARCH \
-      -DLLVM_ENABLE_RUNTIMES="libcxxabi;libcxx" \
+      -DLLVM_ENABLE_RUNTIMES="libcxxabi;libcxx;libunwind" \
       -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
