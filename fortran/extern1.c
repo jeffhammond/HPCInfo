@@ -1,3 +1,1 @@
-static void * svp;
-extern void * evp;
-       void *  vp;
+extern int MPIR_F08_MPI_IN_PLACE;
