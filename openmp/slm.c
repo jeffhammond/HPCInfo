@@ -25,15 +25,23 @@ int main(void)
         const int team = omp_get_team_num();
         #pragma omp parallel shared(a) //num_threads(4)
         {
+            int tls[1024] = {0};
             mxtd = omp_get_max_threads();
             const int thrd = omp_get_thread_num();
-            printf("team %6d thread %6d total %9d\n", team, thrd, mxtd*team+thrd);
+            //printf("team %6d thread %6d total %9d\n", team, thrd, mxtd*team+thrd);
             #pragma omp atomic write
             a[mxtd*team+thrd] = mxtd*team+thrd;
+            if (thrd < sizeof(tls)/sizeof(*tls)) {
+                #pragma omp atomic write
+                tls[thrd] = team;
+            }
+            if (thrd==0) {
+                printf("team=%d tls=%p tls[1]=%d\n", team, tls, tls[1]);
+            }
         }
     }
     for (int i=0; i<mxtd*mxtm; i++) {
-        if (a[i] != 0) printf("%d,",a[i]);
+        //if (a[i] != 0) printf("%d,",a[i]);
     }
     return 0;
 }
