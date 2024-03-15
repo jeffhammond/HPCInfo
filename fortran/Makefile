@@ -3,7 +3,7 @@
 #CC	 = icc -std=c11
 
 OPT	 = -O3 # -fopenmp
-FC	 = gfortran -std=f2018 -ffree-form -fcheck=all -g3
+FC	 = gfortran -ffree-form -fcheck=all -g3 #-std=f2018 
 CC	 = gcc -std=c11
 
 #OPT	 = -O3 -target=gpu
@@ -13,9 +13,9 @@ CC	 = gcc -std=c11
 #CFLAGS   = $(OPT) -acc -mp
 #FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
 
-#LD       = $(FC)
-#LDFLAGS  = $(OPT)
-#LIBS     =
+LD       = $(FC)
+LDFLAGS  = $(OPT)
+LIBS     =
 
 TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic align # interop_f
 
@@ -26,6 +26,12 @@ interop_f: interop_f.o interop_c.o
 
 align: align.o my_allocate.o
 	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
+
+extern: extern.o extern1.o extern2.o
+	$(LD) $(LDFLAGS) $^ -o $@
+
+extern.o: extern.F90
+	$(FC) $(FFLAGS) -c $< -o $@
 
 %: %.F90
 	$(FC) $(FFLAGS) $< -o $@
