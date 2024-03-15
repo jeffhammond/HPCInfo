@@ -2,9 +2,13 @@
 #FC	 = ifort -std18 -free
 #CC	 = icc -std=c11
 
-OPT	 = -O3 # -fopenmp
-FC	 = gfortran -ffree-form -fcheck=all -g3 #-std=f2018 
-CC	 = gcc -std=c11
+#OPT	 = -O3 # -fopenmp
+#FC	 = gfortran -ffree-form -fcheck=all -g3 #-std=f2018 
+#CC	 = gcc -std=c11
+
+OPT	 = -O3
+FC	 = ftn
+CC	 = cc
 
 #OPT	 = -O3 -target=gpu
 #FC	 = nvfortran
