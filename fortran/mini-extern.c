@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-int MPIR_F08_MPI_IN_PLACE;
+int MPIR_F08_MPI_IN_PLACE __attribute__((__common__));
 
 void p(void)
 {
