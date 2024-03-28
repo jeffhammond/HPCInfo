@@ -11,7 +11,6 @@ void user_logical_and(void * invec, void * inoutvec, int * len, MPI_Datatype * d
         printf("datatype (%s) does not match arguments!\n",name);
         MPI_Abort(MPI_COMM_WORLD,1);
     }
-    //MPI_Reduce_local(invec, inoutvec, *len, *datatype, MPI_LAND);
     for (int i=0; i<*len; i++) {
         ((int*)inoutvec)[i] = (((int*)invec)[i] && ((int*)inoutvec)[i]);
     }
