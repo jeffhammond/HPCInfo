@@ -47,6 +47,7 @@ program main
 
     fp => user_logical_and
     call MPI_Op_create(fp, .true., op)
+    ! this is also valid but the compiler error checking is worse
     !call MPI_Op_create(user_logical_and, .true., op)
 
     allocate( a(n), b(n) )
