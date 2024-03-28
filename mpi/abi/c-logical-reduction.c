@@ -32,7 +32,10 @@ int main(int argc, char* argv[])
     int * a = calloc(n,sizeof(int));
     int * b = calloc(n,sizeof(int));
 
-    for (int i=0; i<n; i++) a[i] = (int)(np > 1);
+    for (int i=0; i<n; i++) {
+        a[i] = (int)(np > 1);
+        b[i] = 0;
+    }
 
     // correctness
     MPI_Allreduce(a, b, n, MPI_INT, op, MPI_COMM_WORLD);
