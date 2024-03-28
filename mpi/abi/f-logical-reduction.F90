@@ -13,7 +13,7 @@ module m
             if (datatype .ne. MPI_LOGICAL) then
                 call MPI_Type_get_name(datatype, name, n)
                 print*,'datatype (',name,') does not match arguments!'
-                call MPI_Abort(MPI_COMM_WORLD,1)
+                call MPI_Abort(MPI_COMM_WORLD,9)
             else
                 call c_f_pointer(invec,fpi,[len])
                 call c_f_pointer(inoutvec,fpo,[len])
@@ -55,6 +55,7 @@ program main
 
     do i=1,n
         a(i) = merge(1,0,np .gt. 1)
+        b(i) = 0
     end do
 
     ! correctness
@@ -62,6 +63,7 @@ program main
 
     do i=1,n
         if (b(i) .ne. merge(1,0,np .gt. 1)) then
+            print*,i,b(i),merge(1,0,np .gt. 1)
             call MPI_Abort(MPI_COMM_SELF,np)
         end if
     end do
