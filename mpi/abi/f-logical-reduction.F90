@@ -1,13 +1,13 @@
 module m
     contains
         subroutine user_logical_and(invec, inoutvec, len, datatype)
-            use, intrinsic :: iso_c_binding, only : c_ptr
+            use, intrinsic :: iso_c_binding, only : c_ptr, c_f_pointer
             use mpi_f08
             implicit none
             type(c_ptr), value :: invec, inoutvec
             integer :: len
             type(MPI_Datatype) :: datatype
-            logical, dimension(:), pointer :: fpi, fpo
+            logical, dimension(:), pointer :: fpi => NULL(), fpo => NULL()
             character(len=MPI_MAX_OBJECT_NAME) :: name
             integer :: n
             if (datatype .ne. MPI_LOGICAL) then
@@ -31,6 +31,7 @@ program main
     character(len=64) :: argtmp
     type(MPI_Op) :: op
     procedure(MPI_User_function), pointer :: fp => NULL()
+    double precision :: t0, t1
 
     call MPI_Init()
 
@@ -56,6 +57,7 @@ program main
         a(i) = merge(1,0,np .gt. 1)
     end do
 
+    ! correctness
     call MPI_Allreduce(a, b, n, MPI_LOGICAL, op, MPI_COMM_WORLD)
 
     do i=1,n
@@ -63,6 +65,14 @@ program main
             call MPI_Abort(MPI_COMM_SELF,np)
         end if
     end do
+
+    ! timing
+    t0 = MPI_Wtime(); 
+    do i=1,1000000
+        call MPI_Allreduce(a, b, n, MPI_LOGICAL, op, MPI_COMM_WORLD)
+    end do
+    t1 = MPI_Wtime(); 
+    print*,'F time=',t1-t0,' (for 1000000 calls)'
 
     deallocate( a, b )
 

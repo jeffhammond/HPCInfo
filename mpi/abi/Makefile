@@ -1,13 +1,17 @@
-CC      = mpicc
-COPT    = -g -O2 -Wall -std=c11
+CC      = clang
+CFLAGS  = -g -O2 -Wall -std=c11
+CFLAGS += -I/Users/jhammond/Work/MPI/mukautuva
 
-FC      = mpifort
-FOPT    = -g -O2 -Wall -std=f2018
+FC	= gfortran
+FFLAGS  = -g -O2 -Wall -std=f2018
+FFLAGS += -I/Users/jhammond/Work/MPI/vapaa/source
 
-LD      = mpifort
-
+LD      = $(CC)
 LDFLAGS =
-LIBS    = -lm
+LIBS    = -L/Users/jhammond/Work/MPI/vapaa/source -lmpi_f08
+LIBS   += -L/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/13 -lgfortran
+LIBS   += -L/Users/jhammond/Work/MPI/mukautuva -lmuk
+LIBS   += -lc++
 
 all: c-logical-reduction.x f-logical-reduction.x
 

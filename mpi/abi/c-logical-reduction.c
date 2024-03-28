@@ -35,11 +35,20 @@ int main(int argc, char* argv[])
 
     for (int i=0; i<n; i++) a[i] = (int)(np > 1);
 
+    // correctness
     MPI_Allreduce(a, b, n, MPI_INT, op, MPI_COMM_WORLD);
 
     for (int i=0; i<n; i++) {
         if (b[i] != (np > 1)) MPI_Abort(MPI_COMM_SELF,np);
     }
+
+    // timing
+    double t0 = MPI_Wtime();
+    for (int i=0; i<1000000; i++) {
+        MPI_Allreduce(a, b, n, MPI_INT, op, MPI_COMM_WORLD);
+    }
+    double t1 = MPI_Wtime();
+    printf("C time=%lf (for 1000000 calls)\n",t1-t0);
 
     free(a);
     free(b);
