@@ -1,19 +1,24 @@
 CC      = mpicc
 COPT    = -g -O2 -Wall -std=c11
 
-LD      = $(CC)
-CFLAGS  = $(COPT)
+FC      = mpifort
+FOPT    = -g -O2 -Wall -std=f2018
 
-LDFLAGS = $(COPT)
+LD      = mpifort
+
+LDFLAGS =
 LIBS    = -lm
 
-all: c-logical-reduction.x
+all: c-logical-reduction.x f-logical-reduction.x
 
 %.x: %.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.F90
+	$(FC) $(FFLAGS) -c $< -o $@
 
 clean:
 	-rm -f *.o
