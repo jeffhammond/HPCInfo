@@ -18,7 +18,7 @@ else
     CXX=g++-12
     if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ]; then
         LLVM_HOME=/opt/llvm
-    elif [ `hostname` == "fi-kermit" ]; then
+    elif [ `hostname` == "fi-kermit" ] || [ `hostname` == "gorby" ]; then
         #LLVM_HOME=/home/${USER}/LLVM
         LLVM_HOME=/opt/llvm
     else
