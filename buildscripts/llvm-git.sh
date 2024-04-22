@@ -18,6 +18,9 @@ else
     CXX=g++-12
     if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ]; then
         LLVM_HOME=/opt/llvm
+    elif [ `hostname` == "fi-kermit" ]; then
+        #LLVM_HOME=/home/${USER}/LLVM
+        LLVM_HOME=/opt/llvm
     else
         LLVM_HOME=/local/home/${USER}/LLVM
     fi
@@ -36,8 +39,8 @@ REPO=https://github.com/llvm/llvm-project.git
 cd $LLVM_HOME
 if [ -d $LLVM_HOME/git ] ; then
   cd $LLVM_HOME/git
-  git remote remove origin
-  git remote add origin $REPO
+  #git remote remove origin
+  #git remote add origin $REPO
   git fetch origin
   #git checkout fir-dev -b fir-dev || echo exists
   git checkout origin/main -b main || echo exists
