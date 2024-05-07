@@ -29,8 +29,9 @@ mkdir -p $LLVM_HOME
 mkdir -p $LLVM_TEMP
 
 REPO=https://github.com/llvm/llvm-project.git
-#REPO=https://github.com/flang-compiler/f18-llvm-project.git
+#REPO=https://github.com/flang-compiler/f18-llvm-project.git # OBSOLETE
 #REPO=https://github.com/Sezoir/f18-llvm-project.git # SPECIAL
+#REPO=https://github.com/kiranchandramohan/llvm-project.git # SPECIAL /tree/w-option
 
 # Download/update the source
 cd $LLVM_HOME
@@ -39,9 +40,11 @@ if [ -d $LLVM_HOME/git ] ; then
   git remote remove origin
   git remote add origin $REPO
   git fetch origin
-  #git checkout fir-dev -b fir-dev || echo exists
+  # SPECIAL
+  #git checkout w-option || echo exists
+  #git branch --set-upstream-to=origin/w-option w-option || echo dunno
+  # NORMAL
   git checkout origin/main -b main || echo exists
-  #git branch --set-upstream-to=origin/fir-dev fir-dev || echo dunno
   git branch --set-upstream-to=origin/main main || echo dunno
   git pull
   git submodule update --init --recursive
@@ -104,6 +107,7 @@ cmake \
       -DLLVM_TARGETS_TO_BUILD=$MYARCH \
       -DLLVM_ENABLE_RUNTIMES="libcxxabi;libcxx;libunwind" \
       -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
+      -DFLANG_RUNTIME_F128_MATH_LIB=libquadmath \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
