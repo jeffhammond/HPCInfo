@@ -32,20 +32,22 @@ mkdir -p $LLVM_HOME
 mkdir -p $LLVM_TEMP
 
 REPO=https://github.com/llvm/llvm-project.git
+#REPO=https://github.com/llvm/llvm-project.git
 #REPO=https://github.com/flang-compiler/f18-llvm-project.git # OBSOLETE
 #REPO=https://github.com/Sezoir/f18-llvm-project.git # SPECIAL
-#REPO=https://github.com/kiranchandramohan/llvm-project.git # SPECIAL /tree/w-option
+#REPO=https://github.com/kiranchandramohan/llvm-project.git # SPECIAL
+#BRANCH=w-option
 
 # Download/update the source
 cd $LLVM_HOME
 if [ -d $LLVM_HOME/git ] ; then
   cd $LLVM_HOME/git
-  #git remote remove origin
-  #git remote add origin $REPO
+  git remote remove origin
+  git remote add origin $REPO
   git fetch origin
   # SPECIAL
-  #git checkout w-option || echo exists
-  #git branch --set-upstream-to=origin/w-option w-option || echo dunno
+  #git checkout $BRANCH || echo exists
+  #git branch --set-upstream-to=origin/$BRANCH $BRANCH || echo dunno
   # NORMAL
   git checkout origin/main -b main || echo exists
   git branch --set-upstream-to=origin/main main || echo dunno
