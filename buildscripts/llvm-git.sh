@@ -73,6 +73,7 @@ fi
 # throttle the build so the machine remains responsive #
 ########################################################
 
+EXTRA_CMAKE_ARGS=''
 if [ `uname -s` == Darwin ] ; then
     NUM_HWTHREADS=`sysctl -n hw.ncpu`
 
@@ -84,6 +85,8 @@ if [ `uname -s` == Darwin ] ; then
 
     NUM_COMPILE=$MEMORY_COMPILE_LIMIT
     NUM_LINK=$MEMORY_LINK_LIMIT
+
+    MACOS_SYSROOT="-DDEFAULT_SYSROOT=$(xcrun --show-sdk-path)"
 else
     NUM_HWTHREADS=`nproc`
 
@@ -116,8 +119,11 @@ cmake \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
-      $USE_GOLD \
+      -DLLVM_LIT_ARGS=-v \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
       -DCMAKE_INSTALL_PREFIX=$LLVM_HOME/latest \
+      $USE_GOLD \
+      $MACOS_SYSROOT \
       $LLVM_HOME/git/llvm
 
 
