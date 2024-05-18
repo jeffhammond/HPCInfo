@@ -49,7 +49,7 @@ if [ -d $LLVM_HOME/git ] ; then
   #git checkout $BRANCH || echo exists
   #git branch --set-upstream-to=origin/$BRANCH $BRANCH || echo dunno
   # NORMAL
-  git checkout origin/main -b main || echo exists
+  git checkout origin/main -b main || git checkout main
   git branch --set-upstream-to=origin/main main || echo dunno
   git pull
   git submodule update --init --recursive
