@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # https://www.geeksforgeeks.org/power-method-determine-largest-eigenvalue-and-eigenvector-in-python/
 
 import numpy as np
