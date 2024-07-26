@@ -12,7 +12,7 @@ make -j32 install
 ```
 
 This fails and you have to disable the test utilities related to `REAL(2)` and `REAL(3)` 
-by commenting out lines 32, 48, and 175-246.
+by commenting out lines 32, 48, and 175-246 of `hdf5/build/fortran/test/tf_gen.F90`.
 
 # NetCFD-C
 
