@@ -21,6 +21,10 @@ else
     elif [ `hostname` == "fi-kermit" ] || [ `hostname` == "gorby" ]; then
         #LLVM_HOME=/home/${USER}/LLVM
         LLVM_HOME=/opt/llvm
+    elif [[ `hostname` == "uan"* ]]; then
+	# LUMI
+	module load gcc/12.2.0
+        LLVM_HOME=${HOME}/LLVM
     else
         LLVM_HOME=/local/home/${USER}/LLVM
     fi
