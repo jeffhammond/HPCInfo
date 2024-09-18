@@ -90,7 +90,7 @@ if [ `uname -s` == Darwin ] ; then
     NUM_COMPILE=$MEMORY_COMPILE_LIMIT
     NUM_LINK=$MEMORY_LINK_LIMIT
 
-    MACOS_SYSROOT="-DDEFAULT_SYSROOT=$(xcrun --show-sdk-path)"
+    #MACOS_SYSROOT="-DDEFAULT_SYSROOT=$(xcrun --show-sdk-path)"
 else
     NUM_HWTHREADS=`nproc`
 
@@ -104,6 +104,7 @@ else
     NUM_LINK=$MEMORY_LINK_LIMIT
 
     USE_GOLD="-DLLVM_USE_LINKER=gold"
+    QUADMATH="-DFLANG_RUNTIME_F128_MATH_LIB=libquadmath"
 fi
 
 cd $LLVM_TEMP || exit
@@ -119,7 +120,6 @@ cmake \
       -DLLVM_TARGETS_TO_BUILD=$MYARCH \
       -DLLVM_ENABLE_RUNTIMES="libcxxabi;libcxx;libunwind" \
       -DLLVM_ENABLE_PROJECTS="lld;mlir;clang;flang;openmp;pstl;polly" \
-      -DFLANG_RUNTIME_F128_MATH_LIB=libquadmath \
       -DPYTHON_EXECUTABLE=`which python` \
       -DCMAKE_C_COMPILER=$CC \
       -DCMAKE_CXX_COMPILER=$CXX \
@@ -128,6 +128,7 @@ cmake \
       -DCMAKE_INSTALL_PREFIX=$LLVM_HOME/latest \
       $USE_GOLD \
       $MACOS_SYSROOT \
+      $QUADMATH \
       $LLVM_HOME/git/llvm
 
 
