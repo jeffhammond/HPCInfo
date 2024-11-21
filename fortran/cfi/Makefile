@@ -1,16 +1,25 @@
-CC = gcc-14
+#CC = gcc-14
+#CXX = g++-14
+CC = clang
+CXX = clang++
 FC = gfortran-14
 
-CFLAGS = -g -std=c11
+CFIFLAGS = -I.
+
+CFLAGS = -g -std=c11 $(CFIFLAGS)
+CXXFLAGS = -g -std=c++2a $(CFIFLAGS)
 FCFLAGS = -g -std=f2018
 
 all: class.x array.x
 
-%.x: %.F90 foo.o
+%.x: %.F90 foo.o mmdspan.o
 	$(FC) $(FCFLAGS) $^ -o $@
 
-foo.o: foo.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	-rm -fr *.dSYM
