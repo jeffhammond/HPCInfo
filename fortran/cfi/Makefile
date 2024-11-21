@@ -1,12 +1,12 @@
-CC = gcc-12
-FC = gfortran-12
+CC = gcc-14
+FC = gfortran-14
 
 CFLAGS = -g -std=c11
 FCFLAGS = -g -std=f2018
 
-all: class.x
+all: class.x array.x
 
-class.x: class.F90 foo.o
+%.x: %.F90 foo.o
 	$(FC) $(FCFLAGS) $^ -o $@
 
 foo.o: foo.c
