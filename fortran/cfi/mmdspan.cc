@@ -33,13 +33,14 @@ void mdspan_typed(CFI_cdesc_t * d)
 {
     std::cout << "mdspan_typed" << std::endl;
     ptrdiff_t stride = d->dim[0].sm / d->elem_len;
-    size_t extent = d->dim[0].extent * stride;
-    auto mds = mdspan<T,
-                      std::extents<ptrdiff_t, dynamic_extent>,
-                      layout_stride>
-                     (static_cast<T*>(d->base_addr),
-                      extents<ptrdiff_t,dynamic_extent>{extent},
-                      layout_stride::mapping<extents<ptrdiff_t,dynamic_extent>>{stride});
+    size_t extent = d->dim[0].extent;// * stride;
+
+    // Extents of the 1D array (rank=1)
+    std::extents<size_t, dynamic_extent> extents(extent);
+    // Stride mapping
+    auto mapping = std::layout_stride::mapping(extents, std::array<ptrdiff_t, 1>{{stride}});
+    // Create mdspan:
+    std::mdspan mds { static_cast<T*>(d->base_addr) , mapping };
 
     std::cout << "rank() = " << mds.rank() << "\n";
     std::cout << "size() = " << mds.size() << "\n";
