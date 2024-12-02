@@ -1,12 +1,13 @@
 #include <iostream>
-#include <print>
-#include <mdspan>
+#include <experimental/mdspan>
 #include "ISO_Fortran_binding.h"
+
+using namespace std::experimental;
 
 template<typename T>
 void mdspan_typed(CFI_cdesc_t * d)
 {
-    auto mds = std::mdspan(d->base_addr);
+    auto mds = mdspan(static_cast<T*>(d->base_addr));
 }
 
 extern "C" {
