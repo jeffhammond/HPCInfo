@@ -11,9 +11,11 @@ void mdspan_typed(CFI_cdesc_t * d)
     std::cout << "mdspan_typed" << std::endl;
     auto mds = mdspan<T,
                       std::extents<CFI_index_t, dynamic_extent>,
-                      layout_stride>
+                      layout_left>
+                      //layout_stride>
                      (static_cast<T*>(d->base_addr),
-                      dextents<CFI_index_t,1>{d->dim[0].extent * d->dim[0].sm / d->elem_len}); //,
+//                      dextents<CFI_index_t,1>{d->dim[0].extent}); // stride_left
+                      dextents<CFI_index_t,1>{d->dim[0].extent * d->dim[0].sm / d->elem_len});
 //                      array<CFI_index_t,1>{d->dim[0].extent});
 
     std::cout << "rank() = " << mds.rank() << "\n";
