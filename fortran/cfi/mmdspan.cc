@@ -5,8 +5,6 @@
 using namespace std;
 using namespace std::experimental;
 
-#define OPT 1
-
 template<typename T>
 void mdspan_typed_contig(CFI_cdesc_t * d)
 {
@@ -27,13 +25,12 @@ void mdspan_typed_contig(CFI_cdesc_t * d)
         std::cout << i << "," << mds(i) << "\n";
 }
 
-#if OPT
 template<typename T>
 void mdspan_typed(CFI_cdesc_t * d)
 {
     std::cout << "mdspan_typed" << std::endl;
     ptrdiff_t stride = d->dim[0].sm / d->elem_len;
-    size_t extent = d->dim[0].extent;// * stride;
+    size_t extent = d->dim[0].extent;
 
     // Extents of the 1D array (rank=1)
     std::extents<size_t, dynamic_extent> extents(extent);
@@ -51,7 +48,6 @@ void mdspan_typed(CFI_cdesc_t * d)
     for (size_t i = 0; i < mds.extent(0); i++)
         std::cout << i << "," << mds(i) << "\n";
 }
-#endif
 
 extern "C" {
 
@@ -59,11 +55,8 @@ extern "C" {
         switch (d->type)
         {
             case CFI_type_float:
-#if OPT
+                //mdspan_typed_contig<float>(d);
                 mdspan_typed<float>(d);
-#else
-                mdspan_typed_contig<float>(d);
-#endif
                 break;
             default:
                 printf("Unknown type\n");
