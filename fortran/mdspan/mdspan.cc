@@ -4,10 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <experimental/mdspan>
-//#include <print>
-
-using namespace std::experimental;
  
+using namespace std::experimental;
+
 int main(void)
 {
     std::vector v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
