@@ -1,16 +1,29 @@
-CC = gcc-12
-FC = gfortran-12
+CC = gcc-14
+CXX = g++-14
+#LLVM_PATH = /opt/homebrew/opt/llvm/bin/
+#CC = $(LLVM_PATH)clang
+#CXX = $(LLVM_PATH)clang++
+FC = gfortran-14
 
-CFLAGS = -g -std=c11
+CFIFLAGS = -I.
+
+CFLAGS = -g -std=c11 $(CFIFLAGS)
+CXXFLAGS = -g -std=c++2a $(CFIFLAGS)
 FCFLAGS = -g -std=f2018
 
-all: class.x
+all: class.x array.x
 
-class.x: class.F90 foo.o
+%.x: %.F90 foo.c.o mmdspan.cc.o
 	$(FC) $(FCFLAGS) $^ -o $@
 
-foo.o: foo.c
+%.x: %.cc
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+%.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+%.cc.o: %.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	-rm -fr *.dSYM
