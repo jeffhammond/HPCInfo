@@ -7,6 +7,7 @@ using namespace std::experimental;
 template<typename T>
 void mdspan_typed(CFI_cdesc_t * d)
 {
+    std::cout << "mdspan_typed" << std::endl;
     auto mds = mdspan(static_cast<T*>(d->base_addr));
 }
 

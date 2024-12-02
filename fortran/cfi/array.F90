@@ -41,9 +41,12 @@ program main
     print*,'================'
     call bar(x)
     print*,x
+    call mdspan(x)
     print*,'================'
     call bar(x(1:20:2))
     print*,x(1:20:2)
+    call mdspan(x(1:20:2))
+    print*,'================'
 
     !y = reshape([ (i, i = 1,size(y,1)*size(y,2)) ],[size(y,1),size(y,2)])
     !print*,'================'

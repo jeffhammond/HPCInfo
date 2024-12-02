@@ -1,7 +1,7 @@
-CC = gcc-12
-CXX = g++-12
+#CC = gcc-12
+#CXX = g++-12
 #LLVM_PATH = /opt/homebrew/opt/llvm/bin/
-LLVM_VERSION=-18
+LLVM_VERSION=
 CC = $(LLVM_PATH)clang$(LLVM_VERSION)
 CXX = $(LLVM_PATH)clang++$(LLVM_VERSION)
 FC = gfortran
@@ -14,7 +14,8 @@ CFIFLAGS = -I.
 CFLAGS = -g -std=c11 $(CFIFLAGS)
 CXXFLAGS = -g -std=c++20 $(CFIFLAGS) $(MDSPAN_FLAGS)
 FCFLAGS = -g -std=f2018
-LIBCXX = -lstdc++
+#LIBCXX = -lstdc++ # Linux
+LIBCXX = -lc++ # MacOS
 
 all: class.x array.x
 
