@@ -30,13 +30,11 @@ void mdspan_typed_1d(CFI_cdesc_t * d)
 {
     std::cout << "mdspan_typed_1d" << std::endl;
     size_t extent = d->dim[0].extent;
-    ptrdiff_t stride = d->dim[0].sm / d->elem_len;
+    size_t stride = d->dim[0].sm / d->elem_len;
 
-    // Extents of the 1D array (rank=1)
-    std::extents<size_t, dynamic_extent> extents(extent);
-    // Stride mapping
-    auto mapping = std::layout_stride::mapping(extents, std::array<ptrdiff_t, 1>{{stride}});
-    // Create mdspan:
+    std::dextents<size_t, 1> extents(extent);
+    auto strides = std::array<size_t, 1>{{stride}};
+    auto mapping = std::layout_stride::mapping(extents, strides);
     std::mdspan mds { static_cast<T*>(d->base_addr) , mapping };
 
     std::cout << "rank() = " << mds.rank() << "\n";
@@ -55,7 +53,7 @@ void mdspan_typed_2d(CFI_cdesc_t * d)
     std::cout << "mdspan_typed_2d" << std::endl;
 
     std::dextents<size_t, 2> extents(d->dim[0].extent,d->dim[1].extent);
-    auto strides = std::array<size_t, 2>{d->dim[0].sm / d->elem_len, d->dim[1].sm / d->elem_len};
+    auto strides = std::array<size_t, 2>{{d->dim[0].sm / d->elem_len, d->dim[1].sm / d->elem_len}};
     auto mapping = std::layout_stride::mapping(extents, strides);
     std::mdspan mds { static_cast<T*>(d->base_addr) , mapping };
 
