@@ -48,12 +48,14 @@ program main
     call mdspan(x(1:20:2))
     print*,'================'
 
-    !y = reshape([ (i, i = 1,size(y,1)*size(y,2)) ],[size(y,1),size(y,2)])
-    !print*,'================'
-    !call bar(y)
-    !print*,y
-    !print*,'================'
-    !call bar(y(1:10:2,1:5))
-    !print*,y(1:10:2,1:5)
+    y = reshape([ (i, i = 1,size(y,1)*size(y,2)) ],[size(y,1),size(y,2)])
+    print*,'================'
+    call bar(y)
+    print*,y
+    call mdspan(y)
+    print*,'================'
+    call bar(y(1:10:2,1:4))
+    print*,y(1:10:2,1:4)
+    call mdspan(y(1:10:2,1:4))
 
 end program main
