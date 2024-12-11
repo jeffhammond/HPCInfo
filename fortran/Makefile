@@ -21,7 +21,9 @@ LD       = $(FC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = bool logical ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic align extern # interop_f
+TESTS = bool logical logical_value ieee \
+	array reshape reshape3 reshape4 reshape4all reshape6 \
+	matmul atomic align extern # interop_f
 
 all: $(TESTS)
 
@@ -32,6 +34,9 @@ align: align.o my_allocate.o
 	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
 bool: bool.o print.o
+	$(LD) $(LDFLAGS) $^ -o $@
+
+logical_value: logical_value.o set_logical.o
 	$(LD) $(LDFLAGS) $^ -o $@
 
 extern: extern.o extern1.o extern2.o
