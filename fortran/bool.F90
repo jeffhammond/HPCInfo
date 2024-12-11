@@ -5,6 +5,12 @@ module m
             logical :: i
         end subroutine p
     end interface
+    interface
+        subroutine q(i) bind(C,name="q")
+            implicit none
+            type(*), dimension(..) :: i
+        end subroutine q
+    end interface
 end module m
 
 program main
@@ -13,7 +19,9 @@ program main
     print*,'.FALSE.'
     flush(6)
     call p(.FALSE.)
+    call q(.FALSE.)
     print*,'.TRUE.'
     flush(6)
     call p(.TRUE.)
+    call q(.TRUE.)
 end program main

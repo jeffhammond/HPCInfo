@@ -17,9 +17,9 @@
 #CFLAGS   = $(OPT) -acc -mp
 #FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
 
-#LD       = $(FC)
-#LDFLAGS  = $(OPT)
-#LIBS     =
+LD       = $(FC)
+LDFLAGS  = $(OPT)
+LIBS     =
 
 TESTS = bool ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic align # interop_f
 

@@ -2,6 +2,7 @@ program bomb
     implicit none
     logical, allocatable :: x(:)
     logical :: y
+    integer :: z
     integer :: n, i
     n = 1000*1000
     print*,'allocate'
@@ -14,5 +15,10 @@ program bomb
        y = y .and. x(i)
     end do
     print*,y
+    z = 0
+    do concurrent (i=1:n)
+       if (x(i)) z = z + 1
+    end do
+    print*,z
     print*,'Done'
 end program bomb
