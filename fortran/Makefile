@@ -52,5 +52,7 @@ extern: extern.o extern1.o extern2.o
 clean:
 	-rm -f *.o
 	-rm -f *.mod
+	-rm -f *.so
+	-rm -f *.cod
 	-rm -f $(TESTS)
 
