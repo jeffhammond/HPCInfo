@@ -11,7 +11,9 @@ program main
     use m
     implicit none
     print*,'.FALSE.'
+    flush(6)
     call p(.FALSE.)
     print*,'.TRUE.'
+    flush(6)
     call p(.TRUE.)
 end program main
