@@ -21,7 +21,7 @@ LD       = $(FC)
 LDFLAGS  = $(OPT)
 LIBS     =
 
-TESTS = bool ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic align # interop_f
+TESTS = bool logical ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic align extern # interop_f
 
 all: $(TESTS)
 
@@ -50,6 +50,7 @@ extern: extern.o extern1.o extern2.o
 	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
 clean:
+	-rm -f a.out
 	-rm -f *.o
 	-rm -f *.mod
 	-rm -f *.so
