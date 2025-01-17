@@ -8,7 +8,10 @@ else
         GCC_BASE=/samsung/GCC
         GCC_TEMP=/samsung/GCC/tmp
     else
-        if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ]; then
+        if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ] ; then
+            GCC_BASE=/opt/gcc
+        elif [ `hostname` == "fi-kermit" ] ; then
+            #GCC_BASE=/usr/local
             GCC_BASE=/opt/gcc
         else
             GCC_BASE=/local/home/${USER}/GCC
@@ -66,7 +69,7 @@ process_lib() {
     fi
 }
 
-for v in 13.2.0 ; do # 12.3.0 11.4.0 10.5.0 9.5.0 ; do
+for v in 14.1.0 13.2.0 12.3.0 11.4.0 10.5.0 9.5.0 ; do
     GCC_VERSION=$v
     # There is a better way to do this...
     if [ ${GCC_VERSION:0:1} -eq 1 ] ; then
@@ -88,6 +91,6 @@ for v in 13.2.0 ; do # 12.3.0 11.4.0 10.5.0 9.5.0 ; do
       --enable-gold=yes \
       --enable-ld=yes \
       --disable-multilib \
-      --enable-offload-targets=nvptx-none
     "
+      #--enable-offload-targets=nvptx-none
 done
