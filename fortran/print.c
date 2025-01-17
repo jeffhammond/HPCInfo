@@ -2,6 +2,33 @@
 #include <stdlib.h>
 #include "ISO_Fortran_binding.h"
 
+char * get_attr(CFI_attribute_t a);
+char * get_type(CFI_type_t t);
+
+void p(int * i)
+{
+    printf("sint: %d\n",*i);
+    printf("uint: %u\n",(unsigned)*i);
+    printf("hex:  %x\n",*i);
+    printf("addr:  %p\n",i);
+}
+
+void q(CFI_cdesc_t * d)
+{
+    printf("CFI_cdesc_t           = %p\n",  d);
+    printf("CFI_cdesc_t.base_addr = %p\n",  d->base_addr);
+    printf("CFI_cdesc_t.elem_len  = %zu bytes\n", d->elem_len);
+    printf("CFI_cdesc_t.version   = %d\n",  d->version);
+    printf("CFI_cdesc_t.attribute = %s\n",  get_attr(d->attribute));
+    printf("CFI_cdesc_t.rank      = %d\n",  (int)d->rank);
+    printf("CFI_cdesc_t.type      = %s\n",  get_type(d->type));
+    if (d->rank > 0) {
+        printf("CFI_cdesc_t.dim[0].lb = %td\n", (ptrdiff_t)d->dim[0].lower_bound);
+        printf("CFI_cdesc_t.dim[0].sm = %td\n", (ptrdiff_t)d->dim[0].sm);
+        printf("CFI_cdesc_t.dim[0].xt = %td\n", (ptrdiff_t)d->dim[0].extent);
+    }
+}
+
 char * get_attr(CFI_attribute_t a)
 {
     switch(a) {
@@ -15,6 +42,12 @@ char * get_attr(CFI_attribute_t a)
 char * get_type(CFI_type_t t)
 {
     switch(t) {
+#if 0
+        case CFI_type_Integer              :    return "Integer";                     break;
+        case CFI_type_Real                 :    return "Real";                        break;
+        case CFI_type_Complex              :    return "Complex";                     break;
+        case CFI_type_Logical              :    return "Logical";                     break;
+#endif
         //case CFI_type_signed_char          :     return "signed char";                break;
         //case CFI_type_short                :     return "short int";                  break;
         //case CFI_type_int                  :     return "int";                        break;
@@ -47,23 +80,20 @@ char * get_type(CFI_type_t t)
         case CFI_type_cptr                 :     return "void *";                     break;
         case CFI_type_struct               :     return "interoperable C structure";  break;
         case CFI_type_other                :     return "Not otherwise specified";    break;
-        default                            :     return "unknown type";               break;
-    }
-}
-
-void foo(CFI_cdesc_t * d)
-{
-    printf("CFI_cdesc_t           = %p\n",  d);
-    printf("CFI_cdesc_t.base_addr = %p\n",  d->base_addr);
-    //printf("CFI_cdesc_t address   = %p\n",  CFI_address(d,NULL)); // segfaults if array, trivial for scalar
-    printf("CFI_cdesc_t.elem_len  = %zu bytes\n", d->elem_len);
-    printf("CFI_cdesc_t.version   = %d\n",  d->version);
-    printf("CFI_cdesc_t.attribute = %s\n",  get_attr(d->attribute));
-    printf("CFI_cdesc_t.rank      = %d\n",  (int)d->rank);
-    printf("CFI_cdesc_t.type      = %s\n",  get_type(d->type));
-    if (d->rank > 0) {
-        printf("CFI_cdesc_t.dim[0].lb = %td\n", (ptrdiff_t)d->dim[0].lower_bound);
-        printf("CFI_cdesc_t.dim[0].sm = %td\n", (ptrdiff_t)d->dim[0].sm);
-        printf("CFI_cdesc_t.dim[0].xt = %td\n", (ptrdiff_t)d->dim[0].extent);
+        default: {
+            int i = t & CFI_type_mask;
+            int k = (t-i)  >> CFI_type_kind_shift;
+            printf("   unknown type is %d\n", t);
+            //printf("CFI_type_kind_shift = %d\n", CFI_type_kind_shift);
+            //printf("CFI_type_mask = %d\n", CFI_type_mask);
+            printf("   CFI_type_Integer    = %d\n", CFI_type_Integer);
+            printf("   CFI_type_Logical    = %d\n", CFI_type_Logical);
+            printf("   CFI_type_Real       = %d\n", CFI_type_Real   );
+            printf("   CFI_type_Complex    = %d\n", CFI_type_Complex);
+            printf("   CFI_intrinsic_type  = %d (see above)\n", i);
+            printf("   CFI_type_kind       = %d (storage size)\n", k);
+            return "unknown type";
+            break;
+        }
     }
 }
