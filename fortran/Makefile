@@ -1,10 +1,14 @@
 #OPT	 = -O3 -qopenmp
-#FC	 = ifort -std18 -free
-#CC	 = icc -std=c11
+#FC	 = ifx -free #-std18
+#CC	 = icx -std=c11
 
-OPT	 = -O3 # -fopenmp
-FC	 = gfortran -std=f2018 -ffree-form -fcheck=all
-CC	 = gcc -std=c11
+#OPT	 = -O3 # -fopenmp
+#FC	 = gfortran -ffree-form -fcheck=all -g3 #-std=f2018 
+#CC	 = gcc -std=c11
+
+#OPT	 = -O3
+#FC	 = ftn
+#CC	 = cc
 
 #OPT	 = -O3 -target=gpu
 #FC	 = nvfortran
@@ -13,31 +17,48 @@ CC	 = gcc -std=c11
 #CFLAGS   = $(OPT) -acc -mp
 #FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
 
-#LD       = $(FC)
-#LDFLAGS  = $(OPT)
-#LIBS     =
+LD       = $(FC)
+LDFLAGS  = $(OPT)
+LIBS     =
 
-TESTS = ieee array reshape reshape3 reshape4 reshape4all reshape6 matmul atomic # interop_f
+TESTS = bool logical logical_value ieee \
+	array reshape reshape3 reshape4 reshape4all reshape6 \
+	matmul atomic align extern # interop_f
 
 all: $(TESTS)
 
 interop_f: interop_f.o interop_c.o
 	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
-%: %.c
-	$(CC) $(CFLAGS) $< -o $@
+align: align.o my_allocate.o
+	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
-%: %.f90
-	$(FC) $(FFLAGS) $< -o $@
+bool: bool.o print.o
+	$(LD) $(LDFLAGS) $^ -o $@
 
-%: %.F90
-	$(FC) $(FFLAGS) $< -o $@
+logical_value: logical_value.o set_logical.o
+	$(LD) $(LDFLAGS) $^ -o $@
 
-#%: %.o
-#	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
+extern: extern.o extern1.o extern2.o
+	$(LD) $(LDFLAGS) $^ -o $@
+
+%.o: %.F90
+	$(FC) $(FFLAGS) -c $< -o $@
+
+%.o: %.f90
+	$(FC) $(FFLAGS) -c $< -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%: %.o
+	$(LD) $(LDFLAGS) $< $(LIBS) -o $@
 
 clean:
+	-rm -f a.out
 	-rm -f *.o
 	-rm -f *.mod
+	-rm -f *.so
+	-rm -f *.cod
 	-rm -f $(TESTS)
 

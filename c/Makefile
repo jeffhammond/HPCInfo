@@ -1,4 +1,4 @@
-CC      := icc
+CC      := gcc-12
 CFLAGS   = -g -O3 -Wall -std=c99
 LIBS     =
 

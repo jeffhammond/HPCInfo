@@ -2,7 +2,7 @@
 
 set -e
 
-export MAKE_JNUM="make -j8"
+export MAKE_JNUM="make -j`nproc`"
 
 # where LLVM source and install will live
 export LLVM_TOP=/opt/llvm/flang

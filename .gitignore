@@ -65,3 +65,4 @@ c++/scan/scan
 c++/ranges/ranges
 c++/scan/tbb
 test.x
+cuda/gpu-detect
