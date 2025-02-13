@@ -16,8 +16,17 @@ Finally, it sorts the dimensions in non-increasing order and returns MPI_SUCCESS
 
 int XXX_Dims_create(int nnodes, int ndims, int dims[])
 {
-    int i, factor, remain, constrained_ndims;
+    int i, factor, remain, constrained_ndims, product;
     int constrained_dims[ndims];
+    
+    product = 1;
+    for (i = 0; i < ndims; i++) {
+        product *= dims[i];
+    }
+    
+    if (product > nnodes) {
+        return MPI_ERR_ARG;
+    }
     
     constrained_ndims = 0;
     for (i = 0; i < ndims; i++) {
@@ -46,7 +55,9 @@ int XXX_Dims_create(int nnodes, int ndims, int dims[])
     }
     
     for (i = 0; i < ndims; i++) {
-        dims[i] = constrained_dims[i];
+        if (dims[i] == 0) {
+            dims[i] = constrained_dims[i];
+        }
     }
     
     for (i = 0; i < constrained_ndims; i++) {
