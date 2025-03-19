@@ -9,7 +9,10 @@ CC	 = gcc-11
 #CC	 = clang#++
 CFLAGS	 = -O3
 CFLAGS	+= -fopenmp
-#CFLAGS	+= -march=core-avx2
+#CFLAGS	+= -D__AVX2__ -D__AVX__ -D__SSE4_1__ -D__SSE2__
+CFLAGS	+= -D__SSE2__ -D__SSE4_1__
+CFLAGS  += -I$(HOME)/simde/simde/x86 -DSIMDE
+CFLAGS  += -DSIMDE_ENABLE_NATIVE_ALIASES
 
 # Mac laptop
 #LIBS += -Wl,-L/usr/local/Cellar/llvm/4.0.0/lib -Wl,-rpath -Wl,/usr/local/Cellar/llvm/4.0.0/lib
