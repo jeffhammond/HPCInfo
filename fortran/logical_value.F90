@@ -14,7 +14,7 @@ module m
         implicit none
         logical, intent(in) :: x
         integer, intent(in) :: i
-        print*,'logical value is ',i
+        print*,'logical value',i
         if (x .eqv. .true.) then
             print*,'...is true'
         else if (x .eqv. .false.) then
@@ -45,6 +45,9 @@ program main
     call set(x,i)
     call foo(x,i)    
     i = -1
+    call set(x,i)
+    call foo(x,i)    
+    i = 2
     call set(x,i)
     call foo(x,i)    
 end program main

@@ -9,13 +9,13 @@ FC = gfortran
 # git clone https://github.com/kokkos/mdspan.git kokkos-mdspan
 MDSPAN_FLAGS = -I./kokkos-mdspan/include
 
-CFIFLAGS = -I.
+CFIFLAGS = -I/usr/lib/gcc/x86_64-linux-gnu/11/include/
 
 CFLAGS = -g -std=c11 $(CFIFLAGS)
 CXXFLAGS = -g -std=c++20 $(CFIFLAGS) $(MDSPAN_FLAGS)
 FCFLAGS = -g -std=f2018
-#LIBCXX = -lstdc++ # Linux
-LIBCXX = -lc++ # MacOS
+LIBCXX = -lstdc++ # Linux
+#LIBCXX = -lc++ # MacOS
 
 all: class.x array.x
 
