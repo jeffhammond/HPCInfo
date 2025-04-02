@@ -69,6 +69,7 @@ int main(void)
         const int on = CPU_ISSET(i, &mask);
         if (on) printf(" %zu", i);
     }
+    printf("\nCPU_COUNT=%d",CPU_COUNT(&mask));
     printf("\n\n"); fflush(stdout); usleep(naptime);
 
     if (me < (np-1)) MPI_Ssend(NULL,0,MPI_CHAR,me+1,0,MPI_COMM_WORLD);
