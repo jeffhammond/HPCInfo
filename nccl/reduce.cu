@@ -10,6 +10,13 @@
 #include <mpi.h>
 #include <nccl.h>
 
+#if defined __has_include
+#  if __has_include (<boost/core/demangle.hpp>)
+#    include <boost/core/demangle.hpp>
+#    define USE_DEMANGLE
+#  endif
+#endif
+
 int me, np;
 ncclComm_t NCCL_COMM_WORLD;
 cublasHandle_t cublas_handle;
@@ -112,23 +119,31 @@ void diff(double * __restrict__ out, const T * __restrict__ in, const double * _
 #endif
 
 template <typename T> 
-void print_norm(const T * x, int n, const std::string & name)
-{}
-
-template<>
-void print_norm(const float * x, int n, const std::string & name)
+T get_norm(const T * x, int n, const std::string & name)
 {
-    float result;
-    check( cublasSnrm2(cublas_handle, n, x, 1, &result) );
-    std::cout << me << ": " << "the 2-norm of " << name << " is " << result << std::endl;
+    return (T)0;
 }
 
 template<>
-void print_norm(const double * x, int n, const std::string & name)
+float get_norm(const float * x, int n, const std::string & name)
+{
+    float result;
+    check( cublasSnrm2(cublas_handle, n, x, 1, &result) );
+#if VERBOSE
+    std::cout << me << ": " << "the 2-norm of " << name << " is " << result << std::endl;
+#endif
+    return result;
+}
+
+template<>
+double get_norm(const double * x, int n, const std::string & name)
 {
     double result;
     check( cublasDnrm2(cublas_handle, n, x, 1, &result) );
+#if VERBOSE
     std::cout << me << ": " << "the 2-norm of " << name << " is " << result << std::endl;
+#endif
+    return result;
 }
 
 template <typename T>
@@ -147,15 +162,15 @@ void reduce_test(int count)
     double * ref = nullptr;
     check( cudaMalloc((void**)&ref, count * sizeof(double)) );
     check( curandGenerateUniformDouble(gen, ref, count) );
-    scale<<<blocks_per_grid, threads_per_block>>>(ref, 10, count);
+    scale<<<blocks_per_grid, threads_per_block>>>(ref, 3200, count);
     check( cudaDeviceSynchronize() );
-    print_norm(ref, count, "ref");
+    get_norm(ref, count, "ref");
 
     double * res = nullptr;
     check( cudaMalloc((void**)&res, count * sizeof(double)) );
     check( cudaMemset((void*)res, 0, count * sizeof(double)) );
     check( cudaDeviceSynchronize() );
-    //print_norm(res, count, "res");
+    //get_norm(res, count, "res");
 
     {
         T * in  = nullptr;
@@ -163,7 +178,7 @@ void reduce_test(int count)
         //check( cudaMemset((void*)in, 0xFFFFFFFF, bytes) );
         cast_from_double<<<blocks_per_grid, threads_per_block>>>(in, ref, count);
         check( cudaDeviceSynchronize() );
-        print_norm(in, count, "in");
+        get_norm(in, count, "in");
 
         T * out = nullptr;
         check( cudaMalloc((void**)&out, bytes) );
@@ -172,18 +187,25 @@ void reduce_test(int count)
 
         check( ncclAllReduce(in, out, count, get_NCCL_Datatype(*in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
         check( cudaDeviceSynchronize() );
-        if (me == 0) print_norm(out, count, "out");
+        if (me == 0) get_norm(out, count, "out");
 
         check( ncclAllReduce(ref, ref, count, ncclDouble, ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
         check( cudaDeviceSynchronize() );
-        if (me == 0) print_norm(ref, (int)count, "ref (after ncclAllReduce)");
 
         diff<<<blocks_per_grid, threads_per_block>>>(res, out, ref, count);
 
         double result;
         check( cublasDnrm2(cublas_handle, (int)count, res, 1, &result) );
         if (me == 0) {
-            std::cout << me << ": difference between " << typeid(T).name() <<" and double is " << result << std::endl;
+            double norm = get_norm(ref, (int)count, "ref (after ncclAllReduce)");
+            auto rawname = typeid(T).name();
+#ifdef USE_DEMANGLE
+            auto name = boost::core::demangle(rawname);
+#else
+            auto name = rawname;
+#endif
+            std::cout << me << ": difference between " << name <<" and double is "
+                      << result << " (" << result/norm << " normalized)" << std::endl;
         }
 
         check( cudaFree((void*)out) );
