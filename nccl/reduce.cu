@@ -195,9 +195,9 @@ void reduce_test(int count)
         diff<<<blocks_per_grid, threads_per_block>>>(res, out, ref, count);
 
         double result;
-        check( cublasDnrm2(cublas_handle, (int)count, res, 1, &result) );
+        check( cublasDnrm2(cublas_handle, count, res, 1, &result) );
         if (me == 0) {
-            double norm = get_norm(ref, (int)count, "ref (after ncclAllReduce)");
+            double norm = get_norm(ref, count, "ref (after ncclAllReduce)");
             auto rawname = typeid(T).name();
 #ifdef USE_DEMANGLE
             auto name = boost::core::demangle(rawname);
@@ -206,6 +206,29 @@ void reduce_test(int count)
 #endif
             std::cout << me << ": difference between " << name <<" and double is "
                       << result << " (" << result/norm << " normalized)" << std::endl;
+        }
+
+        {
+            const int reps = 50;
+            cudaEvent_t start;
+            cudaEvent_t end;
+            check( cudaEventCreate(&start) );
+            check( cudaEventCreate(&end) );
+
+            check( cudaEventRecord(start, 0) );
+            for (int i=0; i<reps; i++) {
+                check( ncclAllReduce(in, out, count, get_NCCL_Datatype(*in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
+            }
+            check( cudaEventRecord(end, 0) );
+            check( cudaDeviceSynchronize() );
+
+            float total_time;
+            check( cudaEventElapsedTime(&total_time, start, end) );
+            float iter_time = total_time/reps;
+            double bandwidth = 2L * count * sizeof(T) / (double)iter_time;
+            printf("%d: %f ms, %lf GB/s\n", me, iter_time/reps, bandwidth);
+            check( cudaEventDestroy(start) );
+            check( cudaEventDestroy(end) );
         }
 
         check( cudaFree((void*)out) );
