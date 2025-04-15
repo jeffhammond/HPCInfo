@@ -2,19 +2,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <inttypes.h>
 
 #include <mpi.h>
 
 // we don't bother with Reduce-then-Scatterv because it requires a displacement vector
 
 typedef enum {
-    MPI_REDUCE_SCATTER = 0,
-    MPI_REDUCE_SCATTER_BLOCK = 1,
-    REDUCE_THEN_SCATTER = 2,
-    ALLREDUCE_MEMCPY = 3,
-    MULTIROOT_REDUCE = 4,
-    MULTIROOT_IREDUCE = 5,
-    VARIANT_MAX = 6
+    MPI_REDUCE_SCATTER          = 0,
+    MPI_REDUCE_SCATTER_BLOCK    = 1,
+    REDUCE_THEN_SCATTER         = 2,
+    REDUCE_THEN_SCATTER_OOP     = 3,
+    ALLREDUCE_MEMCPY            = 4,
+    ALLREDUCE_MEMCPY_OOP        = 5,
+    MULTIROOT_REDUCE            = 6,
+    MULTIROOT_IREDUCE           = 7,
+    VARIANT_MAX                 = 8
 } variant_e;
 
 void print_variant_name(variant_e e)
@@ -23,37 +26,49 @@ void print_variant_name(variant_e e)
     {
         case MPI_REDUCE_SCATTER:
         {
-            printf("MPI_REDUCE_SCATTER");
+            printf("%30s","MPI_REDUCE_SCATTER");
             break;
         }
         case MPI_REDUCE_SCATTER_BLOCK:
         {
-            printf("MPI_REDUCE_SCATTER_BLOCK");
+            printf("%30s","MPI_REDUCE_SCATTER_BLOCK");
             break;
         }
         case REDUCE_THEN_SCATTER:
         {
-            printf("REDUCE_THEN_SCATTER");
+            printf("%30s","REDUCE_THEN_SCATTER");
+            break;
+        }
+        case REDUCE_THEN_SCATTER_OOP:
+        {
+            printf("%30s","REDUCE_THEN_SCATTER_OOP");
             break;
         }
         case ALLREDUCE_MEMCPY:
         {
-            printf("ALLREDUCE_MEMCPY");
+            printf("%30s","ALLREDUCE_MEMCPY");
+            break;
+        }
+        case ALLREDUCE_MEMCPY_OOP:
+        {
+            printf("%30s","ALLREDUCE_MEMCPY_OOP");
             break;
         }
         case MULTIROOT_REDUCE:
         {
-            printf("MULTIROOT_REDUCE");
+            printf("%30s","MULTIROOT_REDUCE");
             break;
         }
         case MULTIROOT_IREDUCE:
         {
-            printf("MULTIROOT_IREDUCE");
+            printf("%30s","MULTIROOT_IREDUCE");
             break;
         }
         default:
         {
+            printf("%30s","INVALID VARIANT");
             abort();
+            break;
         }
     }
 }
@@ -83,12 +98,31 @@ int test_reduce_scatter(int64_t * input, int64_t * output, int count, int * coun
             rc = MPI_Scatter(input, count, type, output, count, type, root, comm);
             break;
         }
+        case REDUCE_THEN_SCATTER_OOP:
+        {
+            const int root = 0;
+            int64_t * buf = (me==root) ? malloc(np * count * sizeof(int64_t)) : NULL;
+            rc = MPI_Reduce(input, buf, np * count, type, op, root, comm);
+            rc = MPI_Scatter(buf, count, type, output, count, type, root, comm);
+            if (me==root) free(buf);
+            break;
+        }
         case ALLREDUCE_MEMCPY:
         {
             rc = MPI_Allreduce(MPI_IN_PLACE, input, np * count, type, op, comm);
             for (int k=0; k<count; k++) {            
                 output[k] = input[me * count + k];
             }
+            break;
+        }
+        case ALLREDUCE_MEMCPY_OOP:
+        {
+            int64_t * buf = malloc(np * count * sizeof(int64_t));
+            rc = MPI_Allreduce(input, buf, np * count, type, op, comm);
+            for (int k=0; k<count; k++) {
+                output[k] = buf[me * count + k];
+            }
+            free(buf);
             break;
         }
         case MULTIROOT_REDUCE:
@@ -147,8 +181,8 @@ int main(int argc, char* argv[])
         counts[r] = count;
     }
 
-    double t0, t1;
-    for (int e=0; e<VARIANT_MAX; e++) 
+    double t0=0, t1=0;
+    for (variant_e e=MPI_REDUCE_SCATTER; e!=VARIANT_MAX; e++)
     {
         // initialize buffers every time we change variants
         for (int r=0; r<np; r++) {
@@ -162,9 +196,9 @@ int main(int argc, char* argv[])
         // subsequent iterations: timing
         for (int j=0; j<=REPS; j++) {
             if (me==0 && j==0) {
-                printf("variant %d:", e);
+                printf("variant %d:", (int)e);
                 print_variant_name(e);
-                printf("\n");
+                printf("\t");
             }
             else if (j==1) {
                 rc = MPI_Barrier(comm);
@@ -184,7 +218,7 @@ int main(int argc, char* argv[])
                         printf("variant %d rank %d: fails correctness check\n", e, me);
                         for (int k=0; k<count; k++) {
                             if (outref[k] != output[k]) {
-                                printf("variant %d rank %d: output[%d]=%lld\n", e, me, k, output[k]);
+                                printf("variant %d rank %d: output[%d]=%" PRId64 "\n", (int)e, me, k, output[k]);
                             }
                         }
                         fflush(stdout);

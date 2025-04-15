@@ -9,6 +9,7 @@ OMP_PARALLEL_FOR
     }
 }
 
+#if __x86_64__
 void stride_mov(size_t n, const double * RESTRICT a, double * RESTRICT b, unsigned s)
 {
     ASSUME(s>0);
@@ -27,11 +28,13 @@ OMP_PARALLEL_FOR
 #endif
     }
 }
+#endif
 
 #ifdef __SSE2__
 void stride_movnti(size_t n, const double * RESTRICT a, double * RESTRICT b, unsigned s)
 {
     ASSUME(s>0);
+#if __x86_64__
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=s) {
         double t;
@@ -41,6 +44,11 @@ OMP_PARALLEL_FOR
         asm ("movnti %1, %0" : "=m" (b[i]) : "r" (t));
     }
     asm ("sfence" ::: "memory");
+#elif __aarch64__
+#warning unimplemented
+#else
+#error unsupported ISA
+#endif
 }
 
 #ifdef __INTEL_COMPILER

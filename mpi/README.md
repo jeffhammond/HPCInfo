@@ -2,27 +2,24 @@
 
 ## The MPI Standard
 
-The MPI standard is a formal specification document that is backed by the [http://mpi-forum.org/ MPI Forum], but no official standardization body (e.g. [http://www.iso.org/ISO] or [http://www.ansi.org/ ANSI].
+The MPI standard is a formal specification document that is backed by the [MPI Forum](http://mpi-forum.org/), but no official standardization body (e.g. http://www.iso.org/ISO or http://www.ansi.org/.
 
-Please see [http://mpi-forum.org/docs/docs.html this page] for all of the MPI standardization documents, including the latest version of the standard, [http://mpi-forum.org/docs/mpi-3.0/mpi30-report.pdf MPI 3.0].
+Please see [this page](http://mpi-forum.org/docs/docs.html) for all of the MPI standardization documents, including the latest version of the standard, [MPI 3.0](http://mpi-forum.org/docs/mpi-3.0/mpi30-report.pdf).
 
 ## Tutorials
 
-The [https://computing.llnl.gov/tutorials/mpi/ LLNL tutorial] is excellent.  The Internet has too many MPI-related tutorials to list them all here.  Search engines can help you find some of them.
+The [LLNL tutorial](https://computing.llnl.gov/tutorials/mpi/) is excellent.  The Internet has too many MPI-related tutorials to list them all here.  Search engines can help you find some of them.
 
 ## Books
 
-I personally recommend [http://www.mcs.anl.gov/research/projects/mpi/usingmpi/ Using MPI] and [http://www.mcs.anl.gov/research/projects/mpi/usingmpi2/index.html Using MPI-2] as a means for learning both the basic and advanced features of MPI.
+I personally recommend [Using MPI](http://www.mcs.anl.gov/research/projects/mpi/usingmpi/) and [Using MPI-2](http://www.mcs.anl.gov/research/projects/mpi/usingmpi2/index.html) as a means for learning both the basic and advanced features of MPI.
 
-I recall that [http://www.cs.usfca.edu/~peter/ppmpi/ Peter Pacheco's book] was good, but I lost my copy many years ago and can't certify that my recollection is accurate.
+I recall that [Peter Pacheco's book](http://www.cs.usfca.edu/~peter/ppmpi/) was good, but I lost my copy many years ago and can't certify that my recollection is accurate.
 
 ## Profiling
 
-External:
 * http://mpip.sourceforge.net/
-
-Internal:
-* https://svn.mcs.anl.gov/repos/mpi/mpich2/trunk/src/util/mem/trmem.c
+* https://github.com/jeffhammond/plumber (a good demo of how to use PMPI)
 
 # Basic MPI
 
@@ -36,7 +33,7 @@ See ```mpi/intermediate``` in the repo.
 
 # Hybrid MPI
 
-See [https://www.ieeetcsc.org/activities/blog/challenges_for_interoperability_of_runtime_systems_in_scientific_applications Challenges for Interoperability of Runtime Systems in Scientific Applications] for some commentary on using MPI and threads, among other things.
+See [Challenges for Interoperability of Runtime Systems in Scientific Applications](https://github.com/jeffhammond/HPCInfo/blob/master/docs/Challenges-for-Interoperability-of-Runtime-Systems-in-Scientific-Applications.md) for some commentary on using MPI and threads, among other things.
 
 ## MPI and threads
 

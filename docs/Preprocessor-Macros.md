@@ -43,6 +43,9 @@ OpenMP|``_OPENMP = 201107``|OpenMP 3.1
 OpenMP|``_OPENMP = 201307``|OpenMP 4.0
 OpenMP|``_OPENMP = 201511``|OpenMP 4.5
 OpenMP|``_OPENMP = 201811``|OpenMP 5.0
+OpenMP|``_OPENMP = 202011``|OpenMP 5.1
+OpenMP|``_OPENMP = 202111``|OpenMP 5.2
+OpenMP|``_OPENMP = 202411``|OpenMP 6.0
 Cilk|`__cilk = 200`|Cilk++
 
 # Compilers

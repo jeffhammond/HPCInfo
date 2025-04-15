@@ -14,7 +14,7 @@ static const int print_errors = 1;
 static inline int cuda_check(cudaError_t rc)
 {
     if (rc!=cudaSuccess && print_errors) {
-        printf("CUDA error: %s\n", cudaGetErrorString(rc));
+        printf("CUDA error: %s - %s\n", cudaGetErrorName(rc), cudaGetErrorString(rc));
     }
     return rc;
 }
