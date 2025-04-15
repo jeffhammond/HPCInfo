@@ -2,7 +2,7 @@
 #define HUGE_ALLOC_H
 
 /* This is required to get MAP_HUGETLB, MAP_ANONYMOUS, MAP_POPULATE in C99 mode. */
-/* It must be before all the heads, and not just before sys/mman.h. */
+/* It must be before all the headers, and not just before sys/mman.h. */
 #define _GNU_SOURCE
 
 #include <stdio.h>

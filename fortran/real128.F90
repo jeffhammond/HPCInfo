@@ -1,15 +1,9 @@
 program main
     use iso_fortran_env
-    complex(REAL128) :: z
-    !$omp atomic write
-    z = (0.0d0,0.0d0)
-    !$omp target map(tofrom:z)
-    !$omp teams
-    !$omp parallel
-    !$omp atomic update
-    z = z + (1,1)
-    !$omp end parallel
-    !$omp end teams
-    !$omp end target
-    print*,z
+    real(REAL128) :: z
+    z = 1
+    do while (z .gt. 0)
+        z = z / 2
+        print*,z
+    end do
 end program main

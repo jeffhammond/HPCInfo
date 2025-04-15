@@ -5,10 +5,10 @@
 char * get_attr(CFI_attribute_t a)
 {
     switch(a) {
-        case CFI_attribute_pointer:     return "data pointer";  break;
-        case CFI_attribute_allocatable: return "allocatable";   break;
-        case CFI_attribute_other:       return "other";         break;
-        default: abort();
+        case CFI_attribute_pointer:     return "data pointer";      break;
+        case CFI_attribute_allocatable: return "allocatable";       break;
+        case CFI_attribute_other:       return "other";             break;
+        default:                        return "unknown attribute"; break;
     }
 }
 
@@ -47,7 +47,7 @@ char * get_type(CFI_type_t t)
         case CFI_type_cptr                 :     return "void *";                     break;
         case CFI_type_struct               :     return "interoperable C structure";  break;
         case CFI_type_other                :     return "Not otherwise specified";    break;
-        default                            :     abort();
+        default                            :     return "unknown type";               break;
     }
 }
 

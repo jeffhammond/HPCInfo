@@ -1,16 +1,35 @@
-CC = gcc-12
-FC = gfortran-12
+#CC = gcc-12
+#CXX = g++-12
+#LLVM_PATH = /opt/homebrew/opt/llvm/bin/
+LLVM_VERSION=
+CC = $(LLVM_PATH)clang$(LLVM_VERSION)
+CXX = $(LLVM_PATH)clang++$(LLVM_VERSION)
+FC = gfortran
 
-CFLAGS = -g -std=c11
+# git clone https://github.com/kokkos/mdspan.git kokkos-mdspan
+MDSPAN_FLAGS = -I./kokkos-mdspan/include
+
+CFIFLAGS = -I/usr/lib/gcc/x86_64-linux-gnu/11/include/
+
+CFLAGS = -g -std=c11 $(CFIFLAGS)
+CXXFLAGS = -g -std=c++20 $(CFIFLAGS) $(MDSPAN_FLAGS)
 FCFLAGS = -g -std=f2018
+LIBCXX = -lstdc++ # Linux
+#LIBCXX = -lc++ # MacOS
 
-all: class.x
+all: class.x array.x
 
-class.x: class.F90 foo.o
-	$(FC) $(FCFLAGS) $^ -o $@
+%.x: %.F90 foo.c.o mmdspan.cc.o
+	$(FC) $^ $(FCFLAGS) $(LIBCXX) -o $@
 
-foo.o: foo.c
-	$(CC) $(CFLAGS) -c $< -o $@
+%.x: %.cc
+	$(CXX) $^ $(CXXFLAGS) -o $@
+
+%.c.o: %.c
+	$(CC) -c $< $(CFLAGS) -o $@
+
+%.cc.o: %.cc
+	$(CXX) -c $< $(CXXFLAGS) -o $@
 
 clean:
 	-rm -fr *.dSYM
