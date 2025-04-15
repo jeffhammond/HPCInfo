@@ -183,10 +183,10 @@ void find_nvgpu(void)
             printf("memoryClockRate (Orin AGX LPDDR5x)      = %.3f GHz\n",  memoryClock*1.e-6);
             printf("memoryBusWidth (Orin AGX LPDDR5x)       = %d bits\n",  memoryBusWidth);
         }
-        printf("memoryClockRate (CUDA device query)     = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
-        printf("memoryBusWidth (CUDA device query)      = %d bits\n",   memoryBusWidth );
         // 2 for Dual Data Rate (https://en.wikipedia.org/wiki/Double_data_rate)
         // 1/8 = 0.125 for bit to byte
+        printf("memoryClockRate (CUDA device query)     = %.3f GHz\n",  dp.memoryClockRate*1.e-6);
+        printf("memoryBusWidth (CUDA device query)      = %d bits\n",   dp.memoryBusWidth );
         printf("peak bandwidth                          = %.1f GB/s\n", 2 * memoryClock*1.e-6 * memoryBusWidth * 0.125);
 
         // memory capacity
