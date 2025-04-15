@@ -15,7 +15,7 @@ FC	 = nvfortran
 CC	 = nvc
 
 CFLAGS   = $(OPT) -acc -mp -I/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/compilers/include/
-FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed -target=gpu
+FFLAGS   = $(OPT) -Mfree #-cuda -acc -mp -stdpar -gpu=managed -target=gpu
 
 LD       = $(FC)
 LDFLAGS  = $(FFLAGS)
