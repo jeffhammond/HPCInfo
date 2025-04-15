@@ -81,6 +81,8 @@ char * get_type(CFI_type_t t)
         case CFI_type_struct               :     return "interoperable C structure";  break;
         case CFI_type_other                :     return "Not otherwise specified";    break;
         default: {
+#ifdef GFORTRAN
+            // gfortran-specific
             int i = t & CFI_type_mask;
             int k = (t-i)  >> CFI_type_kind_shift;
             printf("   unknown type is %d\n", t);
@@ -92,6 +94,7 @@ char * get_type(CFI_type_t t)
             printf("   CFI_type_Complex    = %d\n", CFI_type_Complex);
             printf("   CFI_intrinsic_type  = %d (see above)\n", i);
             printf("   CFI_type_kind       = %d (storage size)\n", k);
+#endif
             return "unknown type";
             break;
         }
