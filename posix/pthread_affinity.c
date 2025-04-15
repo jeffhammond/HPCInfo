@@ -1,4 +1,4 @@
-// this has to be above stdio.h for sched_getaffinity to be declared
+// this has to be set before headers are included
 #define _GNU_SOURCE
 
 #include <stdio.h>
