@@ -21,6 +21,8 @@ module hwcount
             write(*,'(a)') 'get_num_cpus_from_mask failed'
           else if  (num_cpus .le. 2) then
             write(*,'(a)') 'Performance warning'
+          else
+            write(*,'(a)') 'Everything is fine'
           end if
         end if
     end subroutine oversubscription_warning
