@@ -88,28 +88,6 @@ void cast(T1 * __restrict__ out, const T2 * __restrict__ in, unsigned n)
     }
 }
 
-#if 0
-template <typename T>
-__global__
-void cast(T * __restrict__ out, const double * __restrict__ in, unsigned n)
-{
-    const unsigned i = blockIdx.x * blockDim.x + threadIdx.x;         
-    if (i < n) {
-        out[i] = (T)in[i];
-    }
-}
-
-template <typename T>
-__global__
-void cast(double * __restrict__ out, const T * __restrict__ in, unsigned n)
-{
-    const unsigned i = blockIdx.x * blockDim.x + threadIdx.x;         
-    if (i < n) {
-        out[i] = (double)in[i];
-    }
-}
-#endif
-
 template <typename T>
 __global__
 void scale(T * __restrict__ out, int s, unsigned n)
@@ -221,6 +199,11 @@ void reduce_test(int count)
             std::cout << me << ": difference between " << name <<" and double is "
                       << result << " (" << result/norm << " normalized)" << std::endl;
         }
+        std::cout << std::flush;
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        if (me == 0) std::cout << "timing out-of-place" << std::endl;
+        MPI_Barrier(MPI_COMM_WORLD);
 
         {
             const int reps = 50;
@@ -244,6 +227,35 @@ void reduce_test(int count)
             check( cudaEventDestroy(start) );
             check( cudaEventDestroy(end) );
         }
+        std::cout << std::flush;
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        if (me == 0) std::cout << "now in-place" << std::endl;
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        {
+            const int reps = 50;
+            cudaEvent_t start;
+            cudaEvent_t end;
+            check( cudaEventCreate(&start) );
+            check( cudaEventCreate(&end) );
+
+            check( cudaEventRecord(start, 0) );
+            for (int i=0; i<reps; i++) {
+                check( ncclAllReduce(in, in, count, get_NCCL_Datatype(in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
+            }
+            check( cudaEventRecord(end, 0) );
+            check( cudaDeviceSynchronize() );
+
+            float total_time;
+            check( cudaEventElapsedTime(&total_time, start, end) );
+            double iter_time = 1.0e-3 * (double)total_time / reps;
+            double bandwidth = 2L * count * sizeof(T) / iter_time;
+            printf("%d: %e seconds, %lf GB/s\n", me, iter_time, bandwidth * 1.0e-9);
+            check( cudaEventDestroy(start) );
+            check( cudaEventDestroy(end) );
+        }
+        std::cout << std::flush;
 
         check( cudaFree((void*)out) );
         check( cudaFree((void*)in) );
