@@ -108,7 +108,7 @@ Macro|Purpose
 ``__NVCOMPILER_MAJOR__ ``|Version
 ``__NVCOMPILER_MINOR__ ``|Revision
 ``__NVCOMPILER_PATCHLEVEL__ ``|Patch
-``__NVCOMPILER_CUDA__``, ``_NVHPC_CUDA``|CUDA support enabled
+``__NVCOMPILER_CUDA__``|CUDA support enabled
 ``__NVCOMPILER_STDPAR_GPU``| StdPar for GPU with CUDA (i.e. ``-stdpar=gpu``)
 ``__NVCOMPILER_STDPAR_MULTICORE``| StdPar for CPU with OpenMP (i.e. ``-stdpar=multicore``)
 ``__NVCOMPILER_CUDA_ARCH__``|CUDA arch (e.g. 860 for ``sm_86``)
