@@ -4,21 +4,21 @@
 
 #OPT	 = -O3 # -fopenmp
 #FC	 = gfortran -ffree-form -fcheck=all -g3 #-std=f2018 
-#CC	 = gcc -std=c11
+#CC	 = gcc -std=c11 -DGFORTRAN
 
 #OPT	 = -O3
 #FC	 = ftn
 #CC	 = cc
 
-#OPT	 = -O3 -target=gpu
-#FC	 = nvfortran
-#CC	 = nvc
+OPT	 = -O3
+FC	 = nvfortran
+CC	 = nvc
 
-#CFLAGS   = $(OPT) -acc -mp
-#FFLAGS   = $(OPT) -Mfree -cuda -acc -mp -stdpar -gpu=managed
+CFLAGS   = $(OPT) -acc -mp -I/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/compilers/include/
+FFLAGS   = $(OPT) -Mfree #-cuda -acc -mp -stdpar -gpu=managed -target=gpu
 
 LD       = $(FC)
-LDFLAGS  = $(OPT)
+LDFLAGS  = $(FFLAGS)
 LIBS     =
 
 TESTS = bool logical logical_value ieee \

@@ -62,6 +62,9 @@ ncclDataType_t get_NCCL_Datatype(T t) {
     std::abort();
 }
 
+template <typename T>
+constexpr ncclDataType_t get_NCCL_Datatype(T * d) { return get_NCCL_Datatype(*d); }
+
 template <>
 constexpr ncclDataType_t get_NCCL_Datatype(double d) { return ncclFloat64; }
 template <>
@@ -73,26 +76,15 @@ constexpr ncclDataType_t get_NCCL_Datatype(nv_bfloat16 d) { return ncclBfloat16;
 template <>
 constexpr ncclDataType_t get_NCCL_Datatype(int i) { return ncclInt32; }
 
-
 #ifdef __NVCC__
 
-template <typename T>
+template <typename T1, typename T2>
 __global__
-void cast_from_double(T * __restrict__ out, const double * __restrict__ in, unsigned n)
+void cast(T1 * __restrict__ out, const T2 * __restrict__ in, unsigned n)
 {
     const unsigned i = blockIdx.x * blockDim.x + threadIdx.x;         
     if (i < n) {
-        out[i] = (T)in[i];
-    }
-}
-
-template <typename T>
-__global__
-void cast_to_double(double * __restrict__ out, const T * __restrict__ in, unsigned n)
-{
-    const unsigned i = blockIdx.x * blockDim.x + threadIdx.x;         
-    if (i < n) {
-        out[i] = (double)in[i];
+        out[i] = (T1)in[i];
     }
 }
 
@@ -162,7 +154,7 @@ void reduce_test(int count)
     double * ref = nullptr;
     check( cudaMalloc((void**)&ref, count * sizeof(double)) );
     check( curandGenerateUniformDouble(gen, ref, count) );
-    scale<<<blocks_per_grid, threads_per_block>>>(ref, 3200, count);
+    scale<<<blocks_per_grid, threads_per_block>>>(ref, 1000, count);
     check( cudaDeviceSynchronize() );
     get_norm(ref, count, "ref");
 
@@ -176,7 +168,7 @@ void reduce_test(int count)
         T * in  = nullptr;
         check( cudaMalloc((void**)&in,  bytes) );
         //check( cudaMemset((void*)in, 0xFFFFFFFF, bytes) );
-        cast_from_double<<<blocks_per_grid, threads_per_block>>>(in, ref, count);
+        cast<<<blocks_per_grid, threads_per_block>>>(in, ref, count);
         check( cudaDeviceSynchronize() );
         get_norm(in, count, "in");
 
@@ -185,7 +177,7 @@ void reduce_test(int count)
         check( cudaMemset((void*)out, 0, bytes) );
         check( cudaDeviceSynchronize() );
 
-        check( ncclAllReduce(in, out, count, get_NCCL_Datatype(*in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
+        check( ncclAllReduce(in, out, count, get_NCCL_Datatype(in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
         check( cudaDeviceSynchronize() );
         if (me == 0) get_norm(out, count, "out");
 
@@ -195,9 +187,9 @@ void reduce_test(int count)
         diff<<<blocks_per_grid, threads_per_block>>>(res, out, ref, count);
 
         double result;
-        check( cublasDnrm2(cublas_handle, (int)count, res, 1, &result) );
+        check( cublasDnrm2(cublas_handle, count, res, 1, &result) );
         if (me == 0) {
-            double norm = get_norm(ref, (int)count, "ref (after ncclAllReduce)");
+            double norm = get_norm(ref, count, "ref (after ncclAllReduce)");
             auto rawname = typeid(T).name();
 #ifdef USE_DEMANGLE
             auto name = boost::core::demangle(rawname);
@@ -207,6 +199,63 @@ void reduce_test(int count)
             std::cout << me << ": difference between " << name <<" and double is "
                       << result << " (" << result/norm << " normalized)" << std::endl;
         }
+        std::cout << std::flush;
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        if (me == 0) std::cout << "timing out-of-place" << std::endl;
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        {
+            const int reps = 50;
+            cudaEvent_t start;
+            cudaEvent_t end;
+            check( cudaEventCreate(&start) );
+            check( cudaEventCreate(&end) );
+
+            check( cudaEventRecord(start, 0) );
+            for (int i=0; i<reps; i++) {
+                check( ncclAllReduce(in, out, count, get_NCCL_Datatype(in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
+            }
+            check( cudaEventRecord(end, 0) );
+            check( cudaDeviceSynchronize() );
+
+            float total_time;
+            check( cudaEventElapsedTime(&total_time, start, end) );
+            double iter_time = 1.0e-3 * (double)total_time / reps;
+            double bandwidth = 2L * count * sizeof(T) / iter_time;
+            printf("%d: %e seconds, %lf GB/s\n", me, iter_time, bandwidth * 1.0e-9);
+            check( cudaEventDestroy(start) );
+            check( cudaEventDestroy(end) );
+        }
+        std::cout << std::flush;
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        if (me == 0) std::cout << "now in-place" << std::endl;
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        {
+            const int reps = 50;
+            cudaEvent_t start;
+            cudaEvent_t end;
+            check( cudaEventCreate(&start) );
+            check( cudaEventCreate(&end) );
+
+            check( cudaEventRecord(start, 0) );
+            for (int i=0; i<reps; i++) {
+                check( ncclAllReduce(in, in, count, get_NCCL_Datatype(in), ncclSum, NCCL_COMM_WORLD, 0 /* default stream */) );
+            }
+            check( cudaEventRecord(end, 0) );
+            check( cudaDeviceSynchronize() );
+
+            float total_time;
+            check( cudaEventElapsedTime(&total_time, start, end) );
+            double iter_time = 1.0e-3 * (double)total_time / reps;
+            double bandwidth = 2L * count * sizeof(T) / iter_time;
+            printf("%d: %e seconds, %lf GB/s\n", me, iter_time, bandwidth * 1.0e-9);
+            check( cudaEventDestroy(start) );
+            check( cudaEventDestroy(end) );
+        }
+        std::cout << std::flush;
 
         check( cudaFree((void*)out) );
         check( cudaFree((void*)in) );
@@ -248,6 +297,9 @@ int main(int argc, char* argv[])
     check( ncclGroupStart() );
     check( ncclCommInitRank(&NCCL_COMM_WORLD, np, uniqueId, me) );
     check( ncclGroupEnd() );
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    reduce_test<double>(count);
     MPI_Barrier(MPI_COMM_WORLD);
 
     reduce_test<float>(count);
