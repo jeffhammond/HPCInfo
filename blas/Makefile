@@ -1,9 +1,9 @@
 FC	 = gfortran
 FFLAGS = -fdefault-integer-8
 
-all: blas_wrapper.x
+all: blas_wrapper.o gemm_wrapper.o
 
-blas_wrapper.x: blas_wrapper.F90
+%.o: %.F90
 	$(FC) $(FFLAGS) -c $^ -o $@
 
 clean:
