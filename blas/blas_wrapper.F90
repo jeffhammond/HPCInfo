@@ -19,27 +19,30 @@ module blas
 #endif
 
     interface
-#if 0
         ! BLAS Level 1
         subroutine dasum(n, x, incx, result)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx
             double precision, intent(in) :: x(*)
             double precision, intent(out) :: result
         end subroutine dasum
 
         subroutine daxpy(n, alpha, x, incx, y, incy)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
             double precision, intent(in) :: alpha, x(*)
             double precision, intent(inout) :: y(*)
         end subroutine daxpy
 
         subroutine dcopy(n, x, incx, y, incy)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
             double precision, intent(in) :: x(*)
             double precision, intent(out) :: y(*)
         end subroutine dcopy
 
         function ddot(n, x, incx, y, incy) result(result)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
             double precision, intent(in) :: x(*), y(*)
             double precision :: result
@@ -47,6 +50,7 @@ module blas
 
         ! BLAS Level 2
         subroutine dgemv(trans, m, n, alpha, a, lda, x, incx, beta, y, incy)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: trans
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, incx, incy
             double precision, intent(in) :: alpha, beta, a(lda,*), x(*)
@@ -54,14 +58,15 @@ module blas
         end subroutine dgemv
 
         subroutine dger(m, n, alpha, x, incx, y, incy, a, lda)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, incx, incy
             double precision, intent(in) :: alpha, x(*), y(*)
             double precision, intent(inout) :: a(lda,*)
         end subroutine dger
-#endif
 
         ! BLAS Level 3
         subroutine dgemm(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: transa, transb
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, k, lda, ldb, ldc
             double precision, intent(in) :: alpha, beta
@@ -69,9 +74,9 @@ module blas
             double precision, intent(out) :: c(ldc,*)
         end subroutine dgemm
 
-#if 0
         ! LAPACK routines
         subroutine dgebak(job, side, n, ilo, ihi, scale, m, v, ldv, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: job, side
             integer(kind=blas_library_integer_kind), intent(in) :: n, ilo, ihi, m, ldv
             double precision, intent(in) :: scale(*)
@@ -80,6 +85,7 @@ module blas
         end subroutine dgebak
 
         subroutine dgebal(job, n, a, lda, ilo, ihi, scale, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: job
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda
             double precision, intent(inout) :: a(lda,*)
@@ -90,6 +96,7 @@ module blas
 
         ! Additional LAPACK routines
         subroutine dgeev(jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr, ldvr, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobvl, jobvr
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, ldvl, ldvr, lwork
             double precision, intent(inout) :: a(lda,*)
@@ -99,6 +106,7 @@ module blas
 
         subroutine dgeevx(balanc, jobvl, jobvr, sense, n, a, lda, wr, wi, vl, ldvl, vr, ldvr, &
                          ilo, ihi, scale, abnrm, rconde, rcondv, work, lwork, iwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: balanc, jobvl, jobvr, sense
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, ldvl, ldvr, lwork
             double precision, intent(inout) :: a(lda,*)
@@ -108,6 +116,7 @@ module blas
         end subroutine dgeevx
 
         subroutine dgehrd(n, ilo, ihi, a, lda, tau, work, lwork, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, ilo, ihi, lda, lwork
             double precision, intent(inout) :: a(lda,*)
             double precision, intent(out) :: tau(*), work(*)
@@ -115,6 +124,7 @@ module blas
         end subroutine dgehrd
 
         subroutine dgels(trans, m, n, nrhs, a, lda, b, ldb, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: trans
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, nrhs, lda, ldb, lwork
             double precision, intent(inout) :: a(lda,*), b(ldb,*)
@@ -123,6 +133,7 @@ module blas
         end subroutine dgels
 
         subroutine dgelss(m, n, nrhs, a, lda, b, ldb, s, rcond, rank, work, lwork, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, nrhs, lda, ldb, lwork
             double precision, intent(in) :: rcond
             double precision, intent(inout) :: a(lda,*), b(ldb,*)
@@ -131,12 +142,14 @@ module blas
         end subroutine dgelss
 
         subroutine dgesv(n, nrhs, a, lda, ipiv, b, ldb, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb
             double precision, intent(inout) :: a(lda,*), b(ldb,*)
             integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
         end subroutine dgesv
 
         subroutine dgesvd(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobu, jobvt
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldu, ldvt, lwork
             double precision, intent(inout) :: a(lda,*)
@@ -145,12 +158,14 @@ module blas
         end subroutine dgesvd
 
         subroutine dgetrf(m, n, a, lda, ipiv, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda
             double precision, intent(inout) :: a(lda,*)
             integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
         end subroutine dgetrf
 
         subroutine dgetri(n, a, lda, ipiv, work, lwork, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, lwork
             double precision, intent(inout) :: a(lda,*)
             integer(kind=blas_library_integer_kind), intent(in) :: ipiv(*)
@@ -159,6 +174,7 @@ module blas
         end subroutine dgetri
 
         subroutine dgetrs(trans, n, nrhs, a, lda, ipiv, b, ldb, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: trans
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb
             double precision, intent(in) :: a(lda,*)
@@ -169,6 +185,7 @@ module blas
 
         ! Symmetric eigenvalue routines
         subroutine dsyev(jobz, uplo, n, a, lda, w, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobz, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, lwork
             double precision, intent(inout) :: a(lda,*)
@@ -177,6 +194,7 @@ module blas
         end subroutine dsyev
 
         subroutine dsyevx(jobz, range, uplo, n, a, lda, vl, vu, il, iu, abstol, m, w, z, ldz, work, lwork, iwork, ifail, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobz, range, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, il, iu, ldz, lwork
             double precision, intent(in) :: vl, vu, abstol
@@ -187,6 +205,7 @@ module blas
 
         ! Symmetric matrix factorization
         subroutine dsytrf(uplo, n, a, lda, ipiv, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, lwork
             double precision, intent(inout) :: a(lda,*)
@@ -195,6 +214,7 @@ module blas
         end subroutine dsytrf
 
         subroutine dsytri(uplo, n, a, lda, ipiv, work, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda
             double precision, intent(inout) :: a(lda,*)
@@ -205,12 +225,14 @@ module blas
 
         ! Banded matrix routines
         subroutine dgbtrf(m, n, kl, ku, ab, ldab, ipiv, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, kl, ku, ldab
             double precision, intent(inout) :: ab(ldab,*)
             integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
         end subroutine dgbtrf
 
         subroutine dgbtrs(trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: trans
             integer(kind=blas_library_integer_kind), intent(in) :: n, kl, ku, nrhs, ldab, ldb
             double precision, intent(in) :: ab(ldab,*)
@@ -221,6 +243,7 @@ module blas
 
         ! Additional symmetric matrix routines
         subroutine dsytrs(uplo, n, nrhs, a, lda, ipiv, b, ldb, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb
             double precision, intent(in) :: a(lda,*)
@@ -230,6 +253,7 @@ module blas
         end subroutine dsytrs
 
         subroutine dsycon(uplo, n, a, lda, ipiv, anorm, rcond, work, iwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda
             double precision, intent(in) :: a(lda,*), anorm
@@ -239,6 +263,7 @@ module blas
         end subroutine dsycon
 
         subroutine dsyrfs(uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb, x, ldx, ferr, berr, work, iwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldaf, ldb, ldx
             double precision, intent(in) :: a(lda,*), af(ldaf,*), b(ldb,*)
@@ -250,6 +275,7 @@ module blas
 
         ! Tridiagonal matrix routines
         subroutine dstev(jobz, n, d, e, z, ldz, work, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobz
             integer(kind=blas_library_integer_kind), intent(in) :: n, ldz
             double precision, intent(inout) :: d(*), e(*)
@@ -258,6 +284,7 @@ module blas
         end subroutine dstev
 
         subroutine dstevr(jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ldz, isuppz, work, lwork, iwork, liwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobz, range
             integer(kind=blas_library_integer_kind), intent(in) :: n, il, iu, ldz, lwork, liwork
             double precision, intent(in) :: vl, vu, abstol
@@ -267,12 +294,14 @@ module blas
         end subroutine dstevr
 
         subroutine dpttrf(n, d, e, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n
             double precision, intent(inout) :: d(*), e(*)
             integer(kind=blas_library_integer_kind), intent(out) :: info
         end subroutine dpttrf
 
         subroutine dpttrs(n, nrhs, d, e, b, ldb, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, ldb
             double precision, intent(in) :: d(*), e(*)
             double precision, intent(inout) :: b(ldb,*)
@@ -281,30 +310,35 @@ module blas
 
         ! Additional BLAS Level 1 routines
         subroutine dnrm2(n, x, incx, result)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx
             double precision, intent(in) :: x(*)
             double precision, intent(out) :: result
         end subroutine dnrm2
 
         subroutine drot(n, x, incx, y, incy, c, s)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
             double precision, intent(in) :: c, s
             double precision, intent(inout) :: x(*), y(*)
         end subroutine drot
 
         subroutine dscal(n, alpha, x, incx)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx
             double precision, intent(in) :: alpha
             double precision, intent(inout) :: x(*)
         end subroutine dscal
 
         subroutine dswap(n, x, incx, y, incy)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
             double precision, intent(inout) :: x(*), y(*)
         end subroutine dswap
 
         ! Additional BLAS Level 2 routines
         subroutine dsymv(uplo, n, alpha, a, lda, x, incx, beta, y, incy)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, incx, incy
             double precision, intent(in) :: alpha, beta, a(lda,*), x(*)
@@ -313,6 +347,7 @@ module blas
 
         ! Additional BLAS Level 3 routines
         subroutine dsymm(side, uplo, m, n, alpha, a, lda, b, ldb, beta, c, ldc)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: side, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldb, ldc
             double precision, intent(in) :: alpha, beta, a(lda,*), b(ldb,*)
@@ -320,6 +355,7 @@ module blas
         end subroutine dsymm
 
         subroutine dsyrk(uplo, trans, n, k, alpha, a, lda, beta, c, ldc)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo, trans
             integer(kind=blas_library_integer_kind), intent(in) :: n, k, lda, ldc
             double precision, intent(in) :: alpha, beta, a(lda,*)
@@ -327,6 +363,7 @@ module blas
         end subroutine dsyrk
 
         subroutine dsyr2k(uplo, trans, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo, trans
             integer(kind=blas_library_integer_kind), intent(in) :: n, k, lda, ldb, ldc
             double precision, intent(in) :: alpha, beta, a(lda,*), b(ldb,*)
@@ -335,12 +372,14 @@ module blas
 
         ! Additional LAPACK routines
         subroutine dgtsv(n, nrhs, dl, d, du, b, ldb, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, ldb
             double precision, intent(inout) :: dl(*), d(*), du(*), b(ldb,*)
             integer(kind=blas_library_integer_kind), intent(out) :: info
         end subroutine dgtsv
 
         subroutine dhseqr(job, compz, n, ilo, ihi, h, ldh, wr, wi, z, ldz, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: job, compz
             integer(kind=blas_library_integer_kind), intent(in) :: n, ilo, ihi, ldh, ldz, lwork
             double precision, intent(inout) :: h(ldh,*), z(ldz,*)
@@ -349,6 +388,7 @@ module blas
         end subroutine dhseqr
 
         subroutine dlacpy(uplo, m, n, a, lda, b, ldb)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldb
             double precision, intent(in) :: a(lda,*)
@@ -356,6 +396,7 @@ module blas
         end subroutine dlacpy
 
         subroutine dlagtf(n, a, lambda, b, c, tol, d, in, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n
             double precision, intent(in) :: lambda, tol
             double precision, intent(inout) :: a(*), b(*), c(*)
@@ -364,6 +405,7 @@ module blas
         end subroutine dlagtf
 
         subroutine dlagts(job, n, a, b, c, d, in, y, tol, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n
             character(len=1), intent(in) :: job
             double precision, intent(in) :: a(*), b(*), c(*), d(*), tol
@@ -373,6 +415,7 @@ module blas
         end subroutine dlagts
 
         function dlange(norm, m, n, a, lda, work) result(result)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: norm
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda
             double precision, intent(in) :: a(lda,*)
@@ -381,12 +424,14 @@ module blas
         end function dlange
 
         subroutine dlarnv(idist, iseed, n, x)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: idist, n
             integer(kind=blas_library_integer_kind), intent(inout) :: iseed(*)
             double precision, intent(out) :: x(*)
         end subroutine dlarnv
 
         subroutine dlascl(type, kl, ku, cfrom, cto, m, n, a, lda, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: type
             integer(kind=blas_library_integer_kind), intent(in) :: kl, ku, m, n, lda
             double precision, intent(in) :: cfrom, cto
@@ -395,6 +440,7 @@ module blas
         end subroutine dlascl
 
         subroutine dlaset(uplo, m, n, alpha, beta, a, lda)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda
             double precision, intent(in) :: alpha, beta
@@ -403,6 +449,7 @@ module blas
 
         ! Additional LAPACK routines
         subroutine dorghr(n, ilo, ihi, a, lda, tau, work, lwork, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, ilo, ihi, lda, lwork
             double precision, intent(inout) :: a(lda,*)
             double precision, intent(in) :: tau(*)
@@ -411,6 +458,7 @@ module blas
         end subroutine dorghr
 
         subroutine dpftrf(transr, uplo, n, a, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: transr, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n
             double precision, intent(inout) :: a(*)
@@ -418,6 +466,7 @@ module blas
         end subroutine dpftrf
 
         subroutine dpftri(transr, uplo, n, a, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: transr, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n
             double precision, intent(inout) :: a(*)
@@ -425,6 +474,7 @@ module blas
         end subroutine dpftri
 
         subroutine dposv(uplo, n, nrhs, a, lda, b, ldb, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb
             double precision, intent(inout) :: a(lda,*), b(ldb,*)
@@ -432,6 +482,7 @@ module blas
         end subroutine dposv
 
         subroutine dpotrf(uplo, n, a, lda, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda
             double precision, intent(inout) :: a(lda,*)
@@ -439,6 +490,7 @@ module blas
         end subroutine dpotrf
 
         subroutine dpotri(uplo, n, a, lda, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda
             double precision, intent(inout) :: a(lda,*)
@@ -446,6 +498,7 @@ module blas
         end subroutine dpotri
 
         subroutine dsfrk(transr, uplo, trans, n, k, alpha, a, lda, beta, c)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: transr, uplo, trans
             integer(kind=blas_library_integer_kind), intent(in) :: n, k, lda
             double precision, intent(in) :: alpha, beta, a(lda,*)
@@ -453,6 +506,7 @@ module blas
         end subroutine dsfrk
 
         subroutine dspsvx(fact, uplo, n, nrhs, a, afac, ipiv, b, ldb, x, ldx, rcond, ferr, berr, work, iwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: fact, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, ldb, ldx
             double precision, intent(in) :: a(*), b(ldb,*)
@@ -463,6 +517,7 @@ module blas
         end subroutine dspsvx
 
         subroutine dstebz(range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit, work, iwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: range, order
             integer(kind=blas_library_integer_kind), intent(in) :: n, il, iu
             double precision, intent(in) :: vl, vu, abstol, d(*), e(*)
@@ -471,6 +526,7 @@ module blas
         end subroutine dstebz
 
         subroutine dstein(n, d, e, m, w, iblock, isplit, z, ldz, work, iwork, ifail, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n, m, ldz
             double precision, intent(in) :: d(*), e(*), w(*)
             integer(kind=blas_library_integer_kind), intent(in) :: iblock(*), isplit(*)
@@ -479,12 +535,14 @@ module blas
         end subroutine dstein
 
         subroutine dsterf(n, d, e, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: n
             double precision, intent(inout) :: d(*), e(*)
             integer(kind=blas_library_integer_kind), intent(out) :: info
         end subroutine dsterf
 
         subroutine dsyevd(jobz, uplo, n, a, lda, w, work, lwork, iwork, liwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: jobz, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda, lwork, liwork
             double precision, intent(inout) :: a(lda,*)
@@ -493,6 +551,7 @@ module blas
         end subroutine dsyevd
 
         subroutine dsygv(itype, jobz, uplo, n, a, lda, b, ldb, w, work, lwork, info)
+            import blas_library_integer_kind
             integer(kind=blas_library_integer_kind), intent(in) :: itype, n, lda, ldb, lwork
             character(len=1), intent(in) :: jobz, uplo
             double precision, intent(inout) :: a(lda,*), b(ldb,*)
@@ -501,6 +560,7 @@ module blas
         end subroutine dsygv
 
         subroutine dsysv(uplo, n, nrhs, a, lda, ipiv, b, ldb, work, lwork, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb, lwork
             double precision, intent(inout) :: a(lda,*), b(ldb,*)
@@ -510,6 +570,7 @@ module blas
 
         ! Additional LAPACK routines
         subroutine dtrtri(uplo, diag, n, a, lda, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: uplo, diag
             integer(kind=blas_library_integer_kind), intent(in) :: n, lda
             double precision, intent(inout) :: a(lda,*)
@@ -517,6 +578,7 @@ module blas
         end subroutine dtrtri
 
         subroutine dtrmm(side, uplo, transa, diag, m, n, alpha, a, lda, b, ldb)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: side, uplo, transa, diag
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldb
             double precision, intent(in) :: alpha, a(lda,*)
@@ -524,6 +586,7 @@ module blas
         end subroutine dtrmm
 
         subroutine dtfsm(transr, side, uplo, trans, unit, m, n, alpha, a, b, ldb)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: transr, side, uplo, trans, unit
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, ldb
             double precision, intent(in) :: alpha, a(*)
@@ -531,6 +594,7 @@ module blas
         end subroutine dtfsm
 
         subroutine dtrevc(side, howmny, select, n, t, ldt, vl, ldvl, vr, ldvr, mm, m, work, info)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: side, howmny
             integer(kind=blas_library_integer_kind), intent(in) :: n, ldt, ldvl, ldvr, mm
             logical, intent(in) :: select(*)
@@ -539,14 +603,12 @@ module blas
             double precision, intent(out) :: work(*)
             integer(kind=blas_library_integer_kind), intent(out) :: m, info
         end subroutine dtrevc
-#endif
 
         ! Add more interface blocks...
     end interface
 
     contains
 
-#if 0
     ! BLAS Level 1 wrappers
     subroutine yasum(n, x, incx, result)
         integer(kind=nwchem_integer_kind), intent(in) :: n, incx
@@ -618,7 +680,6 @@ module blas
         incy_int = int(incy, kind=blas_library_integer_kind)
         call dger(m_int, n_int, alpha, x, incx_int, y, incy_int, a, lda_int)
     end subroutine yger
-#endif
 
     ! BLAS Level 3 wrapper
     subroutine ygemm(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
@@ -637,7 +698,6 @@ module blas
         call dgemm(transa, transb, m_int, n_int, k_int, alpha, a, lda_int, b, ldb_int, beta, c, ldc_int)
     end subroutine ygemm
 
-#if 0
     ! LAPACK wrappers
     subroutine ygebak(job, side, n, ilo, ihi, scale, m, v, ldv, info)
         character(len=1), intent(in) :: job, side
@@ -1441,12 +1501,16 @@ module blas
         double precision, intent(out) :: work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, lwork_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         nrhs_int = int(nrhs, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         ldb_int = int(ldb, kind=blas_library_integer_kind)
         lwork_int = int(lwork, kind=blas_library_integer_kind)
-        call dsysv(uplo, n_int, nrhs_int, a, lda_int, ipiv, b, ldb_int, work, lwork_int, info_int)
+        allocate( ipiv_int(n) )
+        call dsysv(uplo, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, work, lwork_int, info_int)
+        ipiv(:) = int(ipiv_int(:), kind=blas_library_integer_kind)
+        deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysysv
 
@@ -1507,7 +1571,6 @@ module blas
         m = int(m_int, kind=nwchem_integer_kind)
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ytrevc
-#endif
 
     ! Add more wrapper subroutines...
 

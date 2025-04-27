@@ -22,6 +22,7 @@ module blas
 
         ! BLAS Level 3
         subroutine dgemm(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
+            import blas_library_integer_kind
             character(len=1), intent(in) :: transa, transb
             integer(kind=blas_library_integer_kind), intent(in) :: m, n, k, lda, ldb, ldc
             double precision, intent(in) :: alpha, beta
