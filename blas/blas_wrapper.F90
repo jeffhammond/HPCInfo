@@ -1050,7 +1050,7 @@ module blas
         double precision, intent(in) :: a(lda,*), anorm
         integer(kind=nwchem_integer_kind), intent(in) :: ipiv(*)
         double precision, intent(out) :: rcond, work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
+        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info ! iwork is unused
         integer(kind=blas_library_integer_kind) :: n_int, lda_int, info_int
         integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:), iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
@@ -1058,7 +1058,6 @@ module blas
         allocate( ipiv_int(n), iwork_int(n) )
         ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
         call dsycon(uplo, n_int, a, lda_int, ipiv_int, anorm, rcond, work, iwork_int, info_int)
-        iwork = int(iwork_int(1:n), kind=nwchem_integer_kind)
         deallocate( ipiv_int, iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysycon
@@ -1070,7 +1069,7 @@ module blas
         integer(kind=nwchem_integer_kind), intent(in) :: ipiv(*)
         double precision, intent(inout) :: x(ldx,*)
         double precision, intent(out) :: ferr(*), berr(*), work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
+        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info ! iwork is unused
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldaf_int, ldb_int, ldx_int, info_int
         integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:), iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
@@ -1083,7 +1082,6 @@ module blas
         ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
         call dsyrfs(uplo, n_int, nrhs_int, a, lda_int, af, ldaf_int, ipiv_int, b, ldb_int, x, ldx_int, &
                     ferr, berr, work, iwork_int, info_int)
-        iwork = int(iwork_int(1:n), kind=nwchem_integer_kind)
         deallocate( ipiv_int, iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysyrfs
@@ -1459,7 +1457,7 @@ module blas
         double precision, intent(inout) :: afac(*)
         integer(kind=nwchem_integer_kind), intent(inout) :: ipiv(*)
         double precision, intent(out) :: x(ldx,*), rcond, ferr(*), berr(*), work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
+        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info ! iwork is unused
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, ldb_int, ldx_int, info_int
         integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:), iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
@@ -1470,8 +1468,7 @@ module blas
         ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
         call dspsvx(fact, uplo, n_int, nrhs_int, a, afac, ipiv_int, b, ldb_int, x, ldx_int, &
                     rcond, ferr, berr, work, iwork_int, info_int)
-        ipiv = int(ipiv_int(1:n), kind=nwchem_integer_kind)
-        iwork = int(iwork_int(1:n), kind=nwchem_integer_kind)
+        ipiv(1:n) = int(ipiv_int(1:n), kind=nwchem_integer_kind)
         deallocate( ipiv_int, iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine yspsvx
@@ -1481,18 +1478,19 @@ module blas
         integer(kind=nwchem_integer_kind), intent(in) :: n, il, iu
         double precision, intent(in) :: vl, vu, abstol, d(*), e(*)
         double precision, intent(out) :: w(*), work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: m, nsplit, iblock(*), isplit(*), iwork(*), info
+        integer(kind=nwchem_integer_kind), intent(out) :: m, nsplit, iblock(*), isplit(*), iwork(*), info ! iwork is unused
         integer(kind=blas_library_integer_kind) :: n_int, il_int, iu_int, m_int, nsplit_int, info_int
-        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:)
+        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:), isplit_int(:), iblock_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         il_int = int(il, kind=blas_library_integer_kind)
         iu_int = int(iu, kind=blas_library_integer_kind)
-        allocate( iwork_int(n) )
-        call dstebz(range, order, n_int, vl, vu, il_int, iu_int, abstol, d, e, m_int, nsplit_int, w, iblock, isplit, work, iwork_int, info_int)
-        iwork = int(iwork_int(1:n), kind=nwchem_integer_kind)
-        deallocate( iwork_int )
+        allocate( iwork_int(n), isplit_int(n), iblock_int(n) )
+        call dstebz(range, order, n_int, vl, vu, il_int, iu_int, abstol, d, e, m_int, nsplit_int, w, iblock_int, isplit_int, work, iwork_int, info_int)
+        deallocate( iwork_int, isplit_int, iblock_int )
         m = int(m_int, kind=nwchem_integer_kind)
         nsplit = int(nsplit_int, kind=nwchem_integer_kind)
+        iblock(1:n) = int(iblock_int(1:n), kind=nwchem_integer_kind)
+        isplit(1:n) = int(isplit_int(1:n), kind=nwchem_integer_kind)
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ystebz
 
@@ -1503,14 +1501,17 @@ module blas
         double precision, intent(out) :: z(ldz,*), work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), ifail(*), info
         integer(kind=blas_library_integer_kind) :: n_int, m_int, ldz_int, info_int
-        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:)
+        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:), isplit_int(:), iblock_int(:), ifail_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         m_int = int(m, kind=blas_library_integer_kind)
         ldz_int = int(ldz, kind=blas_library_integer_kind)
-        allocate( iwork_int(n) )
-        call dstein(n_int, d, e, m_int, w, iblock, isplit, z, ldz_int, work, iwork_int, ifail, info_int)
-        iwork = int(iwork_int(1:n), kind=nwchem_integer_kind)
-        deallocate( iwork_int )
+        allocate( iwork_int(n), isplit_int(n), iblock_int(n), ifail_int(m) )
+        iblock_int(1:n) = int(iblock(1:n), kind=blas_library_integer_kind)
+        isplit_int(1:n) = int(isplit(1:n), kind=blas_library_integer_kind)
+        call dstein(n_int, d, e, m_int, w, iblock_int, isplit_int, z, ldz_int, work, iwork_int, ifail_int, info_int)
+        deallocate( iwork_int, isplit_int, iblock_int, ifail_int )
+        iwork(1:n) = int(iwork_int(1:n), kind=nwchem_integer_kind)
+        ifail(1:m) = int(ifail_int(1:m), kind=nwchem_integer_kind)
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ystein
 
@@ -1538,7 +1539,7 @@ module blas
         liwork_int = int(liwork, kind=blas_library_integer_kind)
         allocate( iwork_int(liwork) )
         call dsyevd(jobz, uplo, n_int, a, lda_int, w, work, lwork_int, iwork_int, liwork_int, info_int)
-        iwork = int(iwork_int(1:liwork), kind=nwchem_integer_kind)
+        iwork(1:liwork) = int(iwork_int(1:liwork), kind=nwchem_integer_kind)
         deallocate( iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysyevd
@@ -1574,7 +1575,7 @@ module blas
         lwork_int = int(lwork, kind=blas_library_integer_kind)
         allocate( ipiv_int(n) )
         call dsysv(uplo, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, work, lwork_int, info_int)
-        ipiv = int(ipiv_int(1:n), kind=nwchem_integer_kind)
+        ipiv(1:n) = int(ipiv_int(1:n), kind=nwchem_integer_kind)
         deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysysv
