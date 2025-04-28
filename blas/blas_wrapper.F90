@@ -735,6 +735,20 @@ module blas
             complex(kind=8), intent(out) :: work(*)
             integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
         end subroutine zsytrf
+
+        function idamax(n, x, incx) result(result)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx
+            double precision, intent(in) :: x(*)
+            integer(kind=blas_library_integer_kind) :: result
+        end function idamax
+
+        function izamax(n, x, incx) result(result)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx
+            double complex, intent(in) :: x(*)
+            integer(kind=blas_library_integer_kind) :: result
+        end function izamax
     end interface
 
     contains
@@ -1997,5 +2011,27 @@ module blas
         deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine yzsytrf
+
+    function yidamax(n, x, incx) result(result)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx
+        double precision, intent(in) :: x(*)
+        integer(kind=nwchem_integer_kind) :: result
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, result_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        result_int = idamax(n_int, x, incx_int)
+        result = int(result_int, kind=nwchem_integer_kind)
+    end function yidamax
+
+    function yizamax(n, x, incx) result(result)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx
+        double complex, intent(in) :: x(*)
+        integer(kind=nwchem_integer_kind) :: result
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, result_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        result_int = izamax(n_int, x, incx_int)
+        result = int(result_int, kind=nwchem_integer_kind)
+    end function yizamax
 
 end module blas
