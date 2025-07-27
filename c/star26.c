@@ -25,7 +25,8 @@ static inline bool pass(int a, int b, int c,
              ((a+c+f+h)==26) && // left left down
              ((e+g+j+l)==26) && // right left down
              ((b+f+i+l)==26) && // left right down
-             ((a+d+g+k)==26));  // right right down
+             ((a+d+g+k)==26) && // right right down
+             ((a+e+k+l+h+b)==26) ); // vertices condition
 }
 
 int main(void)
