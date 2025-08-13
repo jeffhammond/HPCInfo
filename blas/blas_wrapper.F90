@@ -510,9 +510,9 @@ module blas
             character(len=1), intent(in) :: fact, uplo
             integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, ldb, ldx
             double precision, intent(in) :: a(*), b(ldb,*)
-            double precision, intent(inout) :: afac(*), x(ldx,*)
+            double precision, intent(inout) :: afac(*)
             integer(kind=blas_library_integer_kind), intent(inout) :: ipiv(*)
-            double precision, intent(out) :: rcond, ferr(*), berr(*), work(*)
+            double precision, intent(out) :: x(ldx,*), rcond, ferr(*), berr(*), work(*)
             integer(kind=blas_library_integer_kind), intent(out) :: iwork(*), info
         end subroutine dspsvx
 
@@ -604,7 +604,151 @@ module blas
             integer(kind=blas_library_integer_kind), intent(out) :: m, info
         end subroutine dtrevc
 
-        ! Add more interface blocks...
+        ! Complex BLAS Level 1
+        subroutine zaxpy(n, alpha, x, incx, y, incy)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
+            double complex, intent(in) :: alpha, x(*)
+            double complex, intent(inout) :: y(*)
+        end subroutine zaxpy
+
+        subroutine zcopy(n, x, incx, y, incy)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
+            double complex, intent(in) :: x(*)
+            double complex, intent(out) :: y(*)
+        end subroutine zcopy
+
+        subroutine zdotc(n, x, incx, y, incy, result)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx, incy
+            double complex, intent(in) :: x(*), y(*)
+            double complex, intent(out) :: result
+        end subroutine zdotc
+
+        subroutine zscal(n, alpha, x, incx)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx
+            double complex, intent(in) :: alpha
+            double complex, intent(inout) :: x(*)
+        end subroutine zscal
+
+        ! Complex BLAS Level 3
+        subroutine zgemm(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: transa, transb
+            integer(kind=blas_library_integer_kind), intent(in) :: m, n, k, lda, ldb, ldc
+            double complex, intent(in) :: alpha, beta
+            double complex, intent(in) :: a(lda,*), b(ldb,*)
+            double complex, intent(inout) :: c(ldc,*)
+        end subroutine zgemm
+
+        subroutine zsyrk(uplo, trans, n, k, alpha, a, lda, beta, c, ldc)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: uplo, trans
+            integer(kind=blas_library_integer_kind), intent(in) :: n, k, lda, ldc
+            double complex, intent(in) :: alpha, beta
+            double complex, intent(in) :: a(lda,*)
+            double complex, intent(inout) :: c(ldc,*)
+        end subroutine zsyrk
+
+        ! Complex LAPACK routines
+        subroutine zgeev(jobvl, jobvr, n, a, lda, w, vl, ldvl, vr, ldvr, work, lwork, rwork, info)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: jobvl, jobvr
+            integer(kind=blas_library_integer_kind), intent(in) :: n, lda, ldvl, ldvr, lwork
+            double complex, intent(inout) :: a(lda,*)
+            double complex, intent(out) :: w(*), vl(ldvl,*), vr(ldvr,*), work(*)
+            double precision, intent(out) :: rwork(*)
+            integer(kind=blas_library_integer_kind), intent(out) :: info
+        end subroutine zgeev
+
+        subroutine zgesvd(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork, info)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: jobu, jobvt
+            integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldu, ldvt, lwork
+            double complex, intent(inout) :: a(lda,*)
+            double precision, intent(out) :: s(*)
+            double complex, intent(out) :: u(ldu,*), vt(ldvt,*), work(*)
+            double precision, intent(out) :: rwork(*)
+            integer(kind=blas_library_integer_kind), intent(out) :: info
+        end subroutine zgesvd
+
+        subroutine zgetrf(m, n, a, lda, ipiv, info)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda
+            double complex, intent(inout) :: a(lda,*)
+            integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
+        end subroutine zgetrf
+
+        subroutine zgetrs(trans, n, nrhs, a, lda, ipiv, b, ldb, info)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: trans
+            integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb
+            double complex, intent(in) :: a(lda,*)
+            integer(kind=blas_library_integer_kind), intent(in) :: ipiv(*)
+            double complex, intent(inout) :: b(ldb,*)
+            integer(kind=blas_library_integer_kind), intent(out) :: info
+        end subroutine zgetrs
+
+        subroutine zheev(jobz, uplo, n, a, lda, w, work, lwork, rwork, info)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: jobz, uplo
+            integer(kind=blas_library_integer_kind), intent(in) :: n, lda, lwork
+            double complex, intent(inout) :: a(lda,*)
+            double precision, intent(out) :: w(*)
+            double complex, intent(out) :: work(*)
+            double precision, intent(out) :: rwork(*)
+            integer(kind=blas_library_integer_kind), intent(out) :: info
+        end subroutine zheev
+
+        subroutine zlacp2(uplo, m, n, a, lda, b, ldb)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: uplo
+            integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldb
+            double precision, intent(in) :: a(lda,*)
+            double complex, intent(out) :: b(ldb,*)
+        end subroutine zlacp2
+
+        subroutine zlacpy(uplo, m, n, a, lda, b, ldb)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: uplo
+            integer(kind=blas_library_integer_kind), intent(in) :: m, n, lda, ldb
+            double complex, intent(in) :: a(lda,*)
+            double complex, intent(out) :: b(ldb,*)
+        end subroutine zlacpy
+
+        subroutine zsysv(uplo, n, nrhs, a, lda, ipiv, b, ldb, work, lwork, info)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: uplo
+            integer(kind=blas_library_integer_kind), intent(in) :: n, nrhs, lda, ldb, lwork
+            double complex, intent(inout) :: a(lda,*), b(ldb,*)
+            double complex, intent(out) :: work(*)
+            integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
+        end subroutine zsysv
+
+        subroutine zsytrf(uplo, n, a, lda, ipiv, work, lwork, info)
+            import blas_library_integer_kind
+            character(len=1), intent(in) :: uplo
+            integer(kind=blas_library_integer_kind), intent(in) :: n, lda, lwork
+            double complex, intent(inout) :: a(lda,*)
+            double complex, intent(out) :: work(*)
+            integer(kind=blas_library_integer_kind), intent(out) :: ipiv(*), info
+        end subroutine zsytrf
+
+        function idamax(n, x, incx) result(result)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx
+            double precision, intent(in) :: x(*)
+            integer(kind=blas_library_integer_kind) :: result
+        end function idamax
+
+        function izamax(n, x, incx) result(result)
+            import blas_library_integer_kind
+            integer(kind=blas_library_integer_kind), intent(in) :: n, incx
+            double complex, intent(in) :: x(*)
+            integer(kind=blas_library_integer_kind) :: result
+        end function izamax
     end interface
 
     contains
@@ -758,15 +902,19 @@ module blas
         integer(kind=nwchem_integer_kind), intent(out) :: ilo, ihi, iwork(*), info
         integer(kind=blas_library_integer_kind) :: n_int, lda_int, ldvl_int, ldvr_int, lwork_int
         integer(kind=blas_library_integer_kind) :: ilo_int, ihi_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         ldvl_int = int(ldvl, kind=blas_library_integer_kind)
         ldvr_int = int(ldvr, kind=blas_library_integer_kind)
         lwork_int = int(lwork, kind=blas_library_integer_kind)
+        allocate( iwork_int(2*n-2) )
         call dgeevx(balanc, jobvl, jobvr, sense, n_int, a, lda_int, wr, wi, vl, ldvl_int, vr, ldvr_int, &
-                   ilo_int, ihi_int, scale, abnrm, rconde, rcondv, work, lwork_int, iwork, info_int)
+                    ilo_int, ihi_int, scale, abnrm, rconde, rcondv, work, lwork_int, iwork_int, info_int)
         ilo = int(ilo_int, kind=nwchem_integer_kind)
         ihi = int(ihi_int, kind=nwchem_integer_kind)
+        iwork(1:2*n-2) = int(iwork_int(1:2*n-2), kind=nwchem_integer_kind)
+        deallocate( iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ygeevx
 
@@ -821,18 +969,18 @@ module blas
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ygelss
 
-    subroutine ygesv(n, nrhs, a, lda, ipiv, b, ldb, info)
-        integer(kind=nwchem_integer_kind), intent(in) :: n, nrhs, lda, ldb
-        double precision, intent(inout) :: a(lda,*), b(ldb,*)
-        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
-        integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, info_int
-        n_int = int(n, kind=blas_library_integer_kind)
-        nrhs_int = int(nrhs, kind=blas_library_integer_kind)
-        lda_int = int(lda, kind=blas_library_integer_kind)
-        ldb_int = int(ldb, kind=blas_library_integer_kind)
-        call dgesv(n_int, nrhs_int, a, lda_int, ipiv, b, ldb_int, info_int)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ygesv
+    ! subroutine ygesv(n, nrhs, a, lda, ipiv, b, ldb, info)
+    !     integer(kind=nwchem_integer_kind), intent(in) :: n, nrhs, lda, ldb
+    !     double precision, intent(inout) :: a(lda,*), b(ldb,*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+    !     integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, info_int
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     nrhs_int = int(nrhs, kind=blas_library_integer_kind)
+    !     lda_int = int(lda, kind=blas_library_integer_kind)
+    !     ldb_int = int(ldb, kind=blas_library_integer_kind)
+    !     call dgesv(n_int, nrhs_int, a, lda_int, ipiv, b, ldb_int, info_int)
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ygesv
 
     subroutine ygesvd(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info)
         character(len=1), intent(in) :: jobu, jobvt
@@ -851,17 +999,21 @@ module blas
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ygesvd
 
-    subroutine ygetrf(m, n, a, lda, ipiv, info)
-        integer(kind=nwchem_integer_kind), intent(in) :: m, n, lda
-        double precision, intent(inout) :: a(lda,*)
-        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
-        integer(kind=blas_library_integer_kind) :: m_int, n_int, lda_int, info_int
-        m_int = int(m, kind=blas_library_integer_kind)
-        n_int = int(n, kind=blas_library_integer_kind)
-        lda_int = int(lda, kind=blas_library_integer_kind)
-        call dgetrf(m_int, n_int, a, lda_int, ipiv, info_int)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ygetrf
+    ! subroutine ygetrf(m, n, a, lda, ipiv, info)
+    !     integer(kind=nwchem_integer_kind), intent(in) :: m, n, lda
+    !     double precision, intent(inout) :: a(lda,*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+    !     integer(kind=blas_library_integer_kind) :: m_int, n_int, lda_int, info_int
+    !     integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+    !     m_int = int(m, kind=blas_library_integer_kind)
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     lda_int = int(lda, kind=blas_library_integer_kind)
+    !     allocate( ipiv_int(min(m,n)) )
+    !     call dgetrf(m_int, n_int, a, lda_int, ipiv_int, info_int)
+    !     ipiv = int(ipiv_int(1:min(m,n)), kind=nwchem_integer_kind)
+    !     deallocate( ipiv_int )
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ygetrf
 
     subroutine ygetri(n, a, lda, ipiv, work, lwork, info)
         integer(kind=nwchem_integer_kind), intent(in) :: n, lda, lwork
@@ -870,10 +1022,14 @@ module blas
         double precision, intent(out) :: work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: info
         integer(kind=blas_library_integer_kind) :: n_int, lda_int, lwork_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         lwork_int = int(lwork, kind=blas_library_integer_kind)
-        call dgetri(n_int, a, lda_int, ipiv, work, lwork_int, info_int)
+        allocate( ipiv_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dgetri(n_int, a, lda_int, ipiv_int, work, lwork_int, info_int)
+        deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ygetri
 
@@ -885,11 +1041,15 @@ module blas
         double precision, intent(inout) :: b(ldb,*)
         integer(kind=nwchem_integer_kind), intent(out) :: info
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         nrhs_int = int(nrhs, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         ldb_int = int(ldb, kind=blas_library_integer_kind)
-        call dgetrs(trans, n_int, nrhs_int, a, lda_int, ipiv, b, ldb_int, info_int)
+        allocate( ipiv_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dgetrs(trans, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, info_int)
+        deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ygetrs
 
@@ -908,41 +1068,45 @@ module blas
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysyev
 
-    subroutine ysyevx(jobz, range, uplo, n, a, lda, vl, vu, il, iu, abstol, m, w, z, ldz, work, lwork, iwork, ifail, info)
-        character(len=1), intent(in) :: jobz, range, uplo
-        integer(kind=nwchem_integer_kind), intent(in) :: n, lda, il, iu, ldz, lwork
-        double precision, intent(in) :: vl, vu, abstol
-        double precision, intent(inout) :: a(lda,*)
-        double precision, intent(out) :: w(*), z(ldz,*), work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: m, iwork(*), ifail(*), info
-        integer(kind=blas_library_integer_kind) :: n_int, lda_int, il_int, iu_int, ldz_int, lwork_int
-        integer(kind=blas_library_integer_kind) :: m_int, info_int
-        n_int = int(n, kind=blas_library_integer_kind)
-        lda_int = int(lda, kind=blas_library_integer_kind)
-        il_int = int(il, kind=blas_library_integer_kind)
-        iu_int = int(iu, kind=blas_library_integer_kind)
-        ldz_int = int(ldz, kind=blas_library_integer_kind)
-        lwork_int = int(lwork, kind=blas_library_integer_kind)
-        call dsyevx(jobz, range, uplo, n_int, a, lda_int, vl, vu, il_int, iu_int, abstol, m_int, w, z, ldz_int, &
-                   work, lwork_int, iwork, ifail, info_int)
-        m = int(m_int, kind=nwchem_integer_kind)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ysyevx
+    ! subroutine ysyevx(jobz, range, uplo, n, a, lda, vl, vu, il, iu, abstol, m, w, z, ldz, work, lwork, iwork, ifail, info)
+    !     character(len=1), intent(in) :: jobz, range, uplo
+    !     integer(kind=nwchem_integer_kind), intent(in) :: n, lda, il, iu, ldz, lwork
+    !     double precision, intent(in) :: vl, vu, abstol
+    !     double precision, intent(inout) :: a(lda,*)
+    !     double precision, intent(out) :: w(*), z(ldz,*), work(*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: m, iwork(*), ifail(*), info
+    !     integer(kind=blas_library_integer_kind) :: n_int, lda_int, il_int, iu_int, ldz_int, lwork_int
+    !     integer(kind=blas_library_integer_kind) :: m_int, info_int
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     lda_int = int(lda, kind=blas_library_integer_kind)
+    !     il_int = int(il, kind=blas_library_integer_kind)
+    !     iu_int = int(iu, kind=blas_library_integer_kind)
+    !     ldz_int = int(ldz, kind=blas_library_integer_kind)
+    !     lwork_int = int(lwork, kind=blas_library_integer_kind)
+    !     call dsyevx(jobz, range, uplo, n_int, a, lda_int, vl, vu, il_int, iu_int, abstol, m_int, w, z, ldz_int, &
+    !                work, lwork_int, iwork, ifail, info_int)
+    !     m = int(m_int, kind=nwchem_integer_kind)
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ysyevx
 
-    ! Symmetric matrix factorization wrappers
-    subroutine ysytrf(uplo, n, a, lda, ipiv, work, lwork, info)
-        character(len=1), intent(in) :: uplo
-        integer(kind=nwchem_integer_kind), intent(in) :: n, lda, lwork
-        double precision, intent(inout) :: a(lda,*)
-        double precision, intent(out) :: work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
-        integer(kind=blas_library_integer_kind) :: n_int, lda_int, lwork_int, info_int
-        n_int = int(n, kind=blas_library_integer_kind)
-        lda_int = int(lda, kind=blas_library_integer_kind)
-        lwork_int = int(lwork, kind=blas_library_integer_kind)
-        call dsytrf(uplo, n_int, a, lda_int, ipiv, work, lwork_int, info_int)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ysytrf
+    ! Symmetric matrix factorization
+    ! subroutine ysytrf(uplo, n, a, lda, ipiv, work, lwork, info)
+    !     character(len=1), intent(in) :: uplo
+    !     integer(kind=nwchem_integer_kind), intent(in) :: n, lda, lwork
+    !     double precision, intent(inout) :: a(lda,*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+    !     double precision, intent(out) :: work(*)
+    !     integer(kind=blas_library_integer_kind) :: n_int, lda_int, lwork_int, info_int
+    !     integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     lda_int = int(lda, kind=blas_library_integer_kind)
+    !     lwork_int = int(lwork, kind=blas_library_integer_kind)
+    !     allocate( ipiv_int(n) )
+    !     call dsytrf(uplo, n_int, a, lda_int, ipiv_int, work, lwork_int, info_int)
+    !     ipiv = int(ipiv_int(1:n), kind=nwchem_integer_kind)
+    !     deallocate( ipiv_int )
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ysytrf
 
     subroutine ysytri(uplo, n, a, lda, ipiv, work, info)
         character(len=1), intent(in) :: uplo
@@ -952,26 +1116,34 @@ module blas
         double precision, intent(out) :: work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: info
         integer(kind=blas_library_integer_kind) :: n_int, lda_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
-        call dsytri(uplo, n_int, a, lda_int, ipiv, work, info_int)
+        allocate( ipiv_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dsytri(uplo, n_int, a, lda_int, ipiv_int, work, info_int)
+        deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysytri
 
     ! Banded matrix wrappers
-    subroutine ygbtrf(m, n, kl, ku, ab, ldab, ipiv, info)
-        integer(kind=nwchem_integer_kind), intent(in) :: m, n, kl, ku, ldab
-        double precision, intent(inout) :: ab(ldab,*)
-        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
-        integer(kind=blas_library_integer_kind) :: m_int, n_int, kl_int, ku_int, ldab_int, info_int
-        m_int = int(m, kind=blas_library_integer_kind)
-        n_int = int(n, kind=blas_library_integer_kind)
-        kl_int = int(kl, kind=blas_library_integer_kind)
-        ku_int = int(ku, kind=blas_library_integer_kind)
-        ldab_int = int(ldab, kind=blas_library_integer_kind)
-        call dgbtrf(m_int, n_int, kl_int, ku_int, ab, ldab_int, ipiv, info_int)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ygbtrf
+    ! subroutine ygbtrf(m, n, kl, ku, ab, ldab, ipiv, info)
+    !     integer(kind=nwchem_integer_kind), intent(in) :: m, n, kl, ku, ldab
+    !     double precision, intent(inout) :: ab(ldab,*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+    !     integer(kind=blas_library_integer_kind) :: m_int, n_int, kl_int, ku_int, ldab_int, info_int
+    !     integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+    !     m_int = int(m, kind=blas_library_integer_kind)
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     kl_int = int(kl, kind=blas_library_integer_kind)
+    !     ku_int = int(ku, kind=blas_library_integer_kind)
+    !     ldab_int = int(ldab, kind=blas_library_integer_kind)
+    !     allocate( ipiv_int(min(m,n)) )
+    !     call dgbtrf(m_int, n_int, kl_int, ku_int, ab, ldab_int, ipiv_int, info_int)
+    !     ipiv = int(ipiv_int(1:min(m,n)), kind=nwchem_integer_kind)
+    !     deallocate( ipiv_int )
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ygbtrf
 
     subroutine ygbtrs(trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info)
         character(len=1), intent(in) :: trans
@@ -981,13 +1153,17 @@ module blas
         double precision, intent(inout) :: b(ldb,*)
         integer(kind=nwchem_integer_kind), intent(out) :: info
         integer(kind=blas_library_integer_kind) :: n_int, kl_int, ku_int, nrhs_int, ldab_int, ldb_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         kl_int = int(kl, kind=blas_library_integer_kind)
         ku_int = int(ku, kind=blas_library_integer_kind)
         nrhs_int = int(nrhs, kind=blas_library_integer_kind)
         ldab_int = int(ldab, kind=blas_library_integer_kind)
         ldb_int = int(ldb, kind=blas_library_integer_kind)
-        call dgbtrs(trans, n_int, kl_int, ku_int, nrhs_int, ab, ldab_int, ipiv, b, ldb_int, info_int)
+        allocate( ipiv_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dgbtrs(trans, n_int, kl_int, ku_int, nrhs_int, ab, ldab_int, ipiv_int, b, ldb_int, info_int)
+        deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ygbtrs
 
@@ -1000,11 +1176,15 @@ module blas
         double precision, intent(inout) :: b(ldb,*)
         integer(kind=nwchem_integer_kind), intent(out) :: info
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         nrhs_int = int(nrhs, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         ldb_int = int(ldb, kind=blas_library_integer_kind)
-        call dsytrs(uplo, n_int, nrhs_int, a, lda_int, ipiv, b, ldb_int, info_int)
+        allocate( ipiv_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dsytrs(uplo, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, info_int)
+        deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysytrs
 
@@ -1014,11 +1194,15 @@ module blas
         double precision, intent(in) :: a(lda,*), anorm
         integer(kind=nwchem_integer_kind), intent(in) :: ipiv(*)
         double precision, intent(out) :: rcond, work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
+        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info ! iwork is unused
         integer(kind=blas_library_integer_kind) :: n_int, lda_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:), iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
-        call dsycon(uplo, n_int, a, lda_int, ipiv, anorm, rcond, work, iwork, info_int)
+        allocate( ipiv_int(n), iwork_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dsycon(uplo, n_int, a, lda_int, ipiv_int, anorm, rcond, work, iwork_int, info_int)
+        deallocate( ipiv_int, iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysycon
 
@@ -1029,16 +1213,20 @@ module blas
         integer(kind=nwchem_integer_kind), intent(in) :: ipiv(*)
         double precision, intent(inout) :: x(ldx,*)
         double precision, intent(out) :: ferr(*), berr(*), work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
+        integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info ! iwork is unused
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldaf_int, ldb_int, ldx_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:), iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         nrhs_int = int(nrhs, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         ldaf_int = int(ldaf, kind=blas_library_integer_kind)
         ldb_int = int(ldb, kind=blas_library_integer_kind)
         ldx_int = int(ldx, kind=blas_library_integer_kind)
-        call dsyrfs(uplo, n_int, nrhs_int, a, lda_int, af, ldaf_int, ipiv, b, ldb_int, x, ldx_int, &
-                   ferr, berr, work, iwork, info_int)
+        allocate( ipiv_int(n), iwork_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dsyrfs(uplo, n_int, nrhs_int, a, lda_int, af, ldaf_int, ipiv_int, b, ldb_int, x, ldx_int, &
+                    ferr, berr, work, iwork_int, info_int)
+        deallocate( ipiv_int, iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysyrfs
 
@@ -1056,26 +1244,26 @@ module blas
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ystev
 
-    subroutine ystevr(jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ldz, isuppz, work, lwork, iwork, liwork, info)
-        character(len=1), intent(in) :: jobz, range
-        integer(kind=nwchem_integer_kind), intent(in) :: n, il, iu, ldz, lwork, liwork
-        double precision, intent(in) :: vl, vu, abstol
-        double precision, intent(inout) :: d(*), e(*)
-        double precision, intent(out) :: w(*), z(ldz,*), work(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: m, isuppz(*), iwork(*), info
-        integer(kind=blas_library_integer_kind) :: n_int, il_int, iu_int, ldz_int, lwork_int, liwork_int
-        integer(kind=blas_library_integer_kind) :: m_int, info_int
-        n_int = int(n, kind=blas_library_integer_kind)
-        il_int = int(il, kind=blas_library_integer_kind)
-        iu_int = int(iu, kind=blas_library_integer_kind)
-        ldz_int = int(ldz, kind=blas_library_integer_kind)
-        lwork_int = int(lwork, kind=blas_library_integer_kind)
-        liwork_int = int(liwork, kind=blas_library_integer_kind)
-        call dstevr(jobz, range, n_int, d, e, vl, vu, il_int, iu_int, abstol, m_int, w, z, ldz_int, &
-                   isuppz, work, lwork_int, iwork, liwork_int, info_int)
-        m = int(m_int, kind=nwchem_integer_kind)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ystevr
+    ! subroutine ystevr(jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ldz, isuppz, work, lwork, iwork, liwork, info)
+    !     character(len=1), intent(in) :: jobz, range
+    !     integer(kind=nwchem_integer_kind), intent(in) :: n, il, iu, ldz, lwork, liwork
+    !     double precision, intent(in) :: vl, vu, abstol
+    !     double precision, intent(inout) :: d(*), e(*)
+    !     double precision, intent(out) :: w(*), z(ldz,*), work(*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: m, isuppz(*), iwork(*), info
+    !     integer(kind=blas_library_integer_kind) :: n_int, il_int, iu_int, ldz_int, lwork_int, liwork_int
+    !     integer(kind=blas_library_integer_kind) :: m_int, info_int
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     il_int = int(il, kind=blas_library_integer_kind)
+    !     iu_int = int(iu, kind=blas_library_integer_kind)
+    !     ldz_int = int(ldz, kind=blas_library_integer_kind)
+    !     lwork_int = int(lwork, kind=blas_library_integer_kind)
+    !     liwork_int = int(liwork, kind=blas_library_integer_kind)
+    !     call dstevr(jobz, range, n_int, d, e, vl, vu, il_int, iu_int, abstol, m_int, w, z, ldz_int, &
+    !                isuppz, work, lwork_int, iwork, liwork_int, info_int)
+    !     m = int(m_int, kind=nwchem_integer_kind)
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ystevr
 
     subroutine ypttrf(n, d, e, info)
         integer(kind=nwchem_integer_kind), intent(in) :: n
@@ -1241,30 +1429,30 @@ module blas
         call dlacpy(uplo, m_int, n_int, a, lda_int, b, ldb_int)
     end subroutine ylacpy
 
-    subroutine ylagtf(n, a, lambda, b, c, tol, d, in, info)
-        integer(kind=nwchem_integer_kind), intent(in) :: n
-        double precision, intent(in) :: lambda, tol
-        double precision, intent(inout) :: a(*), b(*), c(*)
-        double precision, intent(out) :: d(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: in(*), info
-        integer(kind=blas_library_integer_kind) :: n_int, info_int
-        n_int = int(n, kind=blas_library_integer_kind)
-        call dlagtf(n_int, a, lambda, b, c, tol, d, in, info_int)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ylagtf
+    ! subroutine ylagtf(n, a, lambda, b, c, tol, d, in, info)
+    !     integer(kind=nwchem_integer_kind), intent(in) :: n
+    !     double precision, intent(in) :: lambda, tol
+    !     double precision, intent(inout) :: a(*), b(*), c(*)
+    !     double precision, intent(out) :: d(*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: in(*), info
+    !     integer(kind=blas_library_integer_kind) :: n_int, info_int
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     call dlagtf(n_int, a, lambda, b, c, tol, d, in, info_int)
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ylagtf
 
-    subroutine ylagts(job, n, a, b, c, d, in, y, tol, info)
-        integer(kind=nwchem_integer_kind), intent(in) :: n
-        character(len=1), intent(in) :: job
-        double precision, intent(in) :: a(*), b(*), c(*), d(*), tol
-        integer(kind=nwchem_integer_kind), intent(in) :: in(*)
-        double precision, intent(inout) :: y(*)
-        integer(kind=nwchem_integer_kind), intent(out) :: info
-        integer(kind=blas_library_integer_kind) :: n_int, info_int
-        n_int = int(n, kind=blas_library_integer_kind)
-        call dlagts(job, n_int, a, b, c, d, in, y, tol, info_int)
-        info = int(info_int, kind=nwchem_integer_kind)
-    end subroutine ylagts
+    ! subroutine ylagts(job, n, a, b, c, d, in, y, tol, info)
+    !     integer(kind=nwchem_integer_kind), intent(in) :: n
+    !     character(len=1), intent(in) :: job
+    !     double precision, intent(in) :: a(*), b(*), c(*), d(*), tol
+    !     integer(kind=nwchem_integer_kind), intent(in) :: in(*)
+    !     double precision, intent(inout) :: y(*)
+    !     integer(kind=nwchem_integer_kind), intent(out) :: info
+    !     integer(kind=blas_library_integer_kind) :: n_int, info_int
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     call dlagts(job, n_int, a, b, c, d, in, y, tol, info_int)
+    !     info = int(info_int, kind=nwchem_integer_kind)
+    ! end subroutine ylagts
 
     function ylange(norm, m, n, a, lda, work) result(result)
         character(len=1), intent(in) :: norm
@@ -1279,15 +1467,15 @@ module blas
         result = dlange(norm, m_int, n_int, a, lda_int, work)
     end function ylange
 
-    subroutine ylarnv(idist, iseed, n, x)
-        integer(kind=nwchem_integer_kind), intent(in) :: idist, n
-        integer(kind=nwchem_integer_kind), intent(inout) :: iseed(*)
-        double precision, intent(out) :: x(*)
-        integer(kind=blas_library_integer_kind) :: idist_int, n_int
-        idist_int = int(idist, kind=blas_library_integer_kind)
-        n_int = int(n, kind=blas_library_integer_kind)
-        call dlarnv(idist_int, iseed, n_int, x)
-    end subroutine ylarnv
+    ! subroutine ylarnv(idist, iseed, n, x)
+    !     integer(kind=nwchem_integer_kind), intent(in) :: idist, n
+    !     integer(kind=nwchem_integer_kind), intent(inout) :: iseed(*)
+    !     double precision, intent(out) :: x(*)
+    !     integer(kind=blas_library_integer_kind) :: idist_int, n_int
+    !     idist_int = int(idist, kind=blas_library_integer_kind)
+    !     n_int = int(n, kind=blas_library_integer_kind)
+    !     call dlarnv(idist_int, iseed, n_int, x)
+    ! end subroutine ylarnv
 
     subroutine ylascl(type, kl, ku, cfrom, cto, m, n, a, lda, info)
         character(len=1), intent(in) :: type
@@ -1410,16 +1598,22 @@ module blas
         character(len=1), intent(in) :: fact, uplo
         integer(kind=nwchem_integer_kind), intent(in) :: n, nrhs, ldb, ldx
         double precision, intent(in) :: a(*), b(ldb,*)
-        double precision, intent(inout) :: afac(*), x(ldx,*)
+        double precision, intent(inout) :: afac(*)
         integer(kind=nwchem_integer_kind), intent(inout) :: ipiv(*)
-        double precision, intent(out) :: rcond, ferr(*), berr(*), work(*)
+        double precision, intent(out) :: x(ldx,*), rcond, ferr(*), berr(*), work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
         integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, ldb_int, ldx_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:), iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         nrhs_int = int(nrhs, kind=blas_library_integer_kind)
         ldb_int = int(ldb, kind=blas_library_integer_kind)
         ldx_int = int(ldx, kind=blas_library_integer_kind)
-        call dspsvx(fact, uplo, n_int, nrhs_int, a, afac, ipiv, b, ldb_int, x, ldx_int, rcond, ferr, berr, work, iwork, info_int)
+        allocate( ipiv_int(n), iwork_int(n) )
+        ipiv_int = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call dspsvx(fact, uplo, n_int, nrhs_int, a, afac, ipiv_int, b, ldb_int, x, ldx_int, &
+                    rcond, ferr, berr, work, iwork_int, info_int)
+        ipiv(1:n) = int(ipiv_int(1:n), kind=nwchem_integer_kind)
+        deallocate( ipiv_int, iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine yspsvx
 
@@ -1430,12 +1624,17 @@ module blas
         double precision, intent(out) :: w(*), work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: m, nsplit, iblock(*), isplit(*), iwork(*), info
         integer(kind=blas_library_integer_kind) :: n_int, il_int, iu_int, m_int, nsplit_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:), isplit_int(:), iblock_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         il_int = int(il, kind=blas_library_integer_kind)
         iu_int = int(iu, kind=blas_library_integer_kind)
-        call dstebz(range, order, n_int, vl, vu, il_int, iu_int, abstol, d, e, m_int, nsplit_int, w, iblock, isplit, work, iwork, info_int)
+        allocate( iwork_int(n), isplit_int(n), iblock_int(n) )
+        call dstebz(range, order, n_int, vl, vu, il_int, iu_int, abstol, d, e, m_int, nsplit_int, w, iblock_int, isplit_int, work, iwork_int, info_int)
+        deallocate( iwork_int, isplit_int, iblock_int )
         m = int(m_int, kind=nwchem_integer_kind)
         nsplit = int(nsplit_int, kind=nwchem_integer_kind)
+        iblock(1:n) = int(iblock_int(1:n), kind=nwchem_integer_kind)
+        isplit(1:n) = int(isplit_int(1:n), kind=nwchem_integer_kind)
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ystebz
 
@@ -1446,10 +1645,17 @@ module blas
         double precision, intent(out) :: z(ldz,*), work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), ifail(*), info
         integer(kind=blas_library_integer_kind) :: n_int, m_int, ldz_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:), isplit_int(:), iblock_int(:), ifail_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         m_int = int(m, kind=blas_library_integer_kind)
         ldz_int = int(ldz, kind=blas_library_integer_kind)
-        call dstein(n_int, d, e, m_int, w, iblock, isplit, z, ldz_int, work, iwork, ifail, info_int)
+        allocate( iwork_int(n), isplit_int(n), iblock_int(n), ifail_int(m) )
+        iblock_int(1:n) = int(iblock(1:n), kind=blas_library_integer_kind)
+        isplit_int(1:n) = int(isplit(1:n), kind=blas_library_integer_kind)
+        call dstein(n_int, d, e, m_int, w, iblock_int, isplit_int, z, ldz_int, work, iwork_int, ifail_int, info_int)
+        deallocate( iwork_int, isplit_int, iblock_int, ifail_int )
+        iwork(1:n) = int(iwork_int(1:n), kind=nwchem_integer_kind)
+        ifail(1:m) = int(ifail_int(1:m), kind=nwchem_integer_kind)
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ystein
 
@@ -1470,11 +1676,15 @@ module blas
         double precision, intent(out) :: w(*), work(*)
         integer(kind=nwchem_integer_kind), intent(out) :: iwork(*), info
         integer(kind=blas_library_integer_kind) :: n_int, lda_int, lwork_int, liwork_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: iwork_int(:)
         n_int = int(n, kind=blas_library_integer_kind)
         lda_int = int(lda, kind=blas_library_integer_kind)
         lwork_int = int(lwork, kind=blas_library_integer_kind)
         liwork_int = int(liwork, kind=blas_library_integer_kind)
-        call dsyevd(jobz, uplo, n_int, a, lda_int, w, work, lwork_int, iwork, liwork_int, info_int)
+        allocate( iwork_int(liwork) )
+        call dsyevd(jobz, uplo, n_int, a, lda_int, w, work, lwork_int, iwork_int, liwork_int, info_int)
+        iwork(1:liwork) = int(iwork_int(1:liwork), kind=nwchem_integer_kind)
+        deallocate( iwork_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysyevd
 
@@ -1509,7 +1719,7 @@ module blas
         lwork_int = int(lwork, kind=blas_library_integer_kind)
         allocate( ipiv_int(n) )
         call dsysv(uplo, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, work, lwork_int, info_int)
-        ipiv(:) = int(ipiv_int(:), kind=blas_library_integer_kind)
+        ipiv(1:n) = int(ipiv_int(1:n), kind=nwchem_integer_kind)
         deallocate( ipiv_int )
         info = int(info_int, kind=nwchem_integer_kind)
     end subroutine ysysv
@@ -1573,5 +1783,255 @@ module blas
     end subroutine ytrevc
 
     ! Add more wrapper subroutines...
+
+    ! Complex BLAS Level 1 wrappers
+    subroutine yzaxpy(n, alpha, x, incx, y, incy)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx, incy
+        double complex, intent(in) :: alpha, x(*)
+        double complex, intent(inout) :: y(*)
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, incy_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        incy_int = int(incy, kind=blas_library_integer_kind)
+        call zaxpy(n_int, alpha, x, incx_int, y, incy_int)
+    end subroutine yzaxpy
+
+    subroutine yzcopy(n, x, incx, y, incy)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx, incy
+        double complex, intent(in) :: x(*)
+        double complex, intent(out) :: y(*)
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, incy_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        incy_int = int(incy, kind=blas_library_integer_kind)
+        call zcopy(n_int, x, incx_int, y, incy_int)
+    end subroutine yzcopy
+
+    subroutine yzdotc(n, x, incx, y, incy, result)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx, incy
+        double complex, intent(in) :: x(*), y(*)
+        double complex, intent(out) :: result
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, incy_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        incy_int = int(incy, kind=blas_library_integer_kind)
+        call zdotc(n_int, x, incx_int, y, incy_int, result)
+    end subroutine yzdotc
+
+    subroutine yzscal(n, alpha, x, incx)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx
+        double complex, intent(in) :: alpha
+        double complex, intent(inout) :: x(*)
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        call zscal(n_int, alpha, x, incx_int)
+    end subroutine yzscal
+
+    ! Complex BLAS Level 3 wrappers
+    subroutine yzgemm(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc)
+        character(len=1), intent(in) :: transa, transb
+        integer(kind=nwchem_integer_kind), intent(in) :: m, n, k, lda, ldb, ldc
+        double complex, intent(in) :: alpha, beta
+        double complex, intent(in) :: a(lda,*), b(ldb,*)
+        double complex, intent(inout) :: c(ldc,*)
+        integer(kind=blas_library_integer_kind) :: m_int, n_int, k_int, lda_int, ldb_int, ldc_int
+        m_int = int(m, kind=blas_library_integer_kind)
+        n_int = int(n, kind=blas_library_integer_kind)
+        k_int = int(k, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldb_int = int(ldb, kind=blas_library_integer_kind)
+        ldc_int = int(ldc, kind=blas_library_integer_kind)
+        call zgemm(transa, transb, m_int, n_int, k_int, alpha, a, lda_int, b, ldb_int, beta, c, ldc_int)
+    end subroutine yzgemm
+
+    subroutine yzsyrk(uplo, trans, n, k, alpha, a, lda, beta, c, ldc)
+        character(len=1), intent(in) :: uplo, trans
+        integer(kind=nwchem_integer_kind), intent(in) :: n, k, lda, ldc
+        double complex, intent(in) :: alpha, beta
+        double complex, intent(in) :: a(lda,*)
+        double complex, intent(inout) :: c(ldc,*)
+        integer(kind=blas_library_integer_kind) :: n_int, k_int, lda_int, ldc_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        k_int = int(k, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldc_int = int(ldc, kind=blas_library_integer_kind)
+        call zsyrk(uplo, trans, n_int, k_int, alpha, a, lda_int, beta, c, ldc_int)
+    end subroutine yzsyrk
+
+    ! Complex LAPACK wrappers
+    subroutine yzgeev(jobvl, jobvr, n, a, lda, w, vl, ldvl, vr, ldvr, work, lwork, rwork, info)
+        character(len=1), intent(in) :: jobvl, jobvr
+        integer(kind=nwchem_integer_kind), intent(in) :: n, lda, ldvl, ldvr, lwork
+        double complex, intent(inout) :: a(lda,*)
+        double complex, intent(out) :: w(*), vl(ldvl,*), vr(ldvr,*), work(*)
+        double precision, intent(out) :: rwork(*)
+        integer(kind=nwchem_integer_kind), intent(out) :: info
+        integer(kind=blas_library_integer_kind) :: n_int, lda_int, ldvl_int, ldvr_int, lwork_int, info_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldvl_int = int(ldvl, kind=blas_library_integer_kind)
+        ldvr_int = int(ldvr, kind=blas_library_integer_kind)
+        lwork_int = int(lwork, kind=blas_library_integer_kind)
+        call zgeev(jobvl, jobvr, n_int, a, lda_int, w, vl, ldvl_int, vr, ldvr_int, work, lwork_int, rwork, info_int)
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzgeev
+
+    subroutine yzgesvd(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, rwork, info)
+        character(len=1), intent(in) :: jobu, jobvt
+        integer(kind=nwchem_integer_kind), intent(in) :: m, n, lda, ldu, ldvt, lwork
+        double complex, intent(inout) :: a(lda,*)
+        double precision, intent(out) :: s(*)
+        double complex, intent(out) :: u(ldu,*), vt(ldvt,*), work(*)
+        double precision, intent(out) :: rwork(*)
+        integer(kind=nwchem_integer_kind), intent(out) :: info
+        integer(kind=blas_library_integer_kind) :: m_int, n_int, lda_int, ldu_int, ldvt_int, lwork_int, info_int
+        m_int = int(m, kind=blas_library_integer_kind)
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldu_int = int(ldu, kind=blas_library_integer_kind)
+        ldvt_int = int(ldvt, kind=blas_library_integer_kind)
+        lwork_int = int(lwork, kind=blas_library_integer_kind)
+        call zgesvd(jobu, jobvt, m_int, n_int, a, lda_int, s, u, ldu_int, vt, ldvt_int, work, lwork_int, rwork, info_int)
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzgesvd
+
+    subroutine yzgetrf(m, n, a, lda, ipiv, info)
+        integer(kind=nwchem_integer_kind), intent(in) :: m, n, lda
+        double complex, intent(inout) :: a(lda,*)
+        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+        integer(kind=blas_library_integer_kind) :: m_int, n_int, lda_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+        m_int = int(m, kind=blas_library_integer_kind)
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        allocate( ipiv_int(min(m,n)) )
+        call zgetrf(m_int, n_int, a, lda_int, ipiv_int, info_int)
+        ipiv(1:min(m,n)) = int(ipiv_int(1:min(m,n)), kind=nwchem_integer_kind)
+        deallocate( ipiv_int )
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzgetrf
+
+    subroutine yzgetrs(trans, n, nrhs, a, lda, ipiv, b, ldb, info)
+        character(len=1), intent(in) :: trans
+        integer(kind=nwchem_integer_kind), intent(in) :: n, nrhs, lda, ldb
+        double complex, intent(in) :: a(lda,*)
+        integer(kind=nwchem_integer_kind), intent(in) :: ipiv(*)
+        double complex, intent(inout) :: b(ldb,*)
+        integer(kind=nwchem_integer_kind), intent(out) :: info
+        integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+        n_int = int(n, kind=blas_library_integer_kind)
+        nrhs_int = int(nrhs, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldb_int = int(ldb, kind=blas_library_integer_kind)
+        allocate( ipiv_int(n) )
+        ipiv_int(1:n) = int(ipiv(1:n), kind=blas_library_integer_kind)
+        call zgetrs(trans, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, info_int)
+        deallocate( ipiv_int )
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzgetrs
+
+    subroutine yzheev(jobz, uplo, n, a, lda, w, work, lwork, rwork, info)
+        character(len=1), intent(in) :: jobz, uplo
+        integer(kind=nwchem_integer_kind), intent(in) :: n, lda, lwork
+        double complex, intent(inout) :: a(lda,*)
+        double precision, intent(out) :: w(*)
+        double complex, intent(out) :: work(*)
+        double precision, intent(out) :: rwork(*)
+        integer(kind=nwchem_integer_kind), intent(out) :: info
+        integer(kind=blas_library_integer_kind) :: n_int, lda_int, lwork_int, info_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        lwork_int = int(lwork, kind=blas_library_integer_kind)
+        call zheev(jobz, uplo, n_int, a, lda_int, w, work, lwork_int, rwork, info_int)
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzheev
+
+    subroutine yzlacp2(uplo, m, n, a, lda, b, ldb)
+        character(len=1), intent(in) :: uplo
+        integer(kind=nwchem_integer_kind), intent(in) :: m, n, lda, ldb
+        double precision, intent(in) :: a(lda,*)
+        double complex, intent(out) :: b(ldb,*)
+        integer(kind=blas_library_integer_kind) :: m_int, n_int, lda_int, ldb_int
+        m_int = int(m, kind=blas_library_integer_kind)
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldb_int = int(ldb, kind=blas_library_integer_kind)
+        call zlacp2(uplo, m_int, n_int, a, lda_int, b, ldb_int)
+    end subroutine yzlacp2
+
+    subroutine yzlacpy(uplo, m, n, a, lda, b, ldb)
+        character(len=1), intent(in) :: uplo
+        integer(kind=nwchem_integer_kind), intent(in) :: m, n, lda, ldb
+        double complex, intent(in) :: a(lda,*)
+        double complex, intent(out) :: b(ldb,*)
+        integer(kind=blas_library_integer_kind) :: m_int, n_int, lda_int, ldb_int
+        m_int = int(m, kind=blas_library_integer_kind)
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldb_int = int(ldb, kind=blas_library_integer_kind)
+        call zlacpy(uplo, m_int, n_int, a, lda_int, b, ldb_int)
+    end subroutine yzlacpy
+
+    subroutine yzsysv(uplo, n, nrhs, a, lda, ipiv, b, ldb, work, lwork, info)
+        character(len=1), intent(in) :: uplo
+        integer(kind=nwchem_integer_kind), intent(in) :: n, nrhs, lda, ldb, lwork
+        double complex, intent(inout) :: a(lda,*), b(ldb,*)
+        double complex, intent(out) :: work(*)
+        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+        integer(kind=blas_library_integer_kind) :: n_int, nrhs_int, lda_int, ldb_int, lwork_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+        n_int = int(n, kind=blas_library_integer_kind)
+        nrhs_int = int(nrhs, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        ldb_int = int(ldb, kind=blas_library_integer_kind)
+        lwork_int = int(lwork, kind=blas_library_integer_kind)
+        allocate( ipiv_int(n) )
+        call zsysv(uplo, n_int, nrhs_int, a, lda_int, ipiv_int, b, ldb_int, work, lwork_int, info_int)
+        ipiv(1:n) = int(ipiv_int(1:n), kind=nwchem_integer_kind)
+        deallocate( ipiv_int )
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzsysv
+
+    subroutine yzsytrf(uplo, n, a, lda, ipiv, work, lwork, info)
+        character(len=1), intent(in) :: uplo
+        integer(kind=nwchem_integer_kind), intent(in) :: n, lda, lwork
+        double complex, intent(inout) :: a(lda,*)
+        double complex, intent(out) :: work(*)
+        integer(kind=nwchem_integer_kind), intent(out) :: ipiv(*), info
+        integer(kind=blas_library_integer_kind) :: n_int, lda_int, lwork_int, info_int
+        integer(kind=blas_library_integer_kind), allocatable :: ipiv_int(:)
+        n_int = int(n, kind=blas_library_integer_kind)
+        lda_int = int(lda, kind=blas_library_integer_kind)
+        lwork_int = int(lwork, kind=blas_library_integer_kind)
+        allocate( ipiv_int(n) )
+        call zsytrf(uplo, n_int, a, lda_int, ipiv_int, work, lwork_int, info_int)
+        ipiv(1:n) = int(ipiv_int(1:n), kind=nwchem_integer_kind)
+        deallocate( ipiv_int )
+        info = int(info_int, kind=nwchem_integer_kind)
+    end subroutine yzsytrf
+
+    function yidamax(n, x, incx) result(result)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx
+        double precision, intent(in) :: x(*)
+        integer(kind=nwchem_integer_kind) :: result
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, result_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        result_int = idamax(n_int, x, incx_int)
+        result = int(result_int, kind=nwchem_integer_kind)
+    end function yidamax
+
+    function yizamax(n, x, incx) result(result)
+        integer(kind=nwchem_integer_kind), intent(in) :: n, incx
+        double complex, intent(in) :: x(*)
+        integer(kind=nwchem_integer_kind) :: result
+        integer(kind=blas_library_integer_kind) :: n_int, incx_int, result_int
+        n_int = int(n, kind=blas_library_integer_kind)
+        incx_int = int(incx, kind=blas_library_integer_kind)
+        result_int = izamax(n_int, x, incx_int)
+        result = int(result_int, kind=nwchem_integer_kind)
+    end function yizamax
 
 end module blas
