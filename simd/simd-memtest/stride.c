@@ -298,7 +298,6 @@ void stride_mvGSdpd512(size_t n, const double * RESTRICT a, double * RESTRICT b,
     const __m512d src = {0};
     const __mmask8 k =  255;
     const __m256i vindex = _mm256_set_epi32(7*s,6*s,5*s,4*s,3*s,2*s,s,0);
-    const int hint = _MM_HINT_NONE;
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i+=(8*s)) {
         const __m512d t = _mm512_mask_i32gather_pd(src, k, vindex, &(a[i]), 8 /* scale */ );
