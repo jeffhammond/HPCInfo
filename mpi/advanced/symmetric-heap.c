@@ -16,7 +16,7 @@
 #  include <mpix.h>
 #elif defined(__CRAYXT) || defined(__CRAYXE)
 #  include <pmi.h> 
-#elif MPI_VERSION >= 3 || ((MPICH2) && (MPICH2_NUM_VERSION >= MPICH2_CALC_VERSION(1,5,0,0,0)))
+#elif MPI_VERSION >= 3
 // MPICH provides MPI(X)_Comm_split_type
 #else
 // fall back to Jeff's memory-intensive implementation 
@@ -118,8 +118,10 @@ int main(int argc, char* argv[])
 
             num_count = strspn(env_char, "0123456789");
             memset( &env_char[num_count], ' ', strlen(env_char)-num_count);
+            sheap_size = units * atoi(env_char);
+        } else {
+            sheap_size = 1024;
         }
-        sheap_size = units * atoi(env_char);
         printf("%7d: BG_SYMMETRIC_HEAP = %d bytes \n", world_rank, sheap_size );
     }
     mpi_result = MPI_Bcast( &sheap_size, 1, MPI_INT, 0, MPI_COMM_WORLD );
