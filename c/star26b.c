@@ -47,14 +47,15 @@ int main(void)
                               if (l!=k && l!=j && l!=i && l!=h && l!=g && l!=f && l!=e && l!=d && l!=c && l!=b && l!=a) 
                                if ((e+g+j+l)==26) // right left down
                                 if ((b+f+i+l)==26) // left right down
-                                {
+                                 if ((a+e+k+l+h+b)==26) // outer vertices condition
+                                  {
 #if 1
-                                 fprintf(stderr,
-                                         "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s,%d\n",
-                                         a,b,c,d,e,f,g,h,i,j,k,l,"pass",n);
+                                   fprintf(stderr,
+                                           "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s,%d\n",
+                                           a,b,c,d,e,f,g,h,i,j,k,l,"pass",n);
 #endif
-                                 n++;
-                                }
+                                   n++;
+                                  }
     printf("%d\n",n);
     return 0;
 }

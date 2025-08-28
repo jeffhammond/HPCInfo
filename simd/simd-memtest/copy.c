@@ -149,6 +149,7 @@ OMP_PARALLEL_FOR
 #ifdef __SSE2__
 void copy_movnti(size_t n, const double * RESTRICT a, double * RESTRICT b)
 {
+#if __x86_64__
 OMP_PARALLEL_FOR
     for (size_t i=0; i<n; i++) {
         double t;
@@ -158,6 +159,11 @@ OMP_PARALLEL_FOR
         asm ("movnti %1, %0" : "=m" (b[i]) : "r" (t));
     }
     asm ("sfence" ::: "memory");
+#elif __aarch64__
+#warning unimplemented
+#else
+#error unsupported ISA
+#endif
 }
 
 #ifdef __INTEL_COMPILER

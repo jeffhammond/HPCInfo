@@ -1,4 +1,4 @@
-// this has to be above stdio.h for sched_getaffinity to be declared
+// this has to be set before headers are included
 #define _GNU_SOURCE
 
 #include <stdio.h>
@@ -15,6 +15,14 @@
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 const useconds_t naptime = 1000;
+
+void print_mask(cpu_set_t mask)
+{
+    for (size_t i=0; i<CPU_SETSIZE; i++) {
+        const int on = CPU_ISSET(i, &mask);
+        if (on) printf(" %zu", i);
+    }
+}
 
 static void * nagot(void * input)
 {
@@ -33,10 +41,7 @@ static void * nagot(void * input)
 
     fflush(stdout); usleep(naptime);
     printf("%d: pthread CPU set=", me);
-    for (size_t i=0; i<CPU_SETSIZE; i++) {
-        const int on = CPU_ISSET(i, &mask);
-        if (on) printf(" %zu", i);
-    }
+    print_mask(mask);
     printf("\n\n"); fflush(stdout); usleep(naptime);
 
     if (me < (np-1)) MPI_Ssend(NULL,0,MPI_CHAR,me+1,1,MPI_COMM_WORLD);
@@ -65,10 +70,8 @@ int main(void)
 
     fflush(stdout); usleep(naptime);
     printf("%d: main CPU set=", me);
-    for (size_t i=0; i<sizeof(cpu_set_t); i++) {
-        const int on = CPU_ISSET(i, &mask);
-        if (on) printf(" %zu", i);
-    }
+    print_mask(mask);
+    printf("\nCPU_COUNT=%d",CPU_COUNT(&mask));
     printf("\n\n"); fflush(stdout); usleep(naptime);
 
     if (me < (np-1)) MPI_Ssend(NULL,0,MPI_CHAR,me+1,0,MPI_COMM_WORLD);
