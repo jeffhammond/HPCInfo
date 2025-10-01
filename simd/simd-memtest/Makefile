@@ -6,14 +6,20 @@
 #CFLAGS += -xMIC-AVX512
 
 #CC	 = gcc-11
-CC	 = nvcc
+#CC	 = nvcc
+#CC	 = clang#++
+CC	 = gcc
 #CC	 = clang#++
 CFLAGS	 = -O3
-#CFLAGS	+= -fopenmp
+CFLAGS	+= -fopenmp
 #CFLAGS	+= -D__AVX2__ -D__AVX__ -D__SSE4_1__ -D__SSE2__
 CFLAGS	+= -D__SSE2__ -D__SSE4_1__
-CFLAGS  += -I$(HOME)/simde/simde/x86 -DSIMDE
-CFLAGS  += -DSIMDE_ENABLE_NATIVE_ALIASES
+#CFLAGS  += -I$(HOME)/simde/simde/x86 -DSIMDE
+#CFLAGS  += -DSIMDE_ENABLE_NATIVE_ALIASES
+CFLAGS	+= -march=native
+#CFLAGS	+= -march=core-avx2
+#CFLAGS	+= -march=skylake-avx512
+#CFLAGS	+= -march=znver3 -mavx512f
 
 # Mac laptop
 #LIBS += -Wl,-L/usr/local/Cellar/llvm/4.0.0/lib -Wl,-rpath -Wl,/usr/local/Cellar/llvm/4.0.0/lib
