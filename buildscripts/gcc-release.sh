@@ -70,7 +70,7 @@ process_lib() {
 }
 
 #for v in 14.1.0 13.2.0 12.3.0 11.4.0 10.5.0 9.5.0 ; do
-for v in 14.2.0 ; do # 12.3.0 11.4.0 10.5.0 9.5.0 ; do
+for v in 16.1.0 15.3.0 14.3.0 ; do # 12.3.0 11.4.0 10.5.0 9.5.0 ; do
     GCC_VERSION=$v
     # There is a better way to do this...
     if [ ${GCC_VERSION:0:1} -eq 1 ] ; then
