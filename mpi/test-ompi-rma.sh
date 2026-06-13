@@ -48,5 +48,11 @@ for VER in $VERSIONS ; do
     /tmp/install-ompi-$VER/bin/mpirun -n 1 gdb ./tests/mpi/test_win_model -ex "set width 1000" -ex "thread apply all bt" -ex run -ex bt -ex "set confirm off" -ex quit
     popd
 
+#    pushd /tmp
+#    wget https://raw.githubusercontent.com/pmodels/armci-mpi/master/tests/mpi/test_win_model.c
+#    /tmp/install-ompi-$VER/bin/mpicc -g /tmp/test_win_model.c -o /tmp/test_win_model.x
+#    /tmp/install-ompi-$VER/bin/mpirun -n 1 /tmp/test_win_model.x || \
+#    /tmp/install-ompi-$VER/bin/mpirun -n 1 gdb /tmp/test_win_model.x -ex "set width 1000" -ex "thread apply all bt" -ex run -ex bt -ex "set confirm off" -ex quit
+
 done
 

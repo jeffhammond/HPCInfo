@@ -8,7 +8,9 @@ See [Pre-defined C/C++ Compiler Macros](http://sourceforge.net/p/predef/wiki/Hom
 
 # Manual Extraction
 
-With GCC, you can get the predefined macros using <tt>gcc -dM -E - < /dev/null</tt>.
+With GCC, you can get the predefined macros using <tt>gcc -dM -E - < /dev/null</tt>.  This usually works with C/C++ compilers.
+
+For NVHPC Fortran, you can dump macros like this: <tt>echo "end" > empty.F90 && nvfortran -stdpar=gpu -dM -E empty.F90</tt>.
 
 # Languages
 
@@ -106,9 +108,9 @@ Macro|Purpose
 ``__NVCOMPILER_MAJOR__ ``|Version
 ``__NVCOMPILER_MINOR__ ``|Revision
 ``__NVCOMPILER_PATCHLEVEL__ ``|Patch
-``__NVCOMPILER_CUDA__``, ``_NVHPC_CUDA``|CUDA support enabled
-``_NVHPC_STDPAR_GPU``, ``_NVHPC_STDPAR_CUDA``| StdPar for GPU with CUDA (i.e. ``-stdpar=gpu``)
-``_NVHPC_STDPAR_MULTICORE``, ``_NVHPC_STDPAR_OMP``| StdPar for CPU with OpenMP (i.e. ``-stdpar=multicore``)
+``__NVCOMPILER_CUDA__``|CUDA support enabled
+``__NVCOMPILER_STDPAR_GPU``| StdPar for GPU with CUDA (i.e. ``-stdpar=gpu``)
+``__NVCOMPILER_STDPAR_MULTICORE``| StdPar for CPU with OpenMP (i.e. ``-stdpar=multicore``)
 ``__NVCOMPILER_CUDA_ARCH__``|CUDA arch (e.g. 860 for ``sm_86``)
 
 Note that the following PGI macros are also supported, for historical reasons.

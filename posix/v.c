@@ -1,16 +1,12 @@
 /* this has to be set before headers are included */
 #define _GNU_SOURCE
 #include <stdio.h>
-#include <sched.h>
+#include <string.h>
 #include <assert.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <sched.h>
 #include <unistd.h>
-#include <string.h>
+#include <fcntl.h>
 
 static inline
 int count_commas(const char* buffer)

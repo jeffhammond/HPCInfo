@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
     size_t size = ( argc>1 ? atoi(argv[1]) : getpagesize() ); 
     printf("%d: size = %ld \n", world_rank, (long)size);
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
 #if defined(POSIX_SHM)
@@ -53,6 +54,7 @@ int main(int argc, char* argv[])
     printf("%d: no file backing \n");
 #endif
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (fd>=0 && world_rank==0)
@@ -62,6 +64,7 @@ int main(int argc, char* argv[])
         else       printf("%d: ftruncate failed \n", world_rank );
     }
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     char * ptr = NULL;
@@ -81,10 +84,12 @@ int main(int argc, char* argv[])
     if (ptr==NULL) printf("%d: mmap failed \n", world_rank );
     else           printf("%d: mmap succeeded \n", world_rank );
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
     
     for (i=0; i<size; i++) printf("%d: ptr[%d] = %c \n", world_rank, i, ptr[i] );
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (0==world_rank)
@@ -97,10 +102,12 @@ int main(int argc, char* argv[])
         else       printf("%d: msync failed \n", world_rank);
     }
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     for (i=0; i<size; i++) printf("%d: ptr[%d] = %c \n", world_rank, i, ptr[i] );
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (fd>=0)
@@ -110,6 +117,7 @@ int main(int argc, char* argv[])
         else       printf("%d: ftruncate failed \n", world_rank );
     }
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
 #if defined(POSIX_SHM)
@@ -128,6 +136,7 @@ int main(int argc, char* argv[])
     }
 #endif
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (ptr!=NULL)
@@ -137,6 +146,7 @@ int main(int argc, char* argv[])
         else       printf("%d: munmap failed \n", world_rank );
     }
 
+    fflush(stdout); usleep(1000);
     MPI_Barrier(MPI_COMM_WORLD);
 
     MPI_Finalize();
