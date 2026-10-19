@@ -16,7 +16,7 @@ elif [ `uname -s` == Darwin ] ; then
 else
     CC=gcc
     CXX=g++
-    if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ]; then
+    if [ `hostname` == "nuclear" ] || [ `hostname` == "oppenheimer" ] || [ `hostname` == "raspberrypi" ]; then
         LLVM_HOME=/opt/llvm
     elif [ `hostname` == "fi-kermit" ] || [ `hostname` == "gorby" ]; then
         #LLVM_HOME=/home/${USER}/LLVM
