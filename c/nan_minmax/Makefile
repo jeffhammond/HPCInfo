@@ -3,10 +3,11 @@
 #   make              build with everything that is detected
 #   make run          build and run
 #   make info         show which backends were enabled
+#   make nvls         build and run nan_nvls (NVSwitch multimem.ld_reduce; needs sm_90+, CUDA >= 12.1)
 #
 # Overrides:
 #   ENABLE_CUDA=0|1  ENABLE_OPENCL=0|1  ENABLE_SVE=0|1  ENABLE_FMAXIMUM=0|1
-#   CUDA_ARCH=sm_80 (default: native, needs CUDA >= 11.5)
+#   CUDA_ARCH=sm_80 (default: native, needs CUDA >= 11.5)   NVLS_ARCH=sm_90 (default)
 #   OPENCL_CPPFLAGS=-I/usr/local/cuda/include   OPENCL_LIBS=-L/path -lOpenCL
 #   CPPFLAGS=-DNT_NO_AVX512   (skip AVX-512 code at compile time)
 
@@ -117,6 +118,14 @@ nan_opencl.o: nan_opencl.c
 nan_cuda.o: nan_cuda.cu
 	$(NVCC) $(NVCCFLAGS) -arch=$(CUDA_ARCH) -DNT_CUDA -c $< -o $@
 
+NVLS_ARCH ?= sm_90
+
+nan_nvls: nan_nvls.cu
+	$(NVCC) $(NVCCFLAGS) -arch=$(NVLS_ARCH) $< -o $@ -lcuda
+
+nvls: nan_nvls
+	./nan_nvls
+
 run: nan_minmax
 	./nan_minmax
 
@@ -130,6 +139,6 @@ info:
 	@echo "objects  : $(OBJS)"
 
 clean:
-	rm -f *.o nan_minmax
+	rm -f *.o nan_minmax nan_nvls
 
-.PHONY: all run info clean
+.PHONY: all run nvls info clean
